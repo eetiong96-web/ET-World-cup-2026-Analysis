@@ -28,23 +28,18 @@ The current static build is precomputed with:
 
 ## Deploy To Cloudflare Pages
 
-Use Cloudflare Pages, not Workers.
+Use Cloudflare's static deploy flow with the generated `public/` folder.
 
-Cloudflare Pages settings:
+Cloudflare build settings:
 
 ```text
 Build command: python build_static.py
+Deploy command: npx wrangler deploy
 Build output directory: public
 Root directory: leave blank
 ```
 
-Do not use:
-
-```text
-npx wrangler deploy
-```
-
-That command is for Cloudflare Workers-style deployment and will not deploy this dashboard correctly.
+`wrangler.jsonc` tells Cloudflare/Wrangler to publish `public/` as static assets.
 
 ## Manual Static Build
 

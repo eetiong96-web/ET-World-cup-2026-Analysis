@@ -7,10 +7,11 @@ This repo can now build a static Cloudflare Pages site.
 Use these Cloudflare Pages settings:
 
 - Build command: `python build_static.py`
+- Deploy command: `npx wrangler deploy`
 - Build output directory: `public`
 - Root directory: leave blank unless this is inside a monorepo
 
-The build script precomputes model outputs, simulation probabilities, bracket paths, matchup odds, and source metadata into `public/data.json`. The static page then renders everything in the browser.
+The build script precomputes model outputs, simulation probabilities, bracket paths, matchup odds, and source metadata into `public/data.json`. The static page then renders everything in the browser. `wrangler.jsonc` tells Cloudflare to deploy `public/` as static assets.
 
 ## 4-Hour Data Refresh
 
@@ -21,7 +22,8 @@ For this to redeploy automatically:
 1. Push the repo to GitHub.
 2. Connect Cloudflare Pages to that GitHub repo.
 3. Use `python build_static.py` as the build command.
-4. Use `public` as the build output directory.
+4. Use `npx wrangler deploy` as the deploy command.
+5. Use `public` as the build output directory if Cloudflare asks for one.
 
 The workflow can also be run manually from GitHub Actions with `workflow_dispatch`.
 
@@ -37,15 +39,7 @@ Use:
 
 ## Why The Earlier Cloudflare Deploy Failed
 
-The previous Cloudflare setup ran `npx wrangler deploy`, which is for Workers-style deployment. This project needs Cloudflare Pages with `public/` as the output directory.
-
-Do not use this Cloudflare deploy command:
-
-```text
-npx wrangler deploy
-```
-
-That command is for Cloudflare Workers-style deployment and will fail for this Streamlit app.
+The previous Cloudflare setup ran `npx wrangler deploy` before the repo had a `wrangler.jsonc` file. Wrangler did not know where the static files were. This repo now includes `wrangler.jsonc`, pointing static assets at `public/`.
 
 ## If You Want The Live Streamlit App
 
