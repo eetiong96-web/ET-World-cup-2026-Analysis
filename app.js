@@ -1,6 +1,6 @@
 const pages = [
   "Data Sources and Refresh Status",
-  "Live Match Results",
+  "Current Group Tables",
   "Team Power Ratings",
   "Group Stage Simulator",
   "Goal Group Stage Simulator",
@@ -32,22 +32,11 @@ function topBar(rows, labelKey, valueKey, limit = 16) {
 }
 
 function renderNav() {
-  const d = state.data;
-  const options = d?.simulation_options;
-  const controls = options ? `<div class="sim-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label><p class="muted mini">Affects odds, bracket, country path, and group qualification pages.</p></div>` : "";
-  document.getElementById("nav").innerHTML = `${controls}${pages.map((p) => `<button class="nav-btn ${state.page === p ? "active" : ""}" data-page="${esc(p)}">${esc(p)}</button>`).join("")}`;
+  document.getElementById("nav").innerHTML = pages.map((p) => `<button class="nav-btn ${state.page === p ? "active" : ""}" data-page="${esc(p)}">${esc(p)}</button>`).join("");
   document.querySelectorAll(".nav-btn").forEach((btn) => btn.addEventListener("click", () => {
     state.page = btn.dataset.page;
     render();
   }));
-  document.getElementById("sim-count")?.addEventListener("change", (event) => {
-    state.simCount = Number(event.target.value);
-    render();
-  });
-  document.getElementById("sim-seed")?.addEventListener("change", (event) => {
-    state.simSeed = Number(event.target.value);
-    render();
-  });
 }
 
 function activeSimulation() {
@@ -77,16 +66,32 @@ function dataSources(d) {
   ])}`;
 }
 
-function liveResults(d) {
-  return `<h2>Live Match Results</h2><p class="muted">Fetched at static build time from the ESPN public scoreboard feed. With the GitHub workflow enabled, this can refresh every 4 hours and trigger a Cloudflare redeploy.</p>${d.live_results.length ? table(d.live_results, [
+function currentGroupTables(d) {
+  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  const cards = groups.map((group) => {
+    const rows = d.current_group_tables.filter((r) => r.group === group);
+    return `<section class="group-card"><h3>Group ${esc(group)}</h3>${table(rows, [
+      { key: "team", label: "Team" },
+      { key: "played", label: "P" },
+      { key: "won", label: "W" },
+      { key: "drawn", label: "D" },
+      { key: "lost", label: "L" },
+      { key: "goals_for", label: "GF" },
+      { key: "goals_against", label: "GA" },
+      { key: "goal_difference", label: "GD" },
+      { key: "points", label: "Pts" },
+    ])}</section>`;
+  }).join("");
+  const completed = d.live_results.filter((r) => r.completed);
+  return `<h2>Current Group Tables</h2><p class="muted">Calculated from completed match results available at static build time. The GitHub workflow can refresh this every 4 hours and Cloudflare can redeploy from the repo.</p>${completed.length ? "" : `<p class="warn">No completed World Cup match results were returned by the build-time scoreboard source yet, so all tables are currently at zero.</p>`}<div class="grid">${cards}</div><h3>Completed Results Used</h3>${completed.length ? table(completed, [
     { key: "date", label: "Date" },
     { key: "match", label: "Match" },
     { key: "home", label: "Home" },
-    { key: "home_score", label: "Home score" },
-    { key: "away_score", label: "Away score" },
+    { key: "home_score", label: "Home" },
+    { key: "away_score", label: "Away" },
     { key: "away", label: "Away" },
     { key: "status", label: "Status" },
-  ]) : `<p class="warn">No live World Cup scoreboard rows were returned at build time. This is normal when there are no matches on the current feed window.</p>`}`;
+  ]) : `<p class="muted">No completed results available in this static build.</p>`}`;
 }
 
 function teamPower(d) {
@@ -244,8 +249,24 @@ function validation(d) {
   ])}`;
 }
 
-function methodology() {
-  return `<h2>Methodology and Caveats</h2><div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>FIFA rankings, Elo, market values, and 2026 structure are fetched/cached during build.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Monte Carlo simulation count is fixed in this static build.</li><li>Public sites may block build-time fetches; cached/seed data is labeled in Sources.</li></ul></div>`;
+function simulationControls(d) {
+  const options = d.simulation_options;
+  if (!options) return "";
+  setTimeout(() => {
+    document.getElementById("sim-count")?.addEventListener("change", (event) => {
+      state.simCount = Number(event.target.value);
+      render();
+    });
+    document.getElementById("sim-seed")?.addEventListener("change", (event) => {
+      state.simSeed = Number(event.target.value);
+      render();
+    });
+  }, 0);
+  return `<div class="sim-controls methodology-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label><p class="muted mini">Applies to odds, bracket, animated country path, Round of 32, and group qualification pages.</p></div>`;
+}
+
+function methodology(d) {
+  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>FIFA rankings, Elo, market values, and 2026 structure are fetched/cached during build.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled in Sources.</li><li>Current group tables use completed scoreboard rows available during the last build.</li></ul></div>`;
 }
 
 function render() {
@@ -255,7 +276,7 @@ function render() {
   document.getElementById("build-meta").textContent = `Built ${d.generated_at} | ${sim.count} simulations | seed ${sim.seed}`;
   const views = {
     "Data Sources and Refresh Status": dataSources,
-    "Live Match Results": liveResults,
+    "Current Group Tables": currentGroupTables,
     "Team Power Ratings": teamPower,
     "Group Stage Simulator": groupStage,
     "Goal Group Stage Simulator": groupGoals,
