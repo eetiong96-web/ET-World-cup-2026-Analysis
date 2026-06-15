@@ -1,6 +1,17 @@
 const ESPN_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
 const FOOTBALL_DATA_MATCHES_URL = "https://api.football-data.org/v4/competitions/WC/matches";
+const DEEPSEEK_CHAT_URL = "https://api.deepseek.com/chat/completions";
 const LIVE_CACHE_SECONDS = 300;
+const COMMENTARY_CACHE_SECONDS = 21600;
+const MAX_AI_REQUEST_BYTES = 12000;
+
+const COMMENTARY_TYPES = {
+  champion: "Explain the champion odds and why the top teams look strongest.",
+  country: "Explain the selected country's possible path through the tournament.",
+  group: "Explain the selected group qualification picture and likely pressure points.",
+  round32: "Explain the Round of 32 risks and likely upset spots.",
+  upsets: "Pick plausible upset teams from the supplied simulation numbers.",
+};
 
 const TEAM_ALIASES = {
   "United States": "USA",
@@ -24,6 +35,18 @@ function jsonResponse(body, status = 200, cacheSeconds = 0) {
       "content-type": "application/json; charset=utf-8",
       "cache-control": cacheSeconds > 0 ? `public, max-age=${cacheSeconds}` : "no-store",
       "access-control-allow-origin": "*",
+    },
+  });
+}
+
+function corsPreflight() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "GET, POST, OPTIONS",
+      "access-control-allow-headers": "content-type",
+      "access-control-max-age": "86400",
     },
   });
 }
@@ -121,9 +144,9 @@ async function fetchFootballData(env) {
 }
 
 async function liveResults(request, env) {
-  const cache = caches.default;
+  const cache = globalThis.caches?.default;
   const cacheKey = new Request(new URL(request.url).origin + "/api/live-results-cache");
-  const cached = await cache.match(cacheKey);
+  const cached = cache ? await cache.match(cacheKey) : null;
   if (cached) return cached;
 
   const sources = [];
@@ -166,8 +189,134 @@ async function liveResults(request, env) {
     matches: primaryMatches,
     sources,
   }, 200, LIVE_CACHE_SECONDS);
-  await cache.put(cacheKey, response.clone());
+  if (cache) await cache.put(cacheKey, response.clone());
   return response;
+}
+
+async function hashText(text) {
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function compactContext(type, context = {}) {
+  const pickRows = (rows, limit, keys) => (Array.isArray(rows) ? rows.slice(0, limit).map((row) => {
+    const out = {};
+    for (const key of keys) out[key] = row?.[key];
+    return out;
+  }) : []);
+
+  if (type === "champion") {
+    return { topTeams: pickRows(context.topTeams, 12, ["team", "group", "Champion", "Final", "Semi-finals", "Quarter-finals"]) };
+  }
+  if (type === "country") {
+    return {
+      team: String(context.team || "").slice(0, 60),
+      probabilities: context.probabilities || {},
+      route: pickRows(context.route, 8, ["round", "match", "opponent", "result"]),
+    };
+  }
+  if (type === "group") {
+    return {
+      group: String(context.group || "").slice(0, 4),
+      teams: pickRows(context.teams, 6, ["team", "Round of 32", "Quarter-finals", "Champion"]),
+      matchups: pickRows(context.matchups, 8, ["team_a", "team_b", "team_a_win", "draw", "team_b_win"]),
+    };
+  }
+  if (type === "round32") {
+    return { fixtures: pickRows(context.fixtures, 16, ["match", "fixture", "favorite", "favorite_win_probability", "analysis"]) };
+  }
+  if (type === "upsets") {
+    return { teams: pickRows(context.teams, 20, ["team", "group", "Round of 32", "Quarter-finals", "Champion"]) };
+  }
+  return {};
+}
+
+function buildDeepSeekPrompt(type, context) {
+  return [
+    "You are an analytical football commentator for a World Cup 2026 dashboard.",
+    "Explain only from the supplied model data. Do not pretend the model is certain.",
+    "Use plain language for casual football fans.",
+    "Keep it concise: one short intro, 3-5 bullets, and one caveat.",
+    `Task: ${COMMENTARY_TYPES[type]}`,
+    `Data: ${JSON.stringify(context)}`,
+  ].join("\n");
+}
+
+async function callDeepSeek(env, type, context) {
+  const response = await fetch(DEEPSEEK_CHAT_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+      messages: [
+        {
+          role: "system",
+          content: "You explain football analytics clearly. You never invent live injuries, private squad news, or results that are not in the provided data.",
+        },
+        { role: "user", content: buildDeepSeekPrompt(type, context) },
+      ],
+      temperature: 0.35,
+      max_tokens: 520,
+      stream: false,
+    }),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`DeepSeek returned ${response.status}: ${text.slice(0, 180)}`);
+  }
+  const payload = await response.json();
+  return payload.choices?.[0]?.message?.content || "No commentary was returned.";
+}
+
+async function aiCommentary(request, env) {
+  if (request.method === "OPTIONS") return corsPreflight();
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Use POST." }, 405);
+  }
+  if (!env.DEEPSEEK_API_KEY) {
+    return jsonResponse({ error: "AI commentary is not enabled. Add DEEPSEEK_API_KEY in Cloudflare." }, 503);
+  }
+  const contentLength = Number(request.headers.get("content-length") || 0);
+  if (contentLength > MAX_AI_REQUEST_BYTES) {
+    return jsonResponse({ error: "AI request is too large." }, 413);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "Invalid JSON body." }, 400);
+  }
+  const type = String(body.type || "");
+  if (!COMMENTARY_TYPES[type]) {
+    return jsonResponse({ error: "Unknown commentary type." }, 400);
+  }
+
+  const context = compactContext(type, body.context);
+  const cacheSeed = JSON.stringify({ type, context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
+  const cacheHash = await hashText(cacheSeed);
+  const cacheKey = new Request(new URL(request.url).origin + `/api/ai-commentary-cache/${cacheHash}`);
+  const cache = globalThis.caches?.default;
+  const cached = cache ? await cache.match(cacheKey) : null;
+  if (cached) return cached;
+
+  try {
+    const commentary = await callDeepSeek(env, type, context);
+    const response = jsonResponse({
+      type,
+      generated_at: new Date().toISOString(),
+      cache_seconds: COMMENTARY_CACHE_SECONDS,
+      commentary,
+    }, 200, COMMENTARY_CACHE_SECONDS);
+    if (cache) await cache.put(cacheKey, response.clone());
+    return response;
+  } catch (error) {
+    return jsonResponse({ error: error.message }, 502);
+  }
 }
 
 export default {
@@ -175,6 +324,9 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/api/live-results") {
       return liveResults(request, env);
+    }
+    if (url.pathname === "/api/ai-commentary") {
+      return aiCommentary(request, env);
     }
     if (url.pathname === "/api/health") {
       return jsonResponse({ ok: true, generated_at: new Date().toISOString() });

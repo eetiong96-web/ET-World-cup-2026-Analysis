@@ -7,6 +7,7 @@ const pages = [
   "Animated Country Path",
   "Round of 32 Fixtures",
   "Penalty Shootout Estimator",
+  "AI Commentary",
   "Bracket Path",
   "Stage Probability Table",
   "Champion Odds",
@@ -14,7 +15,7 @@ const pages = [
   "Methodology and Caveats",
 ];
 
-const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0 };
+const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiCooldownUntil: 0, aiLastResult: null };
 
 const pct = (v) => `${Math.round((Number(v) || 0) * 100)}%`;
 const pct1 = (v) => `${((Number(v) || 0) * 100).toFixed(1)}%`;
@@ -288,6 +289,73 @@ function penalties(d) {
   ])}`;
 }
 
+function aiPayload(type, d) {
+  const sim = activeSimulation();
+  if (type === "champion") {
+    return { topTeams: [...sim.simulation_probabilities].sort((a, b) => b.Champion - a.Champion).slice(0, 12) };
+  }
+  if (type === "country") {
+    const team = document.getElementById("ai-country")?.value || sim.simulation_probabilities[0]?.team;
+    const row = sim.simulation_probabilities.find((r) => r.team === team) || {};
+    const route = sim.bracket
+      .filter((m) => m.team_a === team || m.team_b === team)
+      .map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === team ? m.team_b : m.team_a, result: m.winner === team ? "Advanced" : "Eliminated" }));
+    return { team, probabilities: row, route };
+  }
+  if (type === "group") {
+    const group = document.getElementById("ai-group")?.value || "A";
+    return {
+      group,
+      teams: sim.simulation_probabilities.filter((r) => r.group === group).sort((a, b) => b["Round of 32"] - a["Round of 32"]),
+      matchups: d.matchups.filter((m) => m.group === group).slice(0, 8),
+    };
+  }
+  if (type === "round32") {
+    return { fixtures: sim.round32_analysis };
+  }
+  return { teams: [...sim.simulation_probabilities].sort((a, b) => b["Quarter-finals"] - a["Quarter-finals"]).slice(0, 20) };
+}
+
+function bindAiControls() {
+  document.querySelectorAll("[data-ai-type]").forEach((button) => button.addEventListener("click", () => requestAiCommentary(button.dataset.aiType)));
+}
+
+function setAiResult(html) {
+  const el = document.getElementById("ai-result");
+  if (el) el.innerHTML = html;
+}
+
+function requestAiCommentary(type) {
+  if (Date.now() < state.aiCooldownUntil) {
+    setAiResult(`<p class="warn">Please wait ${formatDuration(state.aiCooldownUntil - Date.now())} before asking again.</p>`);
+    return;
+  }
+  state.aiCooldownUntil = Date.now() + 30000;
+  setAiResult(`<p class="muted">Asking DeepSeek for commentary...</p>`);
+  fetch("/api/ai-commentary", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ type, context: aiPayload(type, state.data) }),
+  })
+    .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
+    .then(({ ok, body }) => {
+      if (!ok) throw new Error(body.error || "AI commentary failed.");
+      state.aiLastResult = body;
+      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.commentary).replace(/\n/g, "<br>")}</div>`);
+    })
+    .catch((err) => {
+      setAiResult(`<p class="warn">${esc(err.message)}</p>`);
+    });
+}
+
+function aiCommentary(d) {
+  const sim = activeSimulation();
+  const teams = [...sim.simulation_probabilities].sort((a, b) => a.team.localeCompare(b.team));
+  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  setTimeout(bindAiControls, 0);
+  return `<h2>AI Commentary</h2><p class="muted">DeepSeek explains the existing simulation results. It does not rerun the model.</p><div class="card ai-panel"><div class="controls-row"><label>Country<select id="ai-country">${teams.map((t) => `<option>${esc(t.team)}</option>`).join("")}</select></label><label>Group<select id="ai-group">${groups.map((g) => `<option>${esc(g)}</option>`).join("")}</select></label></div><div class="ai-actions"><button data-ai-type="champion">Explain champion odds</button><button data-ai-type="country">Explain country path</button><button data-ai-type="group">Explain group picture</button><button data-ai-type="round32">Explain Round of 32 risks</button><button data-ai-type="upsets">Find upset picks</button></div><p class="muted mini">Cost controls: fixed prompts only, compact data only, 30-second browser cooldown, and server-side answer caching.</p></div><div id="ai-result" class="card"><p class="muted">Choose a commentary button.</p></div>`;
+}
+
 function bracket(d) {
   const sim = activeSimulation();
   return `<h2>Sample Simulated Bracket Path</h2>${table(sim.bracket, [
@@ -372,6 +440,7 @@ function render() {
     "Animated Country Path": countryPath,
     "Round of 32 Fixtures": round32,
     "Penalty Shootout Estimator": penalties,
+    "AI Commentary": aiCommentary,
     "Bracket Path": bracket,
     "Stage Probability Table": stageTable,
     "Champion Odds": championOdds,

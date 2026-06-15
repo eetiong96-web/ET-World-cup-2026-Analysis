@@ -29,6 +29,24 @@ For this to redeploy automatically:
 
 The workflow can also be run manually from GitHub Actions with `workflow_dispatch`.
 
+## Optional DeepSeek AI Commentary
+
+The Worker also exposes `/api/ai-commentary`. It uses DeepSeek only to explain already-computed simulation results.
+
+Add this Cloudflare Worker secret:
+
+```text
+DEEPSEEK_API_KEY
+```
+
+Optional variable:
+
+```text
+DEEPSEEK_MODEL=deepseek-v4-flash
+```
+
+The app uses fixed commentary buttons, compact model summaries, a 30-second browser cooldown, request-size limits, and 6-hour Worker cache responses to reduce API spend.
+
 ## Alternative: Streamlit Community Cloud
 
 This is a Python Streamlit app, so the easiest live deployment is Streamlit Community Cloud.

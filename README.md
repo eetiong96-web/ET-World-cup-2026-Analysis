@@ -4,8 +4,8 @@ A static, Cloudflare-ready dashboard for exploring the 2026 FIFA World Cup using
 
 The current static build is precomputed with:
 
-- 10,000 Monte Carlo simulations
-- random seed 999
+- 2,000 Monte Carlo simulations
+- random seed 26
 - 48 teams
 - group-stage fixtures
 - Round of 32 bracket path
@@ -16,6 +16,7 @@ The current static build is precomputed with:
 - match win/draw/loss estimates
 - penalty shootout proxy ratings
 - goal projections
+- DeepSeek AI commentary layer
 
 ## Main Files
 
@@ -89,6 +90,15 @@ Optional football-data.org fallback:
 1. Create a free token at https://www.football-data.org/client/register
 2. Add it to Cloudflare as a Worker variable/secret named `FOOTBALL_DATA_TOKEN`.
 3. Redeploy. ESPN remains the primary free no-key live source.
+
+Optional DeepSeek AI commentary:
+
+1. Create a DeepSeek API key.
+2. Add it to Cloudflare as a Worker secret named `DEEPSEEK_API_KEY`.
+3. Optional: set `DEEPSEEK_MODEL`; otherwise the Worker uses `deepseek-v4-flash`.
+4. Redeploy.
+
+AI commentary is cost controlled with fixed buttons, compact payloads, a 30-second browser cooldown, request-size limits, and 6-hour edge caching for repeated questions.
 
 ## Data Sources
 

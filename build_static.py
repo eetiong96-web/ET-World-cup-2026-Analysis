@@ -248,7 +248,7 @@ def main() -> None:
     model_probs = predict_stage_probabilities(models, team_strength)
     validation, importances = validate_groupkfold(make_training_frame())
     goal_matches, goal_totals = group_goal_projection(data["fixtures"], team_strength)
-    simulation_options = {"counts": [10000], "seeds": [999], "default_count": 10000, "default_seed": 999}
+    simulation_options = {"counts": [2000], "seeds": [26], "default_count": 2000, "default_seed": 26}
     simulations = {}
     for count in simulation_options["counts"]:
         for seed in simulation_options["seeds"]:

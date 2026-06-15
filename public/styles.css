@@ -133,6 +133,37 @@ h3 {
   max-width: none;
 }
 
+.ai-panel {
+  margin-bottom: 14px;
+}
+
+.ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0 12px;
+}
+
+.ai-actions button {
+  padding: 10px 12px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: #eef5ff;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ai-actions button:hover {
+  background: #e1edfb;
+}
+
+.ai-answer {
+  line-height: 1.55;
+  max-width: 920px;
+}
+
 .nav-btn.active,
 .nav-btn:hover {
   border-color: #bdd0e9;
