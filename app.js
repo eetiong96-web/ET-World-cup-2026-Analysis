@@ -1,5 +1,6 @@
 const pages = [
   "Data Sources and Refresh Status",
+  "Live Match Results",
   "Team Power Ratings",
   "Group Stage Simulator",
   "Goal Group Stage Simulator",
@@ -33,7 +34,7 @@ function topBar(rows, labelKey, valueKey, limit = 16) {
 function renderNav() {
   const d = state.data;
   const options = d?.simulation_options;
-  const controls = options ? `<div class="sim-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label></div>` : "";
+  const controls = options ? `<div class="sim-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label><p class="muted mini">Affects odds, bracket, country path, and group qualification pages.</p></div>` : "";
   document.getElementById("nav").innerHTML = `${controls}${pages.map((p) => `<button class="nav-btn ${state.page === p ? "active" : ""}" data-page="${esc(p)}">${esc(p)}</button>`).join("")}`;
   document.querySelectorAll(".nav-btn").forEach((btn) => btn.addEventListener("click", () => {
     state.page = btn.dataset.page;
@@ -74,6 +75,18 @@ function dataSources(d) {
     { key: "position", label: "Pos" },
     { key: "team", label: "Team" },
   ])}`;
+}
+
+function liveResults(d) {
+  return `<h2>Live Match Results</h2><p class="muted">Fetched at static build time from the ESPN public scoreboard feed. With the GitHub workflow enabled, this can refresh every 4 hours and trigger a Cloudflare redeploy.</p>${d.live_results.length ? table(d.live_results, [
+    { key: "date", label: "Date" },
+    { key: "match", label: "Match" },
+    { key: "home", label: "Home" },
+    { key: "home_score", label: "Home score" },
+    { key: "away_score", label: "Away score" },
+    { key: "away", label: "Away" },
+    { key: "status", label: "Status" },
+  ]) : `<p class="warn">No live World Cup scoreboard rows were returned at build time. This is normal when there are no matches on the current feed window.</p>`}`;
 }
 
 function teamPower(d) {
@@ -242,6 +255,7 @@ function render() {
   document.getElementById("build-meta").textContent = `Built ${d.generated_at} | ${sim.count} simulations | seed ${sim.seed}`;
   const views = {
     "Data Sources and Refresh Status": dataSources,
+    "Live Match Results": liveResults,
     "Team Power Ratings": teamPower,
     "Group Stage Simulator": groupStage,
     "Goal Group Stage Simulator": groupGoals,

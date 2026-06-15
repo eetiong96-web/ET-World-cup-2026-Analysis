@@ -52,6 +52,12 @@ h3 {
   color: var(--muted);
 }
 
+.mini {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
 .nav-btn {
   width: 100%;
   display: block;
