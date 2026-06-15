@@ -10,8 +10,14 @@ from .data_fetch import seed_historical_stage_results, seed_rankings
 def build_team_strength(groups: pd.DataFrame, rankings: pd.DataFrame, elo: pd.DataFrame, values: pd.DataFrame) -> pd.DataFrame:
     teams = groups[["team", "group"]].drop_duplicates()
     df = teams.merge(rankings, on="team", how="left").merge(elo, on="team", how="left").merge(values, on="team", how="left")
-    seed = seed_rankings()[["team", "fifa_rank", "fifa_points"]]
-    df = df.merge(seed, on="team", how="left", suffixes=("", "_seed"))
+    for column in ["fifa_rank", "fifa_points", "elo", "market_value_m"]:
+        if column not in df.columns:
+            df[column] = np.nan
+    seed = seed_rankings()[["team", "fifa_rank", "fifa_points"]].rename(columns={
+        "fifa_rank": "fifa_rank_seed",
+        "fifa_points": "fifa_points_seed",
+    })
+    df = df.merge(seed, on="team", how="left")
     df["fifa_rank"] = df["fifa_rank"].fillna(df["fifa_rank_seed"]).fillna(80)
     df["fifa_points"] = df["fifa_points"].fillna(df["fifa_points_seed"]).fillna(1350)
     df["elo"] = df["elo"].fillna(1800 - df["fifa_rank"] * 7)

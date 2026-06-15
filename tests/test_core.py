@@ -47,3 +47,15 @@ def test_monte_carlo_one_champion_probability_mass():
     probs, bracket = run_monte_carlo(teams, fixtures, n=25, seed=3)
     assert abs(probs["Champion"].sum() - 1) < 1e-9
     assert not bracket.empty
+
+
+def test_team_strength_uses_seed_rankings_when_live_rankings_have_no_rank_columns():
+    groups = seed_groups()
+    rankings = pd.DataFrame({"team": groups["team"].unique()})
+    values = seed_values()
+    elo = pd.DataFrame({"team": groups["team"].unique()})
+
+    teams = build_team_strength(groups, rankings, elo, values)
+
+    assert {"fifa_rank", "fifa_points", "elo", "market_value_m"}.issubset(teams.columns)
+    assert teams["fifa_rank"].notna().all()
