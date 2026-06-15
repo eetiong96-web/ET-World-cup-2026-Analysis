@@ -8,3 +8,10 @@ data/cache/
 cloudflared.exe
 worldcup-2026-analysis-deploy-*/
 *.zip
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
