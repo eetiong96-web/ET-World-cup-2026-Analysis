@@ -15,7 +15,8 @@ from wc2026.simulation import analyze_round_of_32, expected_goals, run_monte_car
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
 STATIC = ROOT / "static_site"
-REFRESH_INTERVAL_MINUTES = 5
+LIVE_RESULTS_REFRESH_MINUTES = 5
+MODEL_REFRESH_HOURS = 8
 
 
 def scale_0_100(series: pd.Series, higher_is_better: bool = True) -> pd.Series:
@@ -265,7 +266,11 @@ def main() -> None:
 
     payload = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-        "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES,
+        "refresh_cadences": {
+            "live_results_minutes": LIVE_RESULTS_REFRESH_MINUTES,
+            "transfermarkt_values_hours": MODEL_REFRESH_HOURS,
+            "model_refresh_hours": MODEL_REFRESH_HOURS,
+        },
         "simulation_count": simulation_options["default_count"],
         "simulation_seed": simulation_options["default_seed"],
         "simulation_options": simulation_options,

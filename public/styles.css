@@ -78,6 +78,26 @@ h3 {
   color: #8a5a05;
 }
 
+.countdown-badge {
+  display: inline-flex;
+  min-width: 72px;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid #bdd0e9;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: var(--blue);
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.countdown-badge.checking {
+  border-color: #efd39e;
+  background: #fff7e6;
+  color: #8a5a05;
+}
+
 .nav-btn {
   width: 100%;
   display: block;

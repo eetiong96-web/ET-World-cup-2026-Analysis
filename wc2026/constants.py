@@ -14,6 +14,7 @@ SOURCE_URLS = {
     "format_cross_check": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for",
     "espn_scoreboard": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
     "espn_world_cup": "https://www.espn.com/soccer/league/_/name/fifa.world",
+    "football_data_org": "https://api.football-data.org/v4/competitions/WC/matches",
 }
 
 

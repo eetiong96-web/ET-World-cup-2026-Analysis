@@ -338,6 +338,7 @@ def supplemental_sources() -> list[SourceRecord]:
         SourceRecord("fifa_schedule", SOURCE_URLS["fifa_schedule"], "reference", now, 0, "Official tournament schedule and match path reference."),
         SourceRecord("format_cross_check", SOURCE_URLS["format_cross_check"], "reference", now, 0, "Independent tournament-format cross-check."),
         SourceRecord("espn_world_cup", SOURCE_URLS["espn_world_cup"], "reference", now, 0, "Readable live scores, fixtures, and World Cup news reference."),
+        SourceRecord("football_data_org", SOURCE_URLS["football_data_org"], "optional_api", now, 0, "Optional free-token fallback for World Cup matches. Add FOOTBALL_DATA_TOKEN in Cloudflare to enable live fallback."),
     ]
 
 

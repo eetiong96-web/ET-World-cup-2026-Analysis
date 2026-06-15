@@ -73,7 +73,7 @@ Or manually:
 
 ## Automatic Refresh
 
-The GitHub Actions workflow at `.github/workflows/refresh-static-site.yml` rebuilds the static site every 5 minutes.
+The GitHub Actions workflow at `.github/workflows/refresh-static-site.yml` rebuilds the static model data every 8 hours. Live match scores refresh through the Cloudflare Worker API every 5 minutes.
 
 For automatic refresh to work:
 
@@ -82,7 +82,13 @@ For automatic refresh to work:
 3. Use the Cloudflare build settings above.
 4. Let GitHub Actions commit refreshed `public/` files when data changes.
 
-Manual zip uploads cannot refresh automatically. The live site also shows a countdown timer based on the last generated `data.json` timestamp.
+Manual zip uploads cannot refresh automatically. The live site shows a 5-minute live-score API countdown and an 8-hour Transfermarkt/model refresh countdown.
+
+Optional football-data.org fallback:
+
+1. Create a free token at https://www.football-data.org/client/register
+2. Add it to Cloudflare as a Worker variable/secret named `FOOTBALL_DATA_TOKEN`.
+3. Redeploy. ESPN remains the primary free no-key live source.
 
 ## Data Sources
 

@@ -14,7 +14,7 @@ const pages = [
   "Methodology and Caveats",
 ];
 
-const state = { page: pages[0], data: null, simCount: null, simSeed: null, refreshTimer: null, refreshCheckPending: false, lastRefreshCheck: 0 };
+const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0 };
 
 const pct = (v) => `${Math.round((Number(v) || 0) * 100)}%`;
 const pct1 = (v) => `${((Number(v) || 0) * 100).toFixed(1)}%`;
@@ -23,37 +23,71 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 
 function formatDuration(ms) {
   const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
+  if (hours > 0) return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-function nextRefreshAt(d) {
-  const builtAt = new Date(d.generated_at).getTime();
-  const intervalMs = Number(d.refresh_interval_minutes || 5) * 60 * 1000;
+function nextFromTimestamp(timestamp, intervalMs) {
+  const builtAt = new Date(timestamp).getTime();
   if (!Number.isFinite(builtAt)) return null;
   return builtAt + intervalMs;
 }
 
+function cadenceMinutes() {
+  return Number(state.data?.refresh_cadences?.live_results_minutes || 5);
+}
+
+function modelRefreshHours() {
+  return Number(state.data?.refresh_cadences?.model_refresh_hours || 8);
+}
+
+function sourceRefreshMs(source) {
+  if (["espn_scoreboard", "football_data_org"].includes(source.name)) return cadenceMinutes() * 60 * 1000;
+  if (source.name === "transfermarkt_values") return Number(state.data?.refresh_cadences?.transfermarkt_values_hours || 8) * 60 * 60 * 1000;
+  return 0;
+}
+
+function countdownBadge(source) {
+  const refreshMs = sourceRefreshMs(source);
+  if (!refreshMs || !source.fetched_at) return "Reference";
+  const nextAt = nextFromTimestamp(source.fetched_at, refreshMs);
+  if (!nextAt) return "Timer unavailable";
+  return `<span class="countdown-badge" data-countdown="${nextAt}"></span>`;
+}
+
+function updateCountdownBadges() {
+  document.querySelectorAll("[data-countdown]").forEach((el) => {
+    const nextAt = Number(el.dataset.countdown);
+    const remaining = nextAt - Date.now();
+    el.textContent = remaining > 0 ? formatDuration(remaining) : "checking now";
+    el.classList.toggle("checking", remaining <= 0);
+  });
+}
+
 function updateRefreshTimer() {
   const el = document.getElementById("refresh-meta");
-  if (!el || !state.data) return;
-  const nextAt = nextRefreshAt(state.data);
+  if (!el || !state.data || !state.live) return;
+  const nextAt = nextFromTimestamp(state.live.generated_at, cadenceMinutes() * 60 * 1000);
   if (!nextAt) {
     el.textContent = "Refresh timer unavailable";
     return;
   }
   const remaining = nextAt - Date.now();
   if (remaining > 0) {
-    el.textContent = `Next live data refresh check in ${formatDuration(remaining)}`;
+    el.textContent = `Live match API refresh in ${formatDuration(remaining)} | model refresh every ${modelRefreshHours()}h`;
     el.classList.remove("checking");
+    updateCountdownBadges();
     return;
   }
-  el.textContent = "Checking for newer live data...";
+  el.textContent = "Checking live match API...";
   el.classList.add("checking");
-  const enoughTimePassed = Date.now() - state.lastRefreshCheck > 15000;
-  if (!state.refreshCheckPending && enoughTimePassed) {
-    loadData({ silent: true });
+  updateCountdownBadges();
+  const enoughTimePassed = Date.now() - state.lastLiveRefreshCheck > 15000;
+  if (!state.liveRefreshPending && enoughTimePassed) {
+    loadLiveResults({ silent: true });
   }
 }
 
@@ -65,7 +99,10 @@ function startRefreshTimer() {
 
 function table(rows, columns) {
   if (!rows || rows.length === 0) return `<p class="muted">No rows available.</p>`;
-  return `<table><thead><tr>${columns.map((c) => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${columns.map((c) => `<td>${esc(c.format ? c.format(r[c.key], r) : r[c.key])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  return `<table><thead><tr>${columns.map((c) => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${columns.map((c) => {
+    const value = c.format ? c.format(r[c.key], r) : r[c.key];
+    return `<td>${c.html ? value : esc(value)}</td>`;
+  }).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function topBar(rows, labelKey, valueKey, limit = 16) {
@@ -92,12 +129,50 @@ function activeSimulation() {
   };
 }
 
+function mergedSources(d) {
+  const liveByName = new Map((state.live?.sources || []).map((source) => [source.name, source]));
+  const rows = d.sources.map((source) => ({ ...source, ...(liveByName.get(source.name) || {}) }));
+  for (const source of state.live?.sources || []) {
+    if (!rows.some((row) => row.name === source.name)) rows.push(source);
+  }
+  return rows.map((source) => ({
+    ...source,
+    update_method: source.name === "transfermarkt_values"
+      ? "Build refresh, 8h"
+      : ["espn_scoreboard", "football_data_org"].includes(source.name)
+        ? "Live API, 5m"
+        : source.name === "openfootball_worldcup" || source.name === "groups_2026"
+          ? "GitHub raw/build"
+          : source.status === "reference"
+            ? "Reference only"
+            : "Build fetch/cache",
+    refresh_timer: countdownBadge(source),
+  }));
+}
+
+function liveScorePanel() {
+  if (!state.live) return `<p class="muted">Live API loading...</p>`;
+  const rows = state.live.matches || [];
+  return `<h3>Live Match API</h3><div class="kpi-grid"><div class="kpi"><span>API status</span><strong>${esc(state.live.sources?.[0]?.status || "checking")}</strong></div><div class="kpi"><span>Rows</span><strong>${rows.length}</strong></div><div class="kpi"><span>API refreshed</span><strong>${esc(new Date(state.live.generated_at).toLocaleTimeString())}</strong></div></div>${table(rows.slice(0, 12), [
+    { key: "date", label: "Date", format: (v) => v ? new Date(v).toLocaleString() : "" },
+    { key: "home", label: "Home" },
+    { key: "home_score", label: "H" },
+    { key: "away_score", label: "A" },
+    { key: "away", label: "Away" },
+    { key: "status", label: "Status" },
+    { key: "provider", label: "API" },
+  ])}`;
+}
+
 function dataSources(d) {
-  const warnings = d.sources.filter((s) => s.status !== "live").length;
-  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled below.</p>` : ""}${table(d.sources, [
+  const rows = mergedSources(d);
+  const warnings = rows.filter((s) => !["live", "reference", "optional_api", "not_configured"].includes(s.status)).length;
+  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled below.</p>` : ""}${liveScorePanel()}<h3>Source Details</h3>${table(rows, [
     { key: "name", label: "Source" },
     { key: "status", label: "Status" },
+    { key: "update_method", label: "Update Method" },
     { key: "rows", label: "Rows" },
+    { key: "refresh_timer", label: "Next Refresh", html: true },
     { key: "note", label: "Note" },
     { key: "citation", label: "Citation" },
   ])}<h3>2026 Groups</h3>${table(d.groups, [
@@ -279,7 +354,7 @@ function simulationControls(d) {
 }
 
 function methodology(d) {
-  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>FIFA rankings, Elo, market values, and 2026 structure are fetched/cached during build.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled in Sources.</li><li>Current group tables use completed scoreboard rows available during the last build.</li></ul></div>`;
+  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>ESPN live match data refreshes through a Cloudflare API route every ${cadenceMinutes()} minutes.</li><li>football-data.org is an optional fallback API when a Cloudflare token is configured.</li><li>Transfermarkt market values and the static prediction model refresh during the scheduled build every ${modelRefreshHours()} hours.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled in Sources.</li></ul></div>`;
 }
 
 function render() {
@@ -304,11 +379,37 @@ function render() {
     "Methodology and Caveats": methodology,
   };
   document.getElementById("content").innerHTML = views[state.page](d);
+  updateCountdownBadges();
+}
+
+function loadLiveResults({ silent = false } = {}) {
+  state.liveRefreshPending = true;
+  state.lastLiveRefreshCheck = Date.now();
+  return fetch(`/api/live-results?ts=${Date.now()}`, { cache: "no-store" })
+    .then((r) => r.json())
+    .then((live) => {
+      const previousBuild = state.live?.generated_at;
+      state.live = live;
+      if (!silent || previousBuild !== live.generated_at || state.page === "Data Sources and Refresh Status") {
+        render();
+      }
+      startRefreshTimer();
+    })
+    .catch((err) => {
+      state.live = {
+        generated_at: new Date().toISOString(),
+        refresh_interval_seconds: cadenceMinutes() * 60,
+        matches: [],
+        sources: [{ name: "espn_scoreboard", status: "error", rows: 0, fetched_at: new Date().toISOString(), note: err.message }],
+      };
+      if (!silent) render();
+    })
+    .finally(() => {
+      state.liveRefreshPending = false;
+    });
 }
 
 function loadData({ silent = false } = {}) {
-  state.refreshCheckPending = true;
-  state.lastRefreshCheck = Date.now();
   return fetch(`data.json?ts=${Date.now()}`, { cache: "no-store" })
     .then((r) => r.json())
     .then((d) => {
@@ -319,15 +420,13 @@ function loadData({ silent = false } = {}) {
       if (!silent || previousBuild !== d.generated_at) {
         render();
       }
+      loadLiveResults({ silent: true });
       startRefreshTimer();
     })
     .catch((err) => {
       if (!silent) {
         document.getElementById("content").innerHTML = `<p class="warn">Could not load static data: ${esc(err.message)}</p>`;
       }
-    })
-    .finally(() => {
-      state.refreshCheckPending = false;
     });
 }
 
