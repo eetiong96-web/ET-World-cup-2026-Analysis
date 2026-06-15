@@ -13,9 +13,9 @@ Use these Cloudflare Pages settings:
 
 The build script precomputes model outputs, simulation probabilities, bracket paths, matchup odds, and source metadata into `public/data.json`. The static page then renders everything in the browser. `wrangler.jsonc` tells Cloudflare to deploy `public/` as static assets.
 
-## 4-Hour Data Refresh
+## 5-Minute Data Refresh
 
-`.github/workflows/refresh-static-site.yml` rebuilds the static site every 4 hours and commits updated `public/` files when they change.
+`.github/workflows/refresh-static-site.yml` rebuilds the static site every 5 minutes and commits updated `public/` files when they change. The site header shows a countdown to the next expected refresh check.
 
 For this to redeploy automatically:
 

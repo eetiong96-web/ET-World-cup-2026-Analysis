@@ -1,5 +1,6 @@
 {
-  "generated_at": "2026-06-15T09:13:25+00:00",
+  "generated_at": "2026-06-15T09:34:06+00:00",
+  "refresh_interval_minutes": 5,
   "simulation_count": 10000,
   "simulation_seed": 999,
   "simulation_options": {
@@ -902,7 +903,7 @@
       "name": "groups_2026",
       "url": "https://github.com/openfootball/worldcup",
       "status": "cached",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:17+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://github.com/openfootball/worldcup"
@@ -911,7 +912,7 @@
       "name": "fifa_rankings",
       "url": "https://inside.fifa.com/fifa-world-ranking/men",
       "status": "cached",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:17+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://inside.fifa.com/fifa-world-ranking/men"
@@ -920,7 +921,7 @@
       "name": "elo_ratings",
       "url": "https://www.eloratings.net/",
       "status": "cached",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://www.eloratings.net/"
@@ -929,7 +930,7 @@
       "name": "transfermarkt_values",
       "url": "https://www.transfermarkt.com/statistik/weltrangliste",
       "status": "cached",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://www.transfermarkt.com/statistik/weltrangliste"
@@ -938,7 +939,7 @@
       "name": "espn_scoreboard",
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
       "status": "cached",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 0,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
@@ -947,7 +948,7 @@
       "name": "fifa_schedule",
       "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule",
       "status": "reference",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 0,
       "note": "Official tournament schedule and match path reference.",
       "citation": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule"
@@ -956,7 +957,7 @@
       "name": "format_cross_check",
       "url": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for",
       "status": "reference",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 0,
       "note": "Independent tournament-format cross-check.",
       "citation": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for"
@@ -965,7 +966,7 @@
       "name": "espn_world_cup",
       "url": "https://www.espn.com/soccer/league/_/name/fifa.world",
       "status": "reference",
-      "fetched_at": "2026-06-15T09:10:28+00:00",
+      "fetched_at": "2026-06-15T09:31:18+00:00",
       "rows": 0,
       "note": "Readable live scores, fixtures, and World Cup news reference.",
       "citation": "https://www.espn.com/soccer/league/_/name/fifa.world"

@@ -15,6 +15,7 @@ from wc2026.simulation import analyze_round_of_32, expected_goals, run_monte_car
 ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
 STATIC = ROOT / "static_site"
+REFRESH_INTERVAL_MINUTES = 5
 
 
 def scale_0_100(series: pd.Series, higher_is_better: bool = True) -> pd.Series:
@@ -232,7 +233,9 @@ def write_static_assets() -> None:
     (PUBLIC / "_headers").write_text(
         "/*\n"
         "  X-Content-Type-Options: nosniff\n"
-        "  Referrer-Policy: strict-origin-when-cross-origin\n",
+        "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        "/data.json\n"
+        "  Cache-Control: no-cache, max-age=0\n",
         encoding="utf-8",
     )
 
@@ -262,6 +265,7 @@ def main() -> None:
 
     payload = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES,
         "simulation_count": simulation_options["default_count"],
         "simulation_seed": simulation_options["default_seed"],
         "simulation_options": simulation_options,
@@ -305,6 +309,7 @@ def main() -> None:
     <header class="hero">
       <h1>World Cup 2026 Analysis Generator</h1>
       <p id="build-meta" class="muted">Loading...</p>
+      <div id="refresh-meta" class="refresh-pill">Checking refresh timer...</div>
     </header>
     <section id="content"></section>
   </main>

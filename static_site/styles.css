@@ -58,6 +58,26 @@ h3 {
   line-height: 1.35;
 }
 
+.refresh-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 6px 0 22px;
+  padding: 8px 12px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: #eef5ff;
+  color: var(--blue);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.refresh-pill.checking {
+  border-color: #efd39e;
+  background: #fff7e6;
+  color: #8a5a05;
+}
+
 .nav-btn {
   width: 100%;
   display: block;

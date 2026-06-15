@@ -73,7 +73,7 @@ Or manually:
 
 ## Automatic Refresh
 
-The GitHub Actions workflow at `.github/workflows/refresh-static-site.yml` rebuilds the static site every 4 hours.
+The GitHub Actions workflow at `.github/workflows/refresh-static-site.yml` rebuilds the static site every 5 minutes.
 
 For automatic refresh to work:
 
@@ -82,7 +82,7 @@ For automatic refresh to work:
 3. Use the Cloudflare build settings above.
 4. Let GitHub Actions commit refreshed `public/` files when data changes.
 
-Manual zip uploads cannot refresh automatically.
+Manual zip uploads cannot refresh automatically. The live site also shows a countdown timer based on the last generated `data.json` timestamp.
 
 ## Data Sources
 

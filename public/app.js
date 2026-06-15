@@ -14,12 +14,54 @@ const pages = [
   "Methodology and Caveats",
 ];
 
-const state = { page: pages[0], data: null, simCount: null, simSeed: null };
+const state = { page: pages[0], data: null, simCount: null, simSeed: null, refreshTimer: null, refreshCheckPending: false, lastRefreshCheck: 0 };
 
 const pct = (v) => `${Math.round((Number(v) || 0) * 100)}%`;
 const pct1 = (v) => `${((Number(v) || 0) * 100).toFixed(1)}%`;
 const num = (v, d = 1) => Number(v || 0).toFixed(d);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+
+function formatDuration(ms) {
+  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function nextRefreshAt(d) {
+  const builtAt = new Date(d.generated_at).getTime();
+  const intervalMs = Number(d.refresh_interval_minutes || 5) * 60 * 1000;
+  if (!Number.isFinite(builtAt)) return null;
+  return builtAt + intervalMs;
+}
+
+function updateRefreshTimer() {
+  const el = document.getElementById("refresh-meta");
+  if (!el || !state.data) return;
+  const nextAt = nextRefreshAt(state.data);
+  if (!nextAt) {
+    el.textContent = "Refresh timer unavailable";
+    return;
+  }
+  const remaining = nextAt - Date.now();
+  if (remaining > 0) {
+    el.textContent = `Next live data refresh check in ${formatDuration(remaining)}`;
+    el.classList.remove("checking");
+    return;
+  }
+  el.textContent = "Checking for newer live data...";
+  el.classList.add("checking");
+  const enoughTimePassed = Date.now() - state.lastRefreshCheck > 15000;
+  if (!state.refreshCheckPending && enoughTimePassed) {
+    loadData({ silent: true });
+  }
+}
+
+function startRefreshTimer() {
+  if (state.refreshTimer) window.clearInterval(state.refreshTimer);
+  updateRefreshTimer();
+  state.refreshTimer = window.setInterval(updateRefreshTimer, 1000);
+}
 
 function table(rows, columns) {
   if (!rows || rows.length === 0) return `<p class="muted">No rows available.</p>`;
@@ -245,6 +287,7 @@ function render() {
   const d = state.data;
   const sim = activeSimulation();
   document.getElementById("build-meta").textContent = `Built ${d.generated_at} | ${sim.count} simulations | seed ${sim.seed}`;
+  updateRefreshTimer();
   const views = {
     "Data Sources and Refresh Status": dataSources,
     "Team Power Ratings": teamPower,
@@ -263,14 +306,29 @@ function render() {
   document.getElementById("content").innerHTML = views[state.page](d);
 }
 
-fetch("data.json")
-  .then((r) => r.json())
-  .then((d) => {
-    state.data = d;
-    state.simCount = d.simulation_options?.default_count || d.simulation_count;
-    state.simSeed = d.simulation_options?.default_seed || d.simulation_seed;
-    render();
-  })
-  .catch((err) => {
-    document.getElementById("content").innerHTML = `<p class="warn">Could not load static data: ${esc(err.message)}</p>`;
-  });
+function loadData({ silent = false } = {}) {
+  state.refreshCheckPending = true;
+  state.lastRefreshCheck = Date.now();
+  return fetch(`data.json?ts=${Date.now()}`, { cache: "no-store" })
+    .then((r) => r.json())
+    .then((d) => {
+      const previousBuild = state.data?.generated_at;
+      state.data = d;
+      state.simCount = d.simulations?.[`${state.simCount}-${state.simSeed}`] ? state.simCount : d.simulation_options?.default_count || d.simulation_count;
+      state.simSeed = d.simulations?.[`${state.simCount}-${state.simSeed}`] ? state.simSeed : d.simulation_options?.default_seed || d.simulation_seed;
+      if (!silent || previousBuild !== d.generated_at) {
+        render();
+      }
+      startRefreshTimer();
+    })
+    .catch((err) => {
+      if (!silent) {
+        document.getElementById("content").innerHTML = `<p class="warn">Could not load static data: ${esc(err.message)}</p>`;
+      }
+    })
+    .finally(() => {
+      state.refreshCheckPending = false;
+    });
+}
+
+loadData();
