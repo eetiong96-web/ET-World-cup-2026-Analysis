@@ -1,6 +1,5 @@
 const pages = [
   "Data Sources and Refresh Status",
-  "Live Match Points Table",
   "Team Power Ratings",
   "Group Stage Simulator",
   "Goal Group Stage Simulator",
@@ -64,24 +63,6 @@ function dataSources(d) {
     { key: "position", label: "Pos" },
     { key: "team", label: "Team" },
   ])}`;
-}
-
-function liveMatchPoints(d) {
-  const completed = d.current_match_points.filter((r) => r.completed).length;
-  const rows = d.current_match_points.map((r) => ({
-    ...r,
-    fixture: `${r.home} vs ${r.away}`,
-    points: r.completed ? `${r.home} +${r.home_points}, ${r.away} +${r.away_points}` : "Pending",
-  }));
-  return `<h2>Live Match Points Table</h2><p class="muted">Every group-stage match with latest score/status available at build time. The GitHub workflow can refresh this every 4 hours and Cloudflare can redeploy from the repo.</p>${completed ? "" : `<p class="warn">No completed World Cup match results were returned by the build-time scoreboard source yet. Scores and points will fill in after the refresh source returns completed matches.</p>`}<div class="table-wrap">${table(rows, [
-    { key: "group", label: "Group" },
-    { key: "match_id", label: "Match" },
-    { key: "fixture", label: "Fixture" },
-    { key: "score", label: "Score" },
-    { key: "status", label: "Status" },
-    { key: "points", label: "Points awarded" },
-    { key: "date", label: "Date" },
-  ])}</div>`;
 }
 
 function teamPower(d) {
@@ -266,7 +247,6 @@ function render() {
   document.getElementById("build-meta").textContent = `Built ${d.generated_at} | ${sim.count} simulations | seed ${sim.seed}`;
   const views = {
     "Data Sources and Refresh Status": dataSources,
-    "Live Match Points Table": liveMatchPoints,
     "Team Power Ratings": teamPower,
     "Group Stage Simulator": groupStage,
     "Goal Group Stage Simulator": groupGoals,
