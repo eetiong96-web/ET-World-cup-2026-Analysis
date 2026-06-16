@@ -364,7 +364,7 @@ function buildDeepSeekPrompt(question, context) {
   ].join("\n");
 }
 
-async function callDeepSeek(env, question, context) {
+async function postDeepSeek(env, question, context, model) {
   const response = await fetch(DEEPSEEK_CHAT_URL, {
     method: "POST",
     headers: {
@@ -372,7 +372,7 @@ async function callDeepSeek(env, question, context) {
       authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
     },
     body: JSON.stringify({
-      model: env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+      model,
       messages: [
         {
           role: "system",
@@ -386,10 +386,28 @@ async function callDeepSeek(env, question, context) {
     }),
   });
   if (!response.ok) {
-    throw new Error("AI provider request failed.");
+    const text = await response.text();
+    throw new Error(`DeepSeek ${response.status} for ${model}: ${text.slice(0, 180)}`);
   }
-  const payload = await response.json();
-  return payload.choices?.[0]?.message?.content || "No answer was returned.";
+  return response.json();
+}
+
+async function callDeepSeek(env, question, context) {
+  const models = [...new Set([
+    env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+    "deepseek-chat",
+  ])];
+  let lastError;
+  for (const model of models) {
+    try {
+      const payload = await postDeepSeek(env, question, context, model);
+      return payload.choices?.[0]?.message?.content || "No answer was returned.";
+    } catch (error) {
+      lastError = error;
+      console.error("ask-ai provider failure", error.message);
+    }
+  }
+  throw lastError || new Error("AI provider request failed.");
 }
 
 async function askAi(request, env) {
@@ -453,7 +471,8 @@ async function askAi(request, env) {
     }, 200, ASK_AI_CACHE_SECONDS, corsHeaders);
     if (cache) await cache.put(cacheKey, response.clone());
     return response;
-  } catch {
+  } catch (error) {
+    console.error("ask-ai failed", error.message);
     return jsonResponse({ error: "AI is busy right now. Please try again later." }, 502, 0, corsHeaders);
   }
 }
