@@ -8,7 +8,6 @@ const pages = [
   "Penalty Shootout Estimator",
   "Ask AI",
   "Champion Odds",
-  "Model Validation",
   "Methodology and Caveats",
 ];
 
@@ -69,6 +68,32 @@ function updateCountdownBadges() {
   });
 }
 
+function updateAiCooldownTimer() {
+  const timer = document.getElementById("ai-cooldown-timer");
+  const button = document.getElementById("ask-ai-submit");
+  if (!timer && !button) return;
+  const remaining = state.aiCooldownUntil - Date.now();
+  if (remaining > 0) {
+    if (timer) {
+      timer.textContent = `Next question in ${formatDuration(remaining)}`;
+      timer.classList.add("active");
+    }
+    if (button) {
+      button.disabled = true;
+      button.textContent = `Wait ${formatDuration(remaining)}`;
+    }
+  } else {
+    if (timer) {
+      timer.textContent = "Ready to ask";
+      timer.classList.remove("active");
+    }
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Ask AI";
+    }
+  }
+}
+
 function updateRefreshTimer() {
   const el = document.getElementById("refresh-meta");
   if (!el || !state.data || !state.live) return;
@@ -84,11 +109,13 @@ function updateRefreshTimer() {
     el.textContent = `Live match API refresh in ${formatDuration(remaining)} | model and predictions refresh in ${modelText}`;
     el.classList.remove("checking");
     updateCountdownBadges();
+    updateAiCooldownTimer();
     return;
   }
   el.textContent = "Checking live match API...";
   el.classList.add("checking");
   updateCountdownBadges();
+  updateAiCooldownTimer();
   const enoughTimePassed = Date.now() - state.lastLiveRefreshCheck > 15000;
   if (!state.liveRefreshPending && enoughTimePassed) {
     loadLiveResults({ silent: true });
@@ -233,6 +260,34 @@ function groupTables(d) {
   }).join("")}</div>`;
 }
 
+function knockoutSlotRows(count) {
+  return Array.from({ length: count }, (_, index) => ({ id: index + 1, teamA: "TBD", teamB: "TBD", date: "TBD" }));
+}
+
+function knockoutBracket(d) {
+  const liveRows = liveKnockoutRows(d);
+  const liveByMatch = new Map(liveRows.map((match, index) => [match.match || `live-${index + 1}`, match]));
+  const rounds = [
+    { title: "Round of 32", count: 16, start: 73 },
+    { title: "Round of 16", count: 8, start: 89 },
+    { title: "Quarter-finals", count: 4, start: 97 },
+    { title: "Semi-finals", count: 2, start: 101 },
+    { title: "Final", count: 1, start: 104 },
+  ];
+  return `<section class="bracket-shell"><div class="bracket-scroll">${rounds.map((round) => {
+    const rows = knockoutSlotRows(round.count);
+    return `<section class="bracket-round"><h4>${esc(round.title)}</h4>${rows.map((slot) => {
+      const live = liveByMatch.get(`M${round.start + slot.id - 1}`) || null;
+      const dateText = live?.date ? new Date(live.date).toLocaleString() : slot.date;
+      return `<article class="bracket-match">
+        <div class="bracket-date">${esc(dateText)}</div>
+        <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.home || slot.teamA)}</strong><span>${esc(live?.home_score ?? "")}</span></div>
+        <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.away || slot.teamB)}</strong><span>${esc(live?.away_score ?? "")}</span></div>
+      </article>`;
+    }).join("")}</section>`;
+  }).join("")}</div></section>`;
+}
+
 function isKnockoutLiveMatch(match) {
   const descriptor = `${match.round || ""} ${match.stage || ""} ${match.match || ""}`;
   return /round of 32|round of 16|\br16\b|quarter|semi|final|third-place|knockout/i.test(descriptor)
@@ -256,7 +311,7 @@ function liveKnockoutRows(d) {
 function knockoutOverview(d) {
   const liveRows = liveKnockoutRows(d);
   if (!liveRows.length) return "";
-  return `<h3>Knockout Stage</h3>${table(liveRows, [
+  return `<h4>Live knockout results</h4>${table(liveRows, [
     { key: "date", label: "Date", format: (v) => v ? new Date(v).toLocaleString() : "" },
     { key: "home", label: "Home" },
     { key: "home_score", label: "H" },
@@ -277,7 +332,7 @@ function dataSources(d) {
     { key: "refresh_timer", label: "Next Refresh", html: true },
     { key: "note", label: "Note" },
     { key: "citation", label: "Citation" },
-  ])}<h3>2026 Groups</h3>${groupTables(d)}${knockoutOverview(d)}`;
+  ])}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutBracket(d)}${knockoutOverview(d)}`;
 }
 
 function teamPower(d) {
@@ -488,6 +543,7 @@ function setAiResult(html) {
 
 function requestAskAi() {
   if (Date.now() < state.aiCooldownUntil) {
+    updateAiCooldownTimer();
     setAiResult(`<p class="warn">Please wait ${formatDuration(state.aiCooldownUntil - Date.now())} before asking again.</p>`);
     return;
   }
@@ -502,6 +558,7 @@ function requestAskAi() {
     return;
   }
   state.aiCooldownUntil = Date.now() + 30000;
+  updateAiCooldownTimer();
   setAiResult(`<p class="muted">Asking AI using this dashboard's data...</p>`);
   fetch("/api/ask-ai", {
     method: "POST",
@@ -520,14 +577,17 @@ function requestAskAi() {
 }
 
 function askAi(d) {
-  setTimeout(bindAskAiControls, 0);
+  setTimeout(() => {
+    bindAskAiControls();
+    updateAiCooldownTimer();
+  }, 0);
   const examples = [
     "Which team is most likely to win and why?",
     "Which group looks hardest?",
     "Can Mexico reach the quarter-finals?",
     "Who are good upset picks?",
   ];
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><button class="primary-action" type="submit">Ask AI</button><p class="muted mini">AI is limited to website data, max 280 characters, one question every 30 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 30 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {
@@ -539,18 +599,6 @@ function championOdds(d) {
     { key: "Champion", label: "Champion", format: pct1 },
     { key: "Final", label: "Final", format: pct1 },
     { key: "Semi-finals", label: "Semi-final", format: pct1 },
-  ])}`;
-}
-
-function validation(d) {
-  return `<h2>Model Validation</h2>${table(d.validation, [
-    { key: "target", label: "Target" },
-    { key: "held_out_year", label: "Held-out year" },
-    { key: "log_loss", label: "Log loss", format: (v) => num(v, 3) },
-    { key: "brier", label: "Brier", format: (v) => num(v, 3) },
-  ])}<h3>Feature Importance</h3>${table(d.feature_importance, [
-    { key: "feature", label: "Feature" },
-    { key: "importance", label: "Importance", format: (v) => num(v, 3) },
   ])}`;
 }
 
@@ -590,7 +638,6 @@ function render() {
     "Penalty Shootout Estimator": penalties,
     "Ask AI": askAi,
     "Champion Odds": championOdds,
-    "Model Validation": validation,
     "Methodology and Caveats": methodology,
   };
   const view = views[state.page] || views[pages[0]];
