@@ -11,7 +11,9 @@ const pages = [
   "Methodology and Caveats",
 ];
 
-const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiCooldownUntil: 0, aiLastResult: null };
+const AI_COOLDOWN_MS = 10000;
+
+const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiCooldownUntil: 0, aiLastResult: null, countryPathSort: "az", countryPathTeam: null };
 
 const pct = (v) => `${Math.round((Number(v) || 0) * 100)}%`;
 const pct1 = (v) => `${((Number(v) || 0) * 100).toFixed(1)}%`;
@@ -31,6 +33,21 @@ function nextFromTimestamp(timestamp, intervalMs) {
   const builtAt = new Date(timestamp).getTime();
   if (!Number.isFinite(builtAt)) return null;
   return builtAt + intervalMs;
+}
+
+function formatSgtDate(timestamp) {
+  if (!timestamp) return "Date/time TBD (SGT)";
+  const date = new Date(timestamp);
+  if (!Number.isFinite(date.getTime())) return "Date/time TBD (SGT)";
+  return `${date.toLocaleString("en-SG", {
+    timeZone: "Asia/Singapore",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })} SGT`;
 }
 
 function cadenceMinutes() {
@@ -264,7 +281,7 @@ function knockoutBracket(d) {
     const rows = knockoutSlotRows(round.count);
     return `<section class="bracket-round"><h4>${esc(round.title)}</h4>${rows.map((slot) => {
       const live = liveByMatch.get(`M${round.start + slot.id - 1}`) || null;
-      const dateText = live?.date ? new Date(live.date).toLocaleString() : slot.date;
+      const dateText = live?.date ? formatSgtDate(live.date) : "Date/time TBD (SGT)";
       return `<article class="bracket-match">
         <div class="bracket-date">${esc(dateText)}</div>
         <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.home || slot.teamA)}</strong><span>${esc(live?.home_score ?? "")}</span></div>
@@ -451,19 +468,26 @@ function groupVisual(d) {
 }
 
 function countryPath(d) {
-  const sort = document.getElementById("country-sort")?.value || "az";
+  const sort = state.countryPathSort || document.getElementById("country-sort")?.value || "az";
   const sim = activeSimulation();
   let teams = [...sim.simulation_probabilities];
   if (sort === "za") teams.sort((a, b) => b.team.localeCompare(a.team));
   else if (sort === "champion") teams.sort((a, b) => b.Champion - a.Champion || a.team.localeCompare(b.team));
   else teams.sort((a, b) => a.team.localeCompare(b.team));
-  const current = document.getElementById("country-select")?.value || teams[0].team;
+  const current = state.countryPathTeam && teams.some((team) => team.team === state.countryPathTeam) ? state.countryPathTeam : teams[0].team;
   const row = sim.simulation_probabilities.find((r) => r.team === current);
   const stages = [["Group", 1], ["Round of 32", row["Round of 32"]], ["Quarter-finals", row["Quarter-finals"]], ["Semi-finals", row["Semi-finals"]], ["Final", row.Final], ["Champion", row.Champion]];
   const route = sim.bracket.filter((m) => m.team_a === current || m.team_b === current);
   setTimeout(() => {
-    document.getElementById("country-sort")?.addEventListener("change", render);
-    document.getElementById("country-select")?.addEventListener("change", render);
+    document.getElementById("country-sort")?.addEventListener("change", (event) => {
+      state.countryPathSort = event.target.value;
+      state.countryPathTeam = null;
+      render();
+    });
+    document.getElementById("country-select")?.addEventListener("change", (event) => {
+      state.countryPathTeam = event.target.value;
+      render();
+    });
   }, 0);
   return `<h2>Animated Possible Country Path</h2><div class="controls-row"><label>Country order<select id="country-sort"><option value="az" ${sort === "az" ? "selected" : ""}>A-Z order</option><option value="za" ${sort === "za" ? "selected" : ""}>Z-A order</option><option value="champion" ${sort === "champion" ? "selected" : ""}>Highest champion %</option></select></label><label>Country<select id="country-select">${teams.map((t) => `<option ${t.team === current ? "selected" : ""}>${esc(t.team)}</option>`).join("")}</select></label></div><div class="path-shell"><div class="path-track">${stages.map(([name, p]) => `<section class="path-stage"><strong>${esc(name)}</strong><div class="stage-percent">${pct(p)}</div><p class="muted">${p >= 0.7 ? "Strong chance." : p >= 0.4 ? "Realistic path." : p > 0 ? "Needs the path to break well." : "No path in sample."}</p><div class="bar-track"><div class="stage-meter-fill" style="--p:${p * 100}%; background:${p >= 0.4 ? "#2457a6" : "#b84a62"}"></div></div></section>`).join("")}</div></div><h3>One Sample Knockout Route</h3>${route.length ? table(route.map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === current ? m.team_b : m.team_a, result: m.winner === current ? "Advanced" : "Eliminated" })), [{ key: "round", label: "Round" }, { key: "match", label: "Match" }, { key: "opponent", label: "Opponent" }, { key: "result", label: "Result" }]) : `<p class="warn">${esc(current)} did not reach the Round of 32 in this sampled bracket seed.</p>`}`;
 }
@@ -548,7 +572,7 @@ function requestAskAi() {
     setAiResult(`<p class="warn">Keep the question under 280 characters.</p>`);
     return;
   }
-  state.aiCooldownUntil = Date.now() + 30000;
+  state.aiCooldownUntil = Date.now() + AI_COOLDOWN_MS;
   updateAiCooldownTimer();
   setAiResult(`<p class="muted">Asking AI using this dashboard's data...</p>`);
   fetch("/api/ask-ai", {
@@ -578,7 +602,7 @@ function askAi(d) {
     "Can Mexico reach the quarter-finals?",
     "Who are good upset picks?",
   ];
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 30 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {
@@ -617,7 +641,6 @@ function render() {
   renderNav();
   const d = state.data;
   const sim = activeSimulation();
-  document.getElementById("build-meta").textContent = `Built ${d.generated_at} | ${sim.count} simulations | seed ${sim.seed}`;
   updateRefreshTimer();
   const views = {
     "Data Sources and Refresh Status": dataSources,

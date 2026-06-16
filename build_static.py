@@ -347,13 +347,11 @@ def main() -> None:
 <body>
   <aside class="sidebar">
     <h2>Controls</h2>
-    <p class="muted">Static Cloudflare Pages build</p>
     <nav id="nav"></nav>
   </aside>
   <main class="main">
     <header class="hero">
       <h1>World Cup 2026 Analysis Generator</h1>
-      <p id="build-meta" class="muted">Loading...</p>
       <div id="refresh-meta" class="refresh-pill">Checking refresh timer...</div>
     </header>
     <section id="content"></section>
