@@ -271,8 +271,12 @@ def write_static_assets() -> None:
     (PUBLIC / "app.js").write_text((STATIC / "app.js").read_text(encoding="utf-8"), encoding="utf-8")
     (PUBLIC / "_headers").write_text(
         "/*\n"
+        "  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'\n"
+        "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n"
         "  X-Content-Type-Options: nosniff\n"
+        "  X-Frame-Options: DENY\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload\n"
         "/data.json\n"
         "  Cache-Control: no-cache, max-age=0\n",
         encoding="utf-8",

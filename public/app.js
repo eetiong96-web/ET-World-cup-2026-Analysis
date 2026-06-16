@@ -604,7 +604,7 @@ function requestAskAi() {
   fetch("/api/ask-ai", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ question, context: askAiContext(state.data) }),
+    body: JSON.stringify({ question }),
   })
     .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
     .then(({ ok, body }) => {
