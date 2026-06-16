@@ -309,26 +309,86 @@ function groupStage(d) {
   ])}`;
 }
 
+function goalPaceLabel(total) {
+  const value = Number(total || 0);
+  if (value >= 3) return "Open game";
+  if (value >= 2.35) return "Normal scoring";
+  return "Tight game";
+}
+
+function goalTeamLabel(row, index) {
+  const gd = Number(row.expected_goal_difference || 0);
+  if (index === 0) return "Top projected attack";
+  if (gd >= 0.35) return "Positive goal edge";
+  if (gd >= 0) return "Small goal edge";
+  return "Needs cleaner finishing";
+}
+
 function groupGoals(d) {
   const groups = [...new Set(d.groups.map((r) => r.group))].sort();
   const current = document.getElementById("goal-group-select")?.value || groups[0];
   const totals = d.goal_totals.filter((r) => r.group === current).sort((a, b) => b.expected_goals_for - a.expected_goals_for);
   const matches = d.goal_matches.filter((r) => r.group === current).sort((a, b) => a.match_id.localeCompare(b.match_id));
   const groupTotal = matches.reduce((sum, r) => sum + Number(r.total_expected_goals || 0), 0);
+  const avgMatchGoals = groupTotal / Math.max(1, matches.length);
+  const topTeam = totals[0];
+  const maxFor = Math.max(0.1, ...totals.map((r) => Number(r.expected_goals_for || 0)));
+  const maxAgainst = Math.max(0.1, ...totals.map((r) => Number(r.expected_goals_against || 0)));
+  const highestMatch = [...matches].sort((a, b) => Number(b.total_expected_goals || 0) - Number(a.total_expected_goals || 0))[0];
+  const teamCards = totals.map((row, index) => {
+    const goalsFor = Number(row.expected_goals_for || 0);
+    const goalsAgainst = Number(row.expected_goals_against || 0);
+    const goalDiff = Number(row.expected_goal_difference || 0);
+    return `<article class="goal-team-card">
+      <div class="goal-rank">#${index + 1}</div>
+      <div class="goal-team-main">
+        <h3>${esc(row.team)}</h3>
+        <span class="tag">${goalTeamLabel(row, index)}</span>
+      </div>
+      <div class="goal-main-number">${num(goalsFor, 1)}</div>
+      <div class="goal-card-label">projected goals scored</div>
+      <div class="goal-meter-row"><span>Attack</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(6, goalsFor / maxFor * 100)}%"></div></div><strong>${num(goalsFor, 2)}</strong></div>
+      <div class="goal-meter-row danger"><span>Against</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(6, goalsAgainst / maxAgainst * 100)}%"></div></div><strong>${num(goalsAgainst, 2)}</strong></div>
+      <div class="goal-diff ${goalDiff >= 0 ? "positive" : "negative"}">Goal difference ${goalDiff >= 0 ? "+" : ""}${num(goalDiff, 2)}</div>
+    </article>`;
+  }).join("");
+  const matchCards = matches.map((row) => {
+    const homeGoals = Number(row.home_expected_goals || 0);
+    const awayGoals = Number(row.away_expected_goals || 0);
+    const totalGoals = Number(row.total_expected_goals || 0);
+    const edge = Math.abs(homeGoals - awayGoals);
+    const lean = edge < 0.15 ? "Very even" : homeGoals > awayGoals ? `${row.home} edge` : `${row.away} edge`;
+    return `<article class="goal-match-card">
+      <div class="goal-match-top"><span>${esc(row.match_id)}</span><strong>${goalPaceLabel(totalGoals)}</strong></div>
+      <div class="score-preview">
+        <div><strong>${esc(row.home)}</strong><span>${num(homeGoals, 1)}</span></div>
+        <b>vs</b>
+        <div><strong>${esc(row.away)}</strong><span>${num(awayGoals, 1)}</span></div>
+      </div>
+      <div class="goal-match-foot"><span>${esc(lean)}</span><span>Total ${num(totalGoals, 2)}</span></div>
+    </article>`;
+  }).join("");
   setTimeout(() => document.getElementById("goal-group-select")?.addEventListener("change", render), 0);
-  return `<h2>Goal Group Stage Simulator</h2><p class="muted">Expected goals are model estimates from team attack/defense strength, not guaranteed score predictions.</p><div class="controls-row"><label>Group<select id="goal-group-select">${groups.map((g) => `<option ${g === current ? "selected" : ""}>${g}</option>`).join("")}</select></label></div><div class="kpi-grid"><div class="kpi"><span>Group expected goals</span><strong>${num(groupTotal, 1)}</strong></div><div class="kpi"><span>Average per match</span><strong>${num(groupTotal / Math.max(1, matches.length), 2)}</strong></div><div class="kpi"><span>Top scoring team</span><strong>${esc(totals[0]?.team || "-")}</strong></div></div><h3>Team Goal Projection</h3><div class="card">${totals.map((r) => `<div class="qual-row"><strong>${esc(r.team)}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, Number(r.expected_goals_for) / Math.max(...totals.map((x) => Number(x.expected_goals_for))) * 100)}%"></div></div><span>${num(r.expected_goals_for, 2)}</span></div>`).join("")}</div>${table(totals, [
+  return `<h2>Goal Group Stage Simulator</h2><p class="muted">Expected goals are model estimates from team attack/defense strength, not guaranteed score predictions.</p><div class="controls-row"><label>Group<select id="goal-group-select">${groups.map((g) => `<option ${g === current ? "selected" : ""}>${g}</option>`).join("")}</select></label></div><section class="goal-hero">
+    <div>
+      <span class="section-eyebrow">Group ${esc(current)} goal preview</span>
+      <h3>${esc(topTeam?.team || "-")} project as the strongest attack</h3>
+      <p class="muted">This group projects for ${num(groupTotal, 1)} total goals across six matches, about ${num(avgMatchGoals, 2)} per match.</p>
+    </div>
+    <div class="goal-hero-stat"><strong>${num(avgMatchGoals, 2)}</strong><span>goals per match</span></div>
+  </section><div class="kpi-grid"><div class="kpi"><span>Group expected goals</span><strong>${num(groupTotal, 1)}</strong></div><div class="kpi"><span>Highest-scoring fixture</span><strong>${highestMatch ? `${esc(highestMatch.home)} vs ${esc(highestMatch.away)}` : "-"}</strong></div><div class="kpi"><span>Top scoring team</span><strong>${esc(topTeam?.team || "-")}</strong></div></div><h3>Team Goal Preview</h3><div class="goal-team-grid">${teamCards}</div><h3>Match Score Preview</h3><div class="goal-match-grid">${matchCards}</div><details class="detail-drawer"><summary>Open detailed goal tables</summary>${table(totals, [
     { key: "team", label: "Team" },
     { key: "expected_goals_for", label: "Expected goals for", format: (v) => num(v, 2) },
     { key: "expected_goals_against", label: "Expected goals against", format: (v) => num(v, 2) },
     { key: "expected_goal_difference", label: "Expected goal difference", format: (v) => num(v, 2) },
-  ])}<h3>Match Goal Projection</h3>${table(matches, [
+  ])}${table(matches, [
     { key: "match_id", label: "Match" },
     { key: "home", label: "Country A" },
     { key: "home_expected_goals", label: "A goals", format: (v) => num(v, 2) },
     { key: "away", label: "Country B" },
     { key: "away_expected_goals", label: "B goals", format: (v) => num(v, 2) },
     { key: "total_expected_goals", label: "Total goals", format: (v) => num(v, 2) },
-  ])}`;
+  ])}</details>`;
 }
 
 function bindGroupControls() {

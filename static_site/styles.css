@@ -240,6 +240,217 @@ textarea {
   font-size: 1.5rem;
 }
 
+.section-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--blue);
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.goal-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
+  gap: 18px;
+  align-items: center;
+  margin: 14px 0 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.goal-hero h3 {
+  margin: 0 0 8px;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+}
+
+.goal-hero-stat {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 16px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: white;
+  text-align: center;
+}
+
+.goal-hero-stat strong {
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.goal-hero-stat span,
+.goal-card-label {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.goal-team-grid,
+.goal-match-grid {
+  display: grid;
+  gap: 14px;
+  margin: 12px 0 22px;
+}
+
+.goal-team-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.goal-match-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.goal-team-card,
+.goal-match-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.goal-team-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.goal-rank {
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.goal-team-main h3 {
+  margin: 0 0 4px;
+  font-size: 1.35rem;
+}
+
+.goal-main-number {
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.goal-meter-row {
+  display: grid;
+  grid-template-columns: 74px minmax(92px, 1fr) 54px;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.96rem;
+}
+
+.goal-meter-row span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.goal-meter-row strong {
+  text-align: right;
+}
+
+.goal-meter-row.danger .bar-fill {
+  background: var(--rose);
+}
+
+.goal-diff {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.goal-diff.positive {
+  background: #e9f7ef;
+  color: #17623a;
+}
+
+.goal-diff.negative {
+  background: #fff0f3;
+  color: #9c2f46;
+}
+
+.goal-match-card {
+  padding: 14px;
+}
+
+.goal-match-top,
+.goal-match-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.goal-match-top strong {
+  color: var(--blue);
+}
+
+.score-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin: 14px 0;
+}
+
+.score-preview div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.score-preview strong,
+.score-preview span {
+  display: block;
+}
+
+.score-preview strong {
+  min-height: 3.2em;
+  overflow-wrap: anywhere;
+}
+
+.score-preview span {
+  margin-top: 6px;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.score-preview b {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.detail-drawer {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  overflow: hidden;
+}
+
+.detail-drawer summary {
+  padding: 14px 16px;
+  background: #f6f8fb;
+  color: var(--blue);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.detail-drawer .table-wrap {
+  margin: 14px;
+  width: calc(100% - 28px);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -537,6 +748,8 @@ select {
   }
   .grid,
   .kpi-grid,
+  .goal-team-grid,
+  .goal-match-grid,
   .group-table-grid,
   .knockout-grid {
     grid-template-columns: 1fr;
@@ -569,6 +782,22 @@ select {
   .qual-row {
     grid-template-columns: minmax(92px, 1fr) minmax(96px, 1fr) 54px;
     gap: 7px;
+  }
+  .goal-hero {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+  .goal-meter-row {
+    grid-template-columns: 68px minmax(80px, 1fr) 52px;
+  }
+  .score-preview {
+    grid-template-columns: 1fr;
+  }
+  .score-preview b {
+    text-align: center;
+  }
+  .score-preview strong {
+    min-height: 0;
   }
 }
 
