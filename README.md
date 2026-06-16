@@ -16,7 +16,7 @@ The current static build is precomputed with:
 - match win/draw/loss estimates
 - penalty shootout proxy ratings
 - goal projections
-- DeepSeek AI commentary layer
+- Ask AI layer powered by DeepSeek
 
 ## Main Files
 
@@ -91,14 +91,14 @@ Optional football-data.org fallback:
 2. Add it to Cloudflare as a Worker variable/secret named `FOOTBALL_DATA_TOKEN`.
 3. Redeploy. ESPN remains the primary free no-key live source.
 
-Optional DeepSeek AI commentary:
+Optional Ask AI with DeepSeek:
 
 1. Create a DeepSeek API key.
 2. Add it to Cloudflare as a Worker secret named `DEEPSEEK_API_KEY`.
 3. Optional: set `DEEPSEEK_MODEL`; otherwise the Worker uses `deepseek-v4-flash`.
 4. Redeploy.
 
-AI commentary is cost controlled with fixed buttons, compact payloads, a 30-second browser cooldown, request-size limits, and 6-hour edge caching for repeated questions.
+Ask AI is cost controlled with a 280-character question limit, compact website-only data payloads, a 30-second cooldown, request-size limits, and 6-hour edge caching for repeated questions.
 
 ## Data Sources
 
