@@ -166,13 +166,39 @@ function topBar(rows, labelKey, valueKey, limit = 16) {
   return rows.slice(0, limit).map((r) => `<div class="qual-row"><strong>${esc(r[labelKey])}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, Number(r[valueKey]) * 100)}%"></div></div><span>${pct1(r[valueKey])}</span></div>`).join("");
 }
 
+function setMobileNav(open) {
+  document.body.classList.toggle("nav-open", open);
+  const toggle = document.getElementById("menu-toggle");
+  if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
 function renderNav() {
+  const toggle = document.getElementById("menu-toggle");
   document.getElementById("nav").innerHTML = pages.map((p) => `<button class="nav-btn ${state.page === p ? "active" : ""}" data-page="${esc(p)}">${esc(p)}</button>`).join("");
+  if (toggle && !toggle.dataset.bound) {
+    toggle.dataset.bound = "true";
+    toggle.addEventListener("click", () => setMobileNav(!document.body.classList.contains("nav-open")));
+  }
   document.querySelectorAll(".nav-btn").forEach((btn) => btn.addEventListener("click", () => {
     state.page = btn.dataset.page;
+    setMobileNav(false);
     render();
   }));
 }
+
+document.addEventListener("click", (event) => {
+  if (!document.body.classList.contains("nav-open")) return;
+  if (event.target.closest(".sidebar")) return;
+  setMobileNav(false);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setMobileNav(false);
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 1180) setMobileNav(false);
+});
 
 function activeSimulation() {
   const d = state.data;

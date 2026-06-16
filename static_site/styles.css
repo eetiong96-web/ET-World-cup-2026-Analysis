@@ -31,6 +31,57 @@ body {
   border-right: 1px solid var(--line);
 }
 
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.menu-icon,
+.menu-icon::before,
+.menu-icon::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.menu-icon {
+  position: relative;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.menu-icon::before {
+  top: -6px;
+}
+
+.menu-icon::after {
+  top: 6px;
+}
+
 .main {
   margin-left: 300px;
   padding: 48px min(7vw, 96px);
@@ -870,24 +921,28 @@ select {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
-  .sidebar h2,
-  .sidebar p {
-    display: none;
+  .sidebar h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .menu-toggle {
+    display: inline-flex;
   }
   #nav {
-    display: flex;
+    display: none;
     gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
+    padding-top: 12px;
+  }
+  body.nav-open #nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .nav-btn {
-    flex: 0 0 auto;
-    width: auto;
+    width: 100%;
     margin: 0;
-    padding: 8px 10px;
-    white-space: nowrap;
-    font-size: 0.9rem;
+    padding: 11px 12px;
+    text-align: center;
+    font-size: 0.95rem;
   }
   .main {
     margin-left: 0;
@@ -905,6 +960,9 @@ select {
 }
 
 @media (max-width: 700px) {
+  body.nav-open #nav {
+    grid-template-columns: 1fr;
+  }
   .main {
     padding: 22px 12px 34px;
   }
@@ -996,21 +1054,26 @@ select {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
-  .sidebar h2,
-  .sidebar p {
-    display: none;
+  .sidebar h2 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  .menu-toggle {
+    display: inline-flex;
   }
   #nav {
-    display: flex;
+    display: none;
     gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    padding-top: 12px;
+  }
+  body.nav-open #nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .nav-btn {
-    flex: 0 0 auto;
-    width: auto;
+    width: 100%;
     margin: 0;
-    white-space: nowrap;
+    text-align: center;
   }
   .main {
     margin-left: 0;

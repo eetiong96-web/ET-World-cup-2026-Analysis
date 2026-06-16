@@ -346,8 +346,11 @@ def main() -> None:
 </head>
 <body>
   <aside class="sidebar">
-    <h2>Controls</h2>
-    <nav id="nav"></nav>
+    <div class="sidebar-head">
+      <h2>Settings</h2>
+      <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+    </div>
+    <nav id="nav" aria-label="Dashboard views"></nav>
   </aside>
   <main class="main">
     <header class="hero">
