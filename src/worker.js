@@ -203,15 +203,14 @@ function compactWebsiteContext(context = {}) {
   return {
     generated_at: String(context.generated_at || "").slice(0, 40),
     simulation: context.simulation || {},
-    sources: pickRows(context.sources, 12, ["name", "status", "update_method", "rows", "note"]),
-    groups: pickRows(context.groups, 60, ["group", "position", "team"]),
-    live_matches: pickRows(context.live_matches, 16, ["date", "home", "home_score", "away_score", "away", "status", "provider"]),
-    top_champion_odds: pickRows(context.top_champion_odds, 15, ["team", "group", "Champion", "Final", "Semi-finals", "Quarter-finals", "Round of 32"]),
-    group_qualification: pickRows(context.group_qualification, 60, ["team", "group", "Round of 32", "Quarter-finals", "Champion"]),
-    round32: pickRows(context.round32, 16, ["match", "fixture", "favorite", "favorite_win_probability", "analysis"]),
-    bracket: pickRows(context.bracket, 32, ["round", "match", "team_a", "team_b", "winner"]),
-    team_power: pickRows(context.team_power, 20, ["team", "group", "strength_score", "elo", "fifa_rank", "market_value_m"]),
-    penalties: pickRows(context.penalties, 12, ["team", "group", "penalty_shootout_rating", "profile"]),
+    sources: pickRows(context.sources, 10, ["n", "st", "rows", "method"]),
+    standings: pickRows(context.standings, 60, ["g", "t", "p", "w", "d", "l", "pts"]),
+    live_matches: pickRows(context.live_matches, 8, ["date", "h", "hs", "as", "a", "st"]),
+    stage_probabilities: pickRows(context.stage_probabilities, 60, ["t", "g", "r32", "qf", "sf", "f", "ch"]),
+    round32: pickRows(context.round32, 10, ["m", "fx", "fav", "p"]),
+    bracket: pickRows(context.bracket, 16, ["rd", "m", "a", "b", "w"]),
+    team_power: pickRows(context.team_power, 16, ["t", "g", "s"]),
+    penalties: pickRows(context.penalties, 10, ["t", "rating"]),
   };
 }
 
@@ -223,6 +222,7 @@ function buildDeepSeekPrompt(question, context) {
     "Do not invent injuries, team news, lineups, official results, or private information.",
     "Use plain language for casual football fans.",
     "Keep it concise: direct answer, 3-5 bullets when useful, and one caveat if needed.",
+    "Compact field hints: t/team, g/group, p/position or probability depending on section, pts/points, ch/champion probability, qf/quarter-final probability.",
     `Question: ${question}`,
     `Data: ${JSON.stringify(context)}`,
   ].join("\n");

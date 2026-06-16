@@ -171,11 +171,59 @@ function liveScorePanel() {
   ])}`;
 }
 
+function currentStandings(d) {
+  const teamToGroup = new Map(d.groups.map((row) => [row.team, row.group]));
+  const baseRows = d.current_group_tables?.length
+    ? d.current_group_tables
+    : d.groups.map((row) => ({ group: row.group, team: row.team, played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0, goal_difference: 0, points: 0 }));
+  const table = new Map(baseRows.map((row) => [row.team, { ...row }]));
+  const knownCompleted = new Set((d.live_results || [])
+    .filter((match) => match.completed)
+    .map((match) => `${match.date || ""}|${match.home}|${match.away}`));
+  const completed = (state.live?.matches || []).filter((match) =>
+    match.completed
+    && teamToGroup.has(match.home)
+    && teamToGroup.has(match.away)
+    && !knownCompleted.has(`${match.date || ""}|${match.home}|${match.away}`)
+  );
+  completed.forEach((match) => {
+    const home = table.get(match.home);
+    const away = table.get(match.away);
+    const homeScore = Number(match.home_score);
+    const awayScore = Number(match.away_score);
+    if (!home || !away || !Number.isFinite(homeScore) || !Number.isFinite(awayScore)) return;
+    home.played += 1;
+    away.played += 1;
+    home.goals_for += homeScore;
+    home.goals_against += awayScore;
+    away.goals_for += awayScore;
+    away.goals_against += homeScore;
+    if (homeScore > awayScore) {
+      home.won += 1;
+      home.points += 3;
+      away.lost += 1;
+    } else if (awayScore > homeScore) {
+      away.won += 1;
+      away.points += 3;
+      home.lost += 1;
+    } else {
+      home.drawn += 1;
+      away.drawn += 1;
+      home.points += 1;
+      away.points += 1;
+    }
+  });
+  return [...table.values()].map((row) => ({ ...row, goal_difference: row.goals_for - row.goals_against }));
+}
+
 function groupTables(d) {
   const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  const standings = currentStandings(d);
   return `<div class="group-table-grid">${groups.map((group) => {
-    const rows = d.groups.filter((r) => r.group === group).sort((a, b) => a.position - b.position);
-    return `<section class="group-table-card"><h4>Group ${esc(group)}</h4><table class="compact-table"><thead><tr><th>Pos</th><th>Team</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${esc(row.position)}</td><td>${esc(row.team)}</td></tr>`).join("")}</tbody></table></section>`;
+    const rows = standings
+      .filter((r) => r.group === group)
+      .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team));
+    return `<section class="group-table-card"><h4>Group ${esc(group)}</h4><table class="compact-table standings-mini"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr></thead><tbody>${rows.map((row, index) => `<tr><td>${index + 1}</td><td>${esc(row.team)}</td><td>${esc(row.played)}</td><td>${esc(row.won)}</td><td>${esc(row.drawn)}</td><td>${esc(row.lost)}</td><td><strong>${esc(row.points)}</strong></td></tr>`).join("")}</tbody></table></section>`;
   }).join("")}</div>`;
 }
 
@@ -324,18 +372,38 @@ function penalties(d) {
 
 function askAiContext(d) {
   const sim = activeSimulation();
+  const standings = currentStandings(d);
+  const stageRows = [...sim.simulation_probabilities]
+    .sort((a, b) => b.Champion - a.Champion)
+    .map((r) => ({
+      t: r.team,
+      g: r.group,
+      r32: Number(r["Round of 32"] || 0).toFixed(3),
+      qf: Number(r["Quarter-finals"] || 0).toFixed(3),
+      sf: Number(r["Semi-finals"] || 0).toFixed(3),
+      f: Number(r.Final || 0).toFixed(3),
+      ch: Number(r.Champion || 0).toFixed(3),
+    }));
+  const standingRows = standings.map((r) => ({
+    g: r.group,
+    t: r.team,
+    p: r.played,
+    w: r.won,
+    d: r.drawn,
+    l: r.lost,
+    pts: r.points,
+  }));
   return {
     generated_at: d.generated_at,
     simulation: { count: sim.count, seed: sim.seed },
-    sources: mergedSources(d),
-    groups: d.groups,
-    live_matches: state.live?.matches || [],
-    top_champion_odds: [...sim.simulation_probabilities].sort((a, b) => b.Champion - a.Champion).slice(0, 15),
-    group_qualification: [...sim.simulation_probabilities].sort((a, b) => a.group.localeCompare(b.group) || b["Round of 32"] - a["Round of 32"]),
-    round32: sim.round32_analysis,
-    bracket: sim.bracket,
-    team_power: [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score).slice(0, 24),
-    penalties: [...d.penalties].sort((a, b) => b.penalty_shootout_rating - a.penalty_shootout_rating).slice(0, 16),
+    sources: mergedSources(d).map((s) => ({ n: s.name, st: s.status, rows: s.rows, method: s.update_method })).slice(0, 10),
+    standings: standingRows,
+    live_matches: (state.live?.matches || []).slice(0, 8).map((m) => ({ date: m.date, h: m.home, hs: m.home_score, as: m.away_score, a: m.away, st: m.status })),
+    stage_probabilities: stageRows,
+    round32: sim.round32_analysis.slice(0, 10).map((r) => ({ m: r.match, fx: r.fixture, fav: r.favorite, p: Number(r.favorite_win_probability || 0).toFixed(3) })),
+    bracket: sim.bracket.slice(0, 16).map((r) => ({ rd: r.round, m: r.match, a: r.team_a, b: r.team_b, w: r.winner })),
+    team_power: [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score).slice(0, 16).map((r) => ({ t: r.team, g: r.group, s: Number(r.strength_score || 0).toFixed(1) })),
+    penalties: [...d.penalties].sort((a, b) => b.penalty_shootout_rating - a.penalty_shootout_rating).slice(0, 10).map((r) => ({ t: r.team, rating: Number(r.penalty_shootout_rating || 0).toFixed(1) })),
   };
 }
 
