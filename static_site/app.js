@@ -604,14 +604,13 @@ function requestAskAi() {
   fetch("/api/ask-ai", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, context: askAiContext(state.data) }),
   })
     .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
     .then(({ ok, body }) => {
       if (!ok) throw new Error(body.error || "Ask AI failed.");
       state.aiLastResult = body;
-      const label = body.fallback ? "Dashboard data answer" : `Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours`;
-      setAiResult(`<div class="ai-answer"><div class="tag">${esc(label)}</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
+      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
     })
     .catch((err) => {
       setAiResult(`<p class="warn">${esc(err.message)}</p>`);
