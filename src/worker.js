@@ -364,6 +364,90 @@ function buildDeepSeekPrompt(question, context) {
   ].join("\n");
 }
 
+function percent(value) {
+  const number = Number(value || 0);
+  return `${Math.round(number * 1000) / 10}%`;
+}
+
+function teamLabel(row) {
+  return row?.t || row?.team || "Unknown team";
+}
+
+function localDashboardAnswer(question, context) {
+  const q = question.toLowerCase();
+  const teams = Array.isArray(context.stage_probabilities) ? context.stage_probabilities : [];
+  const groups = Array.isArray(context.standings) ? context.standings : [];
+  const teamPower = Array.isArray(context.team_power) ? context.team_power : [];
+  const penalties = Array.isArray(context.penalties) ? context.penalties : [];
+  const sortedChampion = [...teams].sort((a, b) => Number(b.ch || 0) - Number(a.ch || 0));
+
+  const mentioned = teams.find((row) => q.includes(String(row.t || "").toLowerCase()));
+  if (mentioned) {
+    return [
+      `Based on this dashboard's simulation data, ${mentioned.t} has a ${percent(mentioned.ch)} champion chance.`,
+      `Round of 32: ${percent(mentioned.r32)}, quarter-final: ${percent(mentioned.qf)}, semi-final: ${percent(mentioned.sf)}, final: ${percent(mentioned.f)}.`,
+      "Caveat: this is from the deployed model data, not live injury or lineup news.",
+    ].join("\n");
+  }
+
+  if (q.includes("penalt")) {
+    const top = [...penalties].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 5);
+    return [
+      "Best penalty shootout profiles in the dashboard:",
+      ...top.map((row, index) => `${index + 1}. ${teamLabel(row)} - rating ${Math.round(Number(row.rating || 0) * 10) / 10}`),
+      "Caveat: this is a team-level proxy, not confirmed penalty takers or goalkeeper form.",
+    ].join("\n");
+  }
+
+  if (q.includes("group") && (q.includes("hard") || q.includes("tough"))) {
+    const groupScores = new Map();
+    for (const row of teamPower) {
+      const group = row.g || "Unknown";
+      const current = groupScores.get(group) || { total: 0, count: 0 };
+      current.total += Number(row.s || 0);
+      current.count += 1;
+      groupScores.set(group, current);
+    }
+    const ranked = [...groupScores.entries()]
+      .map(([group, value]) => ({ group, avg: value.count ? value.total / value.count : 0 }))
+      .sort((a, b) => b.avg - a.avg)
+      .slice(0, 3);
+    return [
+      "Hardest groups by average team power:",
+      ...ranked.map((row, index) => `${index + 1}. Group ${row.group} - average strength ${Math.round(row.avg * 10) / 10}`),
+      "Caveat: this uses the dashboard's strength model, not betting markets.",
+    ].join("\n");
+  }
+
+  if (q.includes("upset")) {
+    const upsetTeams = [...teams]
+      .filter((row) => Number(row.qf || 0) >= 0.18 && Number(row.ch || 0) <= 0.08)
+      .sort((a, b) => Number(b.qf || 0) - Number(a.qf || 0))
+      .slice(0, 5);
+    return [
+      "Possible upset picks from the dashboard:",
+      ...upsetTeams.map((row, index) => `${index + 1}. ${row.t} - quarter-final ${percent(row.qf)}, champion ${percent(row.ch)}`),
+      "Caveat: an upset pick means a decent path chance, not that they are favorites.",
+    ].join("\n");
+  }
+
+  if (q.includes("point") || q.includes("standing") || q.includes("table")) {
+    const leaders = [...groups].sort((a, b) => Number(b.pts || 0) - Number(a.pts || 0)).slice(0, 8);
+    return [
+      "Current table leaders from the dashboard:",
+      ...leaders.map((row) => `Group ${row.g}: ${row.t} - ${row.pts} pts, ${row.w}W ${row.d}D ${row.l}L`),
+      "Caveat: before matches are played, most teams will show zero points.",
+    ].join("\n");
+  }
+
+  const top = sortedChampion.slice(0, 5);
+  return [
+    `Most likely champion in the dashboard: ${top[0]?.t || "not available"} at ${percent(top[0]?.ch)}.`,
+    ...top.slice(1).map((row, index) => `${index + 2}. ${row.t} - ${percent(row.ch)}`),
+    "Caveat: this is a model simulation answer from the deployed dashboard data.",
+  ].join("\n");
+}
+
 async function postDeepSeek(env, question, context, model) {
   const response = await fetch(DEEPSEEK_CHAT_URL, {
     method: "POST",
@@ -450,8 +534,9 @@ async function askAi(request, env) {
     return jsonResponse({ error: `Please wait ${ASK_AI_COOLDOWN_SECONDS} seconds before asking another AI question.` }, 429, 0, corsHeaders);
   }
 
+  let context;
   try {
-    const context = await buildServerWebsiteContext(request, env);
+    context = await buildServerWebsiteContext(request, env);
     const cacheSeed = JSON.stringify({ question: question.toLowerCase(), context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
     const cacheHash = await hashText(cacheSeed);
     const cacheKey = new Request(new URL(request.url).origin + `/api/ask-ai-cache/${cacheHash}`);
@@ -473,6 +558,16 @@ async function askAi(request, env) {
     return response;
   } catch (error) {
     console.error("ask-ai failed", error.message);
+    if (context) {
+      const fallback = jsonResponse({
+        question,
+        generated_at: new Date().toISOString(),
+        cache_seconds: 0,
+        fallback: true,
+        answer: localDashboardAnswer(question, context),
+      }, 200, 0, corsHeaders);
+      return fallback;
+    }
     return jsonResponse({ error: "AI is busy right now. Please try again later." }, 502, 0, corsHeaders);
   }
 }

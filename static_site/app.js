@@ -610,7 +610,8 @@ function requestAskAi() {
     .then(({ ok, body }) => {
       if (!ok) throw new Error(body.error || "Ask AI failed.");
       state.aiLastResult = body;
-      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
+      const label = body.fallback ? "Dashboard data answer" : `Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours`;
+      setAiResult(`<div class="ai-answer"><div class="tag">${esc(label)}</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
     })
     .catch((err) => {
       setAiResult(`<p class="warn">${esc(err.message)}</p>`);
