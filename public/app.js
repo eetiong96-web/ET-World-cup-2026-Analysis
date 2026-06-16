@@ -190,20 +190,6 @@ function mergedSources(d) {
   }));
 }
 
-function liveScorePanel() {
-  if (!state.live) return `<p class="muted">Live API loading...</p>`;
-  const rows = state.live.matches || [];
-  return `<h3>Live Match API</h3><div class="kpi-grid"><div class="kpi"><span>API status</span><strong>${esc(state.live.sources?.[0]?.status || "checking")}</strong></div><div class="kpi"><span>Rows</span><strong>${rows.length}</strong></div><div class="kpi"><span>API refreshed</span><strong>${esc(new Date(state.live.generated_at).toLocaleTimeString())}</strong></div></div>${table(rows.slice(0, 12), [
-    { key: "date", label: "Date", format: (v) => v ? new Date(v).toLocaleString() : "" },
-    { key: "home", label: "Home" },
-    { key: "home_score", label: "H" },
-    { key: "away_score", label: "A" },
-    { key: "away", label: "Away" },
-    { key: "status", label: "Status" },
-    { key: "provider", label: "API" },
-  ])}`;
-}
-
 function currentStandings(d) {
   const teamToGroup = new Map(d.groups.map((row) => [row.team, row.group]));
   const baseRows = d.current_group_tables?.length
@@ -256,7 +242,7 @@ function groupTables(d) {
     const rows = standings
       .filter((r) => r.group === group)
       .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team));
-    return `<section class="group-table-card"><h4>Group ${esc(group)}</h4><table class="compact-table standings-mini"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr></thead><tbody>${rows.map((row, index) => `<tr><td>${index + 1}</td><td>${esc(row.team)}</td><td>${esc(row.played)}</td><td>${esc(row.won)}</td><td>${esc(row.drawn)}</td><td>${esc(row.lost)}</td><td><strong>${esc(row.points)}</strong></td></tr>`).join("")}</tbody></table></section>`;
+    return `<section class="group-table-card"><h4>Group ${esc(group)}</h4><div class="mini-standings"><div class="mini-standing-head"><span>Team</span><span>P</span><span>W</span><span>D</span><span>L</span><span>Pts</span></div>${rows.map((row, index) => `<div class="mini-standing-row"><div class="mini-team"><span>${index + 1}</span><strong>${esc(row.team)}</strong></div><span>${esc(row.played)}</span><span>${esc(row.won)}</span><span>${esc(row.drawn)}</span><span>${esc(row.lost)}</span><strong>${esc(row.points)}</strong></div>`).join("")}</div></section>`;
   }).join("")}</div>`;
 }
 
@@ -324,7 +310,12 @@ function knockoutOverview(d) {
 function dataSources(d) {
   const rows = mergedSources(d);
   const warnings = rows.filter((s) => !["live", "reference", "optional_api", "not_configured"].includes(s.status)).length;
-  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled below.</p>` : ""}${liveScorePanel()}<h3>Source Details</h3>${table(rows, [
+  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled in Methodology and Caveats.</p>` : ""}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutBracket(d)}${knockoutOverview(d)}`;
+}
+
+function sourceDetails(d) {
+  const rows = mergedSources(d);
+  return `<h3>Source Details</h3>${table(rows, [
     { key: "name", label: "Source" },
     { key: "status", label: "Status" },
     { key: "update_method", label: "Update Method" },
@@ -332,7 +323,7 @@ function dataSources(d) {
     { key: "refresh_timer", label: "Next Refresh", html: true },
     { key: "note", label: "Note" },
     { key: "citation", label: "Citation" },
-  ])}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutBracket(d)}${knockoutOverview(d)}`;
+  ])}`;
 }
 
 function teamPower(d) {
@@ -619,7 +610,7 @@ function simulationControls(d) {
 }
 
 function methodology(d) {
-  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>ESPN live match data refreshes through a Cloudflare API route every ${cadenceMinutes()} minutes.</li><li>football-data.org is an optional fallback API when a Cloudflare token is configured.</li><li>Transfermarkt market values and the static prediction model refresh during the scheduled build every ${modelRefreshHours()} hours.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled in Sources.</li></ul></div>`;
+  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>ESPN live match data refreshes through a Cloudflare API route every ${cadenceMinutes()} minutes.</li><li>football-data.org is an optional fallback API when a Cloudflare token is configured.</li><li>Transfermarkt market values and the static prediction model refresh during the scheduled build every ${modelRefreshHours()} hours.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled below.</li></ul></div>${sourceDetails(d)}`;
 }
 
 function render() {

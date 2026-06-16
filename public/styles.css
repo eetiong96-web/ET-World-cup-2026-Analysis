@@ -559,7 +559,7 @@ th {
 .group-table-grid,
 .knockout-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 14px;
 }
 
@@ -570,8 +570,7 @@ th {
   border-radius: 8px;
   padding: 14px;
   background: white;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
 }
 
 .group-table-card h4,
@@ -585,17 +584,18 @@ th {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: white;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bracket-scroll {
   display: grid;
   grid-template-columns: repeat(5, minmax(260px, 1fr));
   gap: 18px;
+  width: max-content;
   min-width: 1380px;
-  overflow-x: auto;
   padding: 18px;
-  -webkit-overflow-scrolling: touch;
 }
 
 .bracket-round {
@@ -659,6 +659,65 @@ th {
   height: 24px;
   border-radius: 9px 9px 12px 12px;
   background: #5f6368;
+}
+
+.mini-standings {
+  display: grid;
+  gap: 6px;
+}
+
+.mini-standing-head,
+.mini-standing-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 1fr) 22px 22px 22px 22px 32px;
+  gap: 4px;
+  align-items: center;
+}
+
+.mini-standing-head {
+  padding: 8px 10px;
+  background: #f6f8fb;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.mini-standing-row {
+  min-height: 42px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e7ecf3;
+  font-size: 0.92rem;
+}
+
+.mini-standing-row:last-child {
+  border-bottom: 0;
+}
+
+.mini-standing-head span:not(:first-child),
+.mini-standing-row > span,
+.mini-standing-row > strong:last-child {
+  text-align: center;
+}
+
+.mini-team {
+  display: flex;
+  min-width: 0;
+  gap: 8px;
+  align-items: center;
+}
+
+.mini-team span {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.mini-team strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .compact-table {
@@ -958,7 +1017,7 @@ select {
     padding: 36px min(5vw, 44px);
   }
   .group-table-grid {
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   }
   .knockout-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
