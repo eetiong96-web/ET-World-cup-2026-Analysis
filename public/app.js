@@ -7,7 +7,7 @@ const pages = [
   "Animated Country Path",
   "Round of 32 Fixtures",
   "Penalty Shootout Estimator",
-  "AI Commentary",
+  "Ask AI",
   "Bracket Path",
   "Stage Probability Table",
   "Champion Odds",
@@ -100,10 +100,10 @@ function startRefreshTimer() {
 
 function table(rows, columns) {
   if (!rows || rows.length === 0) return `<p class="muted">No rows available.</p>`;
-  return `<table><thead><tr>${columns.map((c) => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${columns.map((c) => {
+  return `<div class="table-wrap"><table><thead><tr>${columns.map((c) => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${columns.map((c) => {
     const value = c.format ? c.format(r[c.key], r) : r[c.key];
     return `<td>${c.html ? value : esc(value)}</td>`;
-  }).join("")}</tr>`).join("")}</tbody></table>`;
+  }).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function topBar(rows, labelKey, valueKey, limit = 16) {
@@ -165,6 +165,37 @@ function liveScorePanel() {
   ])}`;
 }
 
+function groupTables(d) {
+  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  return `<div class="group-table-grid">${groups.map((group) => {
+    const rows = d.groups.filter((r) => r.group === group).sort((a, b) => a.position - b.position);
+    return `<section class="group-table-card"><h4>Group ${esc(group)}</h4><table class="compact-table"><thead><tr><th>Pos</th><th>Team</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${esc(row.position)}</td><td>${esc(row.team)}</td></tr>`).join("")}</tbody></table></section>`;
+  }).join("")}</div>`;
+}
+
+function knockoutOverview(d) {
+  const sim = activeSimulation();
+  const roundLabels = [
+    ["Round of 32", "Round of 32"],
+    ["R16", "Round of 16"],
+    ["QF", "Quarter-finals"],
+    ["SF", "Semi-finals"],
+    ["Final", "Final"],
+  ];
+  const liveRows = (state.live?.matches || []).filter((match) => /round|quarter|semi|final|knockout/i.test(`${match.match || ""} ${match.status || ""}`));
+  return `<p class="muted">Knockout rows below use the selected simulated bracket for now. Live knockout results can appear here once the public API exposes those matches during the tournament.</p>${liveRows.length ? `<h4>Live Knockout Matches</h4>${table(liveRows, [
+    { key: "date", label: "Date", format: (v) => v ? new Date(v).toLocaleString() : "" },
+    { key: "home", label: "Home" },
+    { key: "home_score", label: "H" },
+    { key: "away_score", label: "A" },
+    { key: "away", label: "Away" },
+    { key: "status", label: "Status" },
+  ])}` : ""}<div class="knockout-grid">${roundLabels.map(([round, label]) => {
+    const rows = sim.bracket.filter((row) => row.round === round);
+    return `<section class="knockout-card"><h4>${esc(label)}</h4>${rows.length ? `<table class="compact-table knockout-table"><thead><tr><th>Match</th><th>Fixture</th><th>Winner</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${esc(row.match)}</td><td>${esc(row.team_a)} vs ${esc(row.team_b)}</td><td>${esc(row.winner)}</td></tr>`).join("")}</tbody></table>` : `<p class="muted mini">Pending.</p>`}</section>`;
+  }).join("")}</div>`;
+}
+
 function dataSources(d) {
   const rows = mergedSources(d);
   const warnings = rows.filter((s) => !["live", "reference", "optional_api", "not_configured"].includes(s.status)).length;
@@ -176,11 +207,7 @@ function dataSources(d) {
     { key: "refresh_timer", label: "Next Refresh", html: true },
     { key: "note", label: "Note" },
     { key: "citation", label: "Citation" },
-  ])}<h3>2026 Groups</h3>${table(d.groups, [
-    { key: "group", label: "Group" },
-    { key: "position", label: "Pos" },
-    { key: "team", label: "Team" },
-  ])}`;
+  ])}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutOverview(d)}`;
 }
 
 function teamPower(d) {
@@ -289,35 +316,32 @@ function penalties(d) {
   ])}`;
 }
 
-function aiPayload(type, d) {
+function askAiContext(d) {
   const sim = activeSimulation();
-  if (type === "champion") {
-    return { topTeams: [...sim.simulation_probabilities].sort((a, b) => b.Champion - a.Champion).slice(0, 12) };
-  }
-  if (type === "country") {
-    const team = document.getElementById("ai-country")?.value || sim.simulation_probabilities[0]?.team;
-    const row = sim.simulation_probabilities.find((r) => r.team === team) || {};
-    const route = sim.bracket
-      .filter((m) => m.team_a === team || m.team_b === team)
-      .map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === team ? m.team_b : m.team_a, result: m.winner === team ? "Advanced" : "Eliminated" }));
-    return { team, probabilities: row, route };
-  }
-  if (type === "group") {
-    const group = document.getElementById("ai-group")?.value || "A";
-    return {
-      group,
-      teams: sim.simulation_probabilities.filter((r) => r.group === group).sort((a, b) => b["Round of 32"] - a["Round of 32"]),
-      matchups: d.matchups.filter((m) => m.group === group).slice(0, 8),
-    };
-  }
-  if (type === "round32") {
-    return { fixtures: sim.round32_analysis };
-  }
-  return { teams: [...sim.simulation_probabilities].sort((a, b) => b["Quarter-finals"] - a["Quarter-finals"]).slice(0, 20) };
+  return {
+    generated_at: d.generated_at,
+    simulation: { count: sim.count, seed: sim.seed },
+    sources: mergedSources(d),
+    groups: d.groups,
+    live_matches: state.live?.matches || [],
+    top_champion_odds: [...sim.simulation_probabilities].sort((a, b) => b.Champion - a.Champion).slice(0, 15),
+    group_qualification: [...sim.simulation_probabilities].sort((a, b) => a.group.localeCompare(b.group) || b["Round of 32"] - a["Round of 32"]),
+    round32: sim.round32_analysis,
+    bracket: sim.bracket,
+    team_power: [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score).slice(0, 24),
+    penalties: [...d.penalties].sort((a, b) => b.penalty_shootout_rating - a.penalty_shootout_rating).slice(0, 16),
+  };
 }
 
-function bindAiControls() {
-  document.querySelectorAll("[data-ai-type]").forEach((button) => button.addEventListener("click", () => requestAiCommentary(button.dataset.aiType)));
+function bindAskAiControls() {
+  document.getElementById("ask-ai-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    requestAskAi();
+  });
+  document.querySelectorAll("[data-ai-example]").forEach((button) => button.addEventListener("click", () => {
+    const input = document.getElementById("ask-ai-question");
+    if (input) input.value = button.dataset.aiExample;
+  }));
 }
 
 function setAiResult(html) {
@@ -325,35 +349,48 @@ function setAiResult(html) {
   if (el) el.innerHTML = html;
 }
 
-function requestAiCommentary(type) {
+function requestAskAi() {
   if (Date.now() < state.aiCooldownUntil) {
     setAiResult(`<p class="warn">Please wait ${formatDuration(state.aiCooldownUntil - Date.now())} before asking again.</p>`);
     return;
   }
+  const input = document.getElementById("ask-ai-question");
+  const question = String(input?.value || "").trim();
+  if (!question) {
+    setAiResult(`<p class="warn">Ask a question first.</p>`);
+    return;
+  }
+  if (question.length > 280) {
+    setAiResult(`<p class="warn">Keep the question under 280 characters.</p>`);
+    return;
+  }
   state.aiCooldownUntil = Date.now() + 30000;
-  setAiResult(`<p class="muted">Asking DeepSeek for commentary...</p>`);
-  fetch("/api/ai-commentary", {
+  setAiResult(`<p class="muted">Asking AI using this dashboard's data...</p>`);
+  fetch("/api/ask-ai", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ type, context: aiPayload(type, state.data) }),
+    body: JSON.stringify({ question, context: askAiContext(state.data) }),
   })
     .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
     .then(({ ok, body }) => {
-      if (!ok) throw new Error(body.error || "AI commentary failed.");
+      if (!ok) throw new Error(body.error || "Ask AI failed.");
       state.aiLastResult = body;
-      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.commentary).replace(/\n/g, "<br>")}</div>`);
+      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
     })
     .catch((err) => {
       setAiResult(`<p class="warn">${esc(err.message)}</p>`);
     });
 }
 
-function aiCommentary(d) {
-  const sim = activeSimulation();
-  const teams = [...sim.simulation_probabilities].sort((a, b) => a.team.localeCompare(b.team));
-  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
-  setTimeout(bindAiControls, 0);
-  return `<h2>AI Commentary</h2><p class="muted">DeepSeek explains the existing simulation results. It does not rerun the model.</p><div class="card ai-panel"><div class="controls-row"><label>Country<select id="ai-country">${teams.map((t) => `<option>${esc(t.team)}</option>`).join("")}</select></label><label>Group<select id="ai-group">${groups.map((g) => `<option>${esc(g)}</option>`).join("")}</select></label></div><div class="ai-actions"><button data-ai-type="champion">Explain champion odds</button><button data-ai-type="country">Explain country path</button><button data-ai-type="group">Explain group picture</button><button data-ai-type="round32">Explain Round of 32 risks</button><button data-ai-type="upsets">Find upset picks</button></div><p class="muted mini">Cost controls: fixed prompts only, compact data only, 30-second browser cooldown, and server-side answer caching.</p></div><div id="ai-result" class="card"><p class="muted">Choose a commentary button.</p></div>`;
+function askAi(d) {
+  setTimeout(bindAskAiControls, 0);
+  const examples = [
+    "Which team is most likely to win and why?",
+    "Which group looks hardest?",
+    "Can Mexico reach the quarter-finals?",
+    "Who are good upset picks?",
+  ];
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><button class="primary-action" type="submit">Ask AI</button><p class="muted mini">AI is limited to website data, max 280 characters, one question every 30 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function bracket(d) {
@@ -440,7 +477,7 @@ function render() {
     "Animated Country Path": countryPath,
     "Round of 32 Fixtures": round32,
     "Penalty Shootout Estimator": penalties,
-    "AI Commentary": aiCommentary,
+    "Ask AI": askAi,
     "Bracket Path": bracket,
     "Stage Probability Table": stageTable,
     "Champion Odds": championOdds,

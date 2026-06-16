@@ -2,16 +2,10 @@ const ESPN_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/socce
 const FOOTBALL_DATA_MATCHES_URL = "https://api.football-data.org/v4/competitions/WC/matches";
 const DEEPSEEK_CHAT_URL = "https://api.deepseek.com/chat/completions";
 const LIVE_CACHE_SECONDS = 300;
-const COMMENTARY_CACHE_SECONDS = 21600;
+const ASK_AI_CACHE_SECONDS = 21600;
 const MAX_AI_REQUEST_BYTES = 12000;
-
-const COMMENTARY_TYPES = {
-  champion: "Explain the champion odds and why the top teams look strongest.",
-  country: "Explain the selected country's possible path through the tournament.",
-  group: "Explain the selected group qualification picture and likely pressure points.",
-  round32: "Explain the Round of 32 risks and likely upset spots.",
-  upsets: "Pick plausible upset teams from the supplied simulation numbers.",
-};
+const MAX_AI_QUESTION_CHARS = 280;
+const ASK_AI_COOLDOWN_SECONDS = 30;
 
 const TEAM_ALIASES = {
   "United States": "USA",
@@ -199,51 +193,42 @@ async function hashText(text) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function compactContext(type, context = {}) {
+function compactWebsiteContext(context = {}) {
   const pickRows = (rows, limit, keys) => (Array.isArray(rows) ? rows.slice(0, limit).map((row) => {
     const out = {};
     for (const key of keys) out[key] = row?.[key];
     return out;
   }) : []);
 
-  if (type === "champion") {
-    return { topTeams: pickRows(context.topTeams, 12, ["team", "group", "Champion", "Final", "Semi-finals", "Quarter-finals"]) };
-  }
-  if (type === "country") {
-    return {
-      team: String(context.team || "").slice(0, 60),
-      probabilities: context.probabilities || {},
-      route: pickRows(context.route, 8, ["round", "match", "opponent", "result"]),
-    };
-  }
-  if (type === "group") {
-    return {
-      group: String(context.group || "").slice(0, 4),
-      teams: pickRows(context.teams, 6, ["team", "Round of 32", "Quarter-finals", "Champion"]),
-      matchups: pickRows(context.matchups, 8, ["team_a", "team_b", "team_a_win", "draw", "team_b_win"]),
-    };
-  }
-  if (type === "round32") {
-    return { fixtures: pickRows(context.fixtures, 16, ["match", "fixture", "favorite", "favorite_win_probability", "analysis"]) };
-  }
-  if (type === "upsets") {
-    return { teams: pickRows(context.teams, 20, ["team", "group", "Round of 32", "Quarter-finals", "Champion"]) };
-  }
-  return {};
+  return {
+    generated_at: String(context.generated_at || "").slice(0, 40),
+    simulation: context.simulation || {},
+    sources: pickRows(context.sources, 12, ["name", "status", "update_method", "rows", "note"]),
+    groups: pickRows(context.groups, 60, ["group", "position", "team"]),
+    live_matches: pickRows(context.live_matches, 16, ["date", "home", "home_score", "away_score", "away", "status", "provider"]),
+    top_champion_odds: pickRows(context.top_champion_odds, 15, ["team", "group", "Champion", "Final", "Semi-finals", "Quarter-finals", "Round of 32"]),
+    group_qualification: pickRows(context.group_qualification, 60, ["team", "group", "Round of 32", "Quarter-finals", "Champion"]),
+    round32: pickRows(context.round32, 16, ["match", "fixture", "favorite", "favorite_win_probability", "analysis"]),
+    bracket: pickRows(context.bracket, 32, ["round", "match", "team_a", "team_b", "winner"]),
+    team_power: pickRows(context.team_power, 20, ["team", "group", "strength_score", "elo", "fifa_rank", "market_value_m"]),
+    penalties: pickRows(context.penalties, 12, ["team", "group", "penalty_shootout_rating", "profile"]),
+  };
 }
 
-function buildDeepSeekPrompt(type, context) {
+function buildDeepSeekPrompt(question, context) {
   return [
     "You are an analytical football commentator for a World Cup 2026 dashboard.",
-    "Explain only from the supplied model data. Do not pretend the model is certain.",
+    "Answer ONLY from the supplied website data. Do not use outside knowledge or live internet.",
+    "If the website data does not contain the answer, say that the dashboard does not have enough data.",
+    "Do not invent injuries, team news, lineups, official results, or private information.",
     "Use plain language for casual football fans.",
-    "Keep it concise: one short intro, 3-5 bullets, and one caveat.",
-    `Task: ${COMMENTARY_TYPES[type]}`,
+    "Keep it concise: direct answer, 3-5 bullets when useful, and one caveat if needed.",
+    `Question: ${question}`,
     `Data: ${JSON.stringify(context)}`,
   ].join("\n");
 }
 
-async function callDeepSeek(env, type, context) {
+async function callDeepSeek(env, question, context) {
   const response = await fetch(DEEPSEEK_CHAT_URL, {
     method: "POST",
     headers: {
@@ -255,9 +240,9 @@ async function callDeepSeek(env, type, context) {
       messages: [
         {
           role: "system",
-          content: "You explain football analytics clearly. You never invent live injuries, private squad news, or results that are not in the provided data.",
+          content: "You answer questions about a World Cup dashboard using only the provided JSON context. If the answer is outside the context, say so.",
         },
-        { role: "user", content: buildDeepSeekPrompt(type, context) },
+        { role: "user", content: buildDeepSeekPrompt(question, context) },
       ],
       temperature: 0.35,
       max_tokens: 520,
@@ -269,16 +254,16 @@ async function callDeepSeek(env, type, context) {
     throw new Error(`DeepSeek returned ${response.status}: ${text.slice(0, 180)}`);
   }
   const payload = await response.json();
-  return payload.choices?.[0]?.message?.content || "No commentary was returned.";
+  return payload.choices?.[0]?.message?.content || "No answer was returned.";
 }
 
-async function aiCommentary(request, env) {
+async function askAi(request, env) {
   if (request.method === "OPTIONS") return corsPreflight();
   if (request.method !== "POST") {
     return jsonResponse({ error: "Use POST." }, 405);
   }
   if (!env.DEEPSEEK_API_KEY) {
-    return jsonResponse({ error: "AI commentary is not enabled. Add DEEPSEEK_API_KEY in Cloudflare." }, 503);
+    return jsonResponse({ error: "Ask AI is not enabled. Add DEEPSEEK_API_KEY in Cloudflare." }, 503);
   }
   const contentLength = Number(request.headers.get("content-length") || 0);
   if (contentLength > MAX_AI_REQUEST_BYTES) {
@@ -291,27 +276,40 @@ async function aiCommentary(request, env) {
   } catch {
     return jsonResponse({ error: "Invalid JSON body." }, 400);
   }
-  const type = String(body.type || "");
-  if (!COMMENTARY_TYPES[type]) {
-    return jsonResponse({ error: "Unknown commentary type." }, 400);
+  const question = String(body.question || "").trim();
+  if (!question) {
+    return jsonResponse({ error: "Please ask a question." }, 400);
+  }
+  if (question.length > MAX_AI_QUESTION_CHARS) {
+    return jsonResponse({ error: `Question is too long. Keep it under ${MAX_AI_QUESTION_CHARS} characters.` }, 413);
   }
 
-  const context = compactContext(type, body.context);
-  const cacheSeed = JSON.stringify({ type, context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
-  const cacheHash = await hashText(cacheSeed);
-  const cacheKey = new Request(new URL(request.url).origin + `/api/ai-commentary-cache/${cacheHash}`);
   const cache = globalThis.caches?.default;
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "local";
+  const rateHash = await hashText(ip);
+  const rateKey = new Request(new URL(request.url).origin + `/api/ask-ai-rate/${rateHash}`);
+  if (cache && await cache.match(rateKey)) {
+    return jsonResponse({ error: `Please wait ${ASK_AI_COOLDOWN_SECONDS} seconds before asking another AI question.` }, 429);
+  }
+
+  const context = compactWebsiteContext(body.context);
+  const cacheSeed = JSON.stringify({ question: question.toLowerCase(), context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
+  const cacheHash = await hashText(cacheSeed);
+  const cacheKey = new Request(new URL(request.url).origin + `/api/ask-ai-cache/${cacheHash}`);
   const cached = cache ? await cache.match(cacheKey) : null;
   if (cached) return cached;
 
   try {
-    const commentary = await callDeepSeek(env, type, context);
+    if (cache) {
+      await cache.put(rateKey, jsonResponse({ ok: true }, 200, ASK_AI_COOLDOWN_SECONDS));
+    }
+    const answer = await callDeepSeek(env, question, context);
     const response = jsonResponse({
-      type,
+      question,
       generated_at: new Date().toISOString(),
-      cache_seconds: COMMENTARY_CACHE_SECONDS,
-      commentary,
-    }, 200, COMMENTARY_CACHE_SECONDS);
+      cache_seconds: ASK_AI_CACHE_SECONDS,
+      answer,
+    }, 200, ASK_AI_CACHE_SECONDS);
     if (cache) await cache.put(cacheKey, response.clone());
     return response;
   } catch (error) {
@@ -325,8 +323,8 @@ export default {
     if (url.pathname === "/api/live-results") {
       return liveResults(request, env);
     }
-    if (url.pathname === "/api/ai-commentary") {
-      return aiCommentary(request, env);
+    if (url.pathname === "/api/ask-ai") {
+      return askAi(request, env);
     }
     if (url.pathname === "/api/health") {
       return jsonResponse({ ok: true, generated_at: new Date().toISOString() });
