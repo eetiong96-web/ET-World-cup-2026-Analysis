@@ -5,11 +5,8 @@ const pages = [
   "Goal Group Stage Simulator",
   "Group Qualification Visual",
   "Animated Country Path",
-  "Round of 32 Fixtures",
   "Penalty Shootout Estimator",
   "Ask AI",
-  "Bracket Path",
-  "Stage Probability Table",
   "Champion Odds",
   "Model Validation",
   "Methodology and Caveats",
@@ -47,7 +44,7 @@ function modelRefreshHours() {
 
 function sourceRefreshMs(source) {
   if (["espn_scoreboard", "football_data_org"].includes(source.name)) return cadenceMinutes() * 60 * 1000;
-  if (source.name === "transfermarkt_values") return Number(state.data?.refresh_cadences?.transfermarkt_values_hours || 1) * 60 * 60 * 1000;
+  if (["transfermarkt_values", "eur_sgd_fx"].includes(source.name)) return Number(state.data?.refresh_cadences?.transfermarkt_values_hours || 1) * 60 * 60 * 1000;
   return 0;
 }
 
@@ -112,6 +109,15 @@ function table(rows, columns) {
   }).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
+function sgdValueMillions(value) {
+  const rate = Number(state.data?.currency?.eur_to_sgd || 1.46);
+  return Number(value || 0) * rate;
+}
+
+function sgdMillions(value) {
+  return `SGD ${sgdValueMillions(value).toLocaleString(undefined, { maximumFractionDigits: 0 })}m`;
+}
+
 function topBar(rows, labelKey, valueKey, limit = 16) {
   return rows.slice(0, limit).map((r) => `<div class="qual-row"><strong>${esc(r[labelKey])}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, Number(r[valueKey]) * 100)}%"></div></div><span>${pct1(r[valueKey])}</span></div>`).join("");
 }
@@ -144,7 +150,7 @@ function mergedSources(d) {
   }
   return rows.map((source) => ({
     ...source,
-    update_method: source.name === "transfermarkt_values"
+    update_method: ["transfermarkt_values", "eur_sgd_fx"].includes(source.name)
       ? `Build refresh, ${modelRefreshHours()}h`
       : ["espn_scoreboard", "football_data_org"].includes(source.name)
         ? "Live API, 5m"
@@ -227,27 +233,37 @@ function groupTables(d) {
   }).join("")}</div>`;
 }
 
+function isKnockoutLiveMatch(match) {
+  const descriptor = `${match.round || ""} ${match.stage || ""} ${match.match || ""}`;
+  return /round of 32|round of 16|\br16\b|quarter|semi|final|third-place|knockout/i.test(descriptor)
+    && !/group/i.test(descriptor);
+}
+
+function liveKnockoutRows(d) {
+  const rows = [...(d.live_results || []), ...(state.live?.matches || [])];
+  const seen = new Set();
+  return rows
+    .filter(isKnockoutLiveMatch)
+    .filter((match) => {
+      const key = `${match.date || ""}|${match.home || ""}|${match.away || ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+}
+
 function knockoutOverview(d) {
-  const sim = activeSimulation();
-  const roundLabels = [
-    ["Round of 32", "Round of 32"],
-    ["R16", "Round of 16"],
-    ["QF", "Quarter-finals"],
-    ["SF", "Semi-finals"],
-    ["Final", "Final"],
-  ];
-  const liveRows = (state.live?.matches || []).filter((match) => /round|quarter|semi|final|knockout/i.test(`${match.match || ""} ${match.status || ""}`));
-  return `<p class="muted">Knockout rows below use the selected simulated bracket for now. Live knockout results can appear here once the public API exposes those matches during the tournament.</p>${liveRows.length ? `<h4>Live Knockout Matches</h4>${table(liveRows, [
+  const liveRows = liveKnockoutRows(d);
+  if (!liveRows.length) return "";
+  return `<h3>Knockout Stage</h3>${table(liveRows, [
     { key: "date", label: "Date", format: (v) => v ? new Date(v).toLocaleString() : "" },
     { key: "home", label: "Home" },
     { key: "home_score", label: "H" },
     { key: "away_score", label: "A" },
     { key: "away", label: "Away" },
     { key: "status", label: "Status" },
-  ])}` : ""}<div class="knockout-grid">${roundLabels.map(([round, label]) => {
-    const rows = sim.bracket.filter((row) => row.round === round);
-    return `<section class="knockout-card"><h4>${esc(label)}</h4>${rows.length ? `<table class="compact-table knockout-table"><thead><tr><th>Match</th><th>Fixture</th><th>Winner</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${esc(row.match)}</td><td>${esc(row.team_a)} vs ${esc(row.team_b)}</td><td>${esc(row.winner)}</td></tr>`).join("")}</tbody></table>` : `<p class="muted mini">Pending.</p>`}</section>`;
-  }).join("")}</div>`;
+  ])}`;
 }
 
 function dataSources(d) {
@@ -261,20 +277,20 @@ function dataSources(d) {
     { key: "refresh_timer", label: "Next Refresh", html: true },
     { key: "note", label: "Note" },
     { key: "citation", label: "Citation" },
-  ])}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutOverview(d)}`;
+  ])}<h3>2026 Groups</h3>${groupTables(d)}${knockoutOverview(d)}`;
 }
 
 function teamPower(d) {
   const rows = [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score);
   const maxScore = Math.max(...rows.map((r) => Number(r.strength_score) || 0));
   const ratingBars = rows.slice(0, 20).map((r) => `<div class="qual-row"><strong>${esc(r.team)}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, (Number(r.strength_score) / maxScore) * 100)}%"></div></div><span>${num(r.strength_score, 1)}</span></div>`).join("");
-  return `<h2>Team Power Ratings</h2><p class="muted">Strength is a 0-100 style rating, not a percentage.</p><div class="card">${ratingBars}</div>${table(rows, [
+  return `<h2>Team Power Ratings</h2><p class="muted">Strength is a 0-100 style rating, not a percentage. Squad value is shown in SGD for easier reading.</p><div class="card">${ratingBars}</div>${table(rows, [
     { key: "team", label: "Team" },
     { key: "group", label: "Group" },
     { key: "strength_score", label: "Strength", format: (v) => num(v, 1) },
     { key: "elo", label: "Elo", format: (v) => num(v, 0) },
     { key: "fifa_rank", label: "FIFA Rank", format: (v) => num(v, 0) },
-    { key: "market_value_m", label: "Value EUR m", format: (v) => num(v, 0) },
+    { key: "market_value_m", label: "Value SGD", format: sgdMillions },
   ])}`;
 }
 
@@ -344,19 +360,6 @@ function countryPath(d) {
     document.getElementById("country-select")?.addEventListener("change", render);
   }, 0);
   return `<h2>Animated Possible Country Path</h2><div class="controls-row"><label>Country order<select id="country-sort"><option value="az" ${sort === "az" ? "selected" : ""}>A-Z order</option><option value="za" ${sort === "za" ? "selected" : ""}>Z-A order</option><option value="champion" ${sort === "champion" ? "selected" : ""}>Highest champion %</option></select></label><label>Country<select id="country-select">${teams.map((t) => `<option ${t.team === current ? "selected" : ""}>${esc(t.team)}</option>`).join("")}</select></label></div><div class="path-shell"><div class="path-track">${stages.map(([name, p]) => `<section class="path-stage"><strong>${esc(name)}</strong><div class="stage-percent">${pct(p)}</div><p class="muted">${p >= 0.7 ? "Strong chance." : p >= 0.4 ? "Realistic path." : p > 0 ? "Needs the path to break well." : "No path in sample."}</p><div class="bar-track"><div class="stage-meter-fill" style="--p:${p * 100}%; background:${p >= 0.4 ? "#2457a6" : "#b84a62"}"></div></div></section>`).join("")}</div></div><h3>One Sample Knockout Route</h3>${route.length ? table(route.map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === current ? m.team_b : m.team_a, result: m.winner === current ? "Advanced" : "Eliminated" })), [{ key: "round", label: "Round" }, { key: "match", label: "Match" }, { key: "opponent", label: "Opponent" }, { key: "result", label: "Result" }]) : `<p class="warn">${esc(current)} did not reach the Round of 32 in this sampled bracket seed.</p>`}`;
-}
-
-function round32(d) {
-  const sim = activeSimulation();
-  return `<h2>Round of 32 Fixture Analysis</h2>${table(sim.round32_analysis, [
-    { key: "match", label: "Match" },
-    { key: "fixture", label: "Fixture" },
-    { key: "favorite", label: "Favorite" },
-    { key: "favorite_win_probability", label: "Favorite win", format: pct1 },
-    { key: "team_a_expected_goals", label: "A xG", format: (v) => num(v, 2) },
-    { key: "team_b_expected_goals", label: "B xG", format: (v) => num(v, 2) },
-    { key: "analysis", label: "Analysis" },
-  ])}`;
 }
 
 function penalties(d) {
@@ -467,31 +470,6 @@ function askAi(d) {
   return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><button class="primary-action" type="submit">Ask AI</button><p class="muted mini">AI is limited to website data, max 280 characters, one question every 30 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
-function bracket(d) {
-  const sim = activeSimulation();
-  return `<h2>Sample Simulated Bracket Path</h2>${table(sim.bracket, [
-    { key: "round", label: "Round" },
-    { key: "match", label: "Match" },
-    { key: "team_a", label: "Team A" },
-    { key: "team_b", label: "Team B" },
-    { key: "winner", label: "Winner" },
-  ])}`;
-}
-
-function stageTable(d) {
-  const sim = activeSimulation();
-  const joined = sim.simulation_probabilities.map((s) => ({ ...s, ...(d.model_probabilities.find((m) => m.team === s.team) || {}) })).sort((a, b) => b.Champion - a.Champion);
-  return `<h2>Stage Probability Table</h2>${table(joined, [
-    { key: "team", label: "Team" },
-    { key: "group", label: "Group" },
-    { key: "Round of 32", label: "R32", format: pct1 },
-    { key: "Quarter-finals", label: "QF sim", format: pct1 },
-    { key: "Semi-finals", label: "SF sim", format: pct1 },
-    { key: "Final", label: "Final sim", format: pct1 },
-    { key: "Champion", label: "Champion sim", format: pct1 },
-  ])}`;
-}
-
 function championOdds(d) {
   const sim = activeSimulation();
   const top = [...sim.simulation_probabilities].sort((a, b) => b.Champion - a.Champion);
@@ -529,7 +507,7 @@ function simulationControls(d) {
       render();
     });
   }, 0);
-  return `<div class="sim-controls methodology-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label><p class="muted mini">Applies to odds, bracket, animated country path, Round of 32, and group qualification pages.</p></div>`;
+  return `<div class="sim-controls methodology-controls"><label>Simulations<select id="sim-count">${options.counts.map((c) => `<option value="${c}" ${String(c) === String(state.simCount) ? "selected" : ""}>${c}</option>`).join("")}</select></label><label>Seed<select id="sim-seed">${options.seeds.map((s) => `<option value="${s}" ${String(s) === String(state.simSeed) ? "selected" : ""}>${s}</option>`).join("")}</select></label><p class="muted mini">Applies to champion odds, animated country path, and group qualification pages.</p></div>`;
 }
 
 function methodology(d) {
@@ -549,16 +527,15 @@ function render() {
     "Goal Group Stage Simulator": groupGoals,
     "Group Qualification Visual": groupVisual,
     "Animated Country Path": countryPath,
-    "Round of 32 Fixtures": round32,
     "Penalty Shootout Estimator": penalties,
     "Ask AI": askAi,
-    "Bracket Path": bracket,
-    "Stage Probability Table": stageTable,
     "Champion Odds": championOdds,
     "Model Validation": validation,
     "Methodology and Caveats": methodology,
   };
-  document.getElementById("content").innerHTML = views[state.page](d);
+  const view = views[state.page] || views[pages[0]];
+  if (!views[state.page]) state.page = pages[0];
+  document.getElementById("content").innerHTML = view(d);
   updateCountdownBadges();
 }
 

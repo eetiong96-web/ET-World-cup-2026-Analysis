@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 import numpy as np
 import pandas as pd
 
+from wc2026.constants import SourceRecord
 from wc2026.data_fetch import load_all_data, source_table
 from wc2026.features import build_team_strength, make_training_frame
 from wc2026.models import predict_stage_probabilities, train_stage_models, validate_groupkfold
@@ -17,6 +19,8 @@ PUBLIC = ROOT / "public"
 STATIC = ROOT / "static_site"
 LIVE_RESULTS_REFRESH_MINUTES = 5
 MODEL_REFRESH_HOURS = 1
+EUR_TO_SGD_FALLBACK = 1.46
+EUR_TO_SGD_URL = "https://api.frankfurter.app/latest?from=EUR&to=SGD"
 
 
 def scale_0_100(series: pd.Series, higher_is_better: bool = True) -> pd.Series:
@@ -34,6 +38,40 @@ def penalty_profile(score: float) -> str:
     if score >= 44:
         return "Competitive shootout profile"
     return "Risky shootout profile"
+
+
+def fetch_eur_to_sgd_rate() -> tuple[dict, SourceRecord]:
+    fetched_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    try:
+        req = Request(EUR_TO_SGD_URL, headers={"User-Agent": "WorldCup2026Analysis/1.0"})
+        with urlopen(req, timeout=10) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        rate = float(payload["rates"]["SGD"])
+        source = SourceRecord(
+            "eur_sgd_fx",
+            EUR_TO_SGD_URL,
+            "live",
+            fetched_at,
+            1,
+            "Live EUR to SGD display conversion refreshed successfully.",
+        )
+    except Exception as exc:
+        rate = EUR_TO_SGD_FALLBACK
+        source = SourceRecord(
+            "eur_sgd_fx",
+            EUR_TO_SGD_URL,
+            "seed",
+            fetched_at,
+            1,
+            f"Using fallback EUR to SGD display conversion. Live FX fetch failed: {exc}",
+        )
+    return {
+        "base": "EUR",
+        "quote": "SGD",
+        "eur_to_sgd": rate,
+        "fetched_at": fetched_at,
+        "note": "Transfermarkt squad values are stored in EUR millions and converted to SGD for display only.",
+    }, source
 
 
 def build_penalty_table(team_strength: pd.DataFrame) -> pd.DataFrame:
@@ -243,6 +281,7 @@ def write_static_assets() -> None:
 
 def main() -> None:
     data = load_all_data()
+    currency, currency_source = fetch_eur_to_sgd_rate()
     team_strength = build_team_strength(data["groups"], data["rankings"], data["elo"], data["values"])
     models = train_stage_models(make_training_frame())
     model_probs = predict_stage_probabilities(models, team_strength)
@@ -275,7 +314,8 @@ def main() -> None:
         "simulation_seed": simulation_options["default_seed"],
         "simulation_options": simulation_options,
         "simulations": simulations,
-        "sources": clean_records(source_table(data["sources"])),
+        "currency": currency,
+        "sources": clean_records(source_table([*data["sources"], currency_source])),
         "live_results": clean_records(data["live_results"]),
         "current_group_tables": clean_records(current_group_tables(data["groups"], data["live_results"])),
         "groups": clean_records(data["groups"].sort_values(["group", "position"])),
