@@ -42,13 +42,17 @@ function cadenceMinutes() {
 }
 
 function modelRefreshHours() {
-  return Number(state.data?.refresh_cadences?.model_refresh_hours || 8);
+  return Number(state.data?.refresh_cadences?.model_refresh_hours || 1);
 }
 
 function sourceRefreshMs(source) {
   if (["espn_scoreboard", "football_data_org"].includes(source.name)) return cadenceMinutes() * 60 * 1000;
-  if (source.name === "transfermarkt_values") return Number(state.data?.refresh_cadences?.transfermarkt_values_hours || 8) * 60 * 60 * 1000;
+  if (source.name === "transfermarkt_values") return Number(state.data?.refresh_cadences?.transfermarkt_values_hours || 1) * 60 * 60 * 1000;
   return 0;
+}
+
+function modelNextRefreshAt() {
+  return nextFromTimestamp(state.data?.generated_at, modelRefreshHours() * 60 * 60 * 1000);
 }
 
 function countdownBadge(source) {
@@ -78,7 +82,9 @@ function updateRefreshTimer() {
   }
   const remaining = nextAt - Date.now();
   if (remaining > 0) {
-    el.textContent = `Live match API refresh in ${formatDuration(remaining)} | model refresh every ${modelRefreshHours()}h`;
+    const modelNextAt = modelNextRefreshAt();
+    const modelText = modelNextAt ? formatDuration(modelNextAt - Date.now()) : `${modelRefreshHours()}h`;
+    el.textContent = `Live match API refresh in ${formatDuration(remaining)} | model and predictions refresh in ${modelText}`;
     el.classList.remove("checking");
     updateCountdownBadges();
     return;
@@ -139,7 +145,7 @@ function mergedSources(d) {
   return rows.map((source) => ({
     ...source,
     update_method: source.name === "transfermarkt_values"
-      ? "Build refresh, 8h"
+      ? `Build refresh, ${modelRefreshHours()}h`
       : ["espn_scoreboard", "football_data_org"].includes(source.name)
         ? "Live API, 5m"
         : source.name === "openfootball_worldcup" || source.name === "groups_2026"

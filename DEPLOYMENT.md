@@ -13,11 +13,11 @@ Use these Cloudflare Pages settings:
 
 The build script precomputes model outputs, simulation probabilities, bracket paths, matchup odds, and source metadata into `public/data.json`. The static page then renders everything in the browser. `wrangler.jsonc` tells Cloudflare to deploy `public/` as static assets.
 
-## Live API And 8-Hour Model Refresh
+## Live API And 1-Hour Model Refresh
 
 The Cloudflare Worker serves `/api/live-results`, which calls ESPN's public scoreboard API and caches the result for 5 minutes. If `FOOTBALL_DATA_TOKEN` is configured in Cloudflare, football-data.org is also used as a fallback.
 
-`.github/workflows/refresh-static-site.yml` rebuilds the static model data every 8 hours and commits updated `public/` files when they change. This is the cadence for Transfermarkt values and other build-time model inputs. The site header and Sources table show countdown timers.
+`.github/workflows/refresh-static-site.yml` rebuilds the static model data every 1 hour and commits updated `public/` files when they change. This is the cadence for Transfermarkt values and other build-time model inputs. The site header and Sources table show countdown timers.
 
 For this to redeploy automatically:
 

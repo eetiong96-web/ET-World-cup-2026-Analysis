@@ -16,7 +16,7 @@ ROOT = Path(__file__).parent
 PUBLIC = ROOT / "public"
 STATIC = ROOT / "static_site"
 LIVE_RESULTS_REFRESH_MINUTES = 5
-MODEL_REFRESH_HOURS = 8
+MODEL_REFRESH_HOURS = 1
 
 
 def scale_0_100(series: pd.Series, higher_is_better: bool = True) -> pd.Series:
