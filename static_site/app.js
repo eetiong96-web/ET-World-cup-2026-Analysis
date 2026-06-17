@@ -297,6 +297,41 @@ function knockoutSlotRows(count) {
   return Array.from({ length: count }, (_, index) => ({ id: index + 1, teamA: "TBD", teamB: "TBD", date: "TBD" }));
 }
 
+const knockoutSchedule = {
+  73: { date: "2026-06-28T19:00:00Z", venue: "Inglewood" },
+  74: { date: "2026-06-29T20:30:00Z", venue: "Foxborough" },
+  75: { date: "2026-06-30T01:00:00Z", venue: "Guadalupe" },
+  76: { date: "2026-06-29T17:00:00Z", venue: "Houston" },
+  77: { date: "2026-06-30T21:00:00Z", venue: "East Rutherford" },
+  78: { date: "2026-06-30T17:00:00Z", venue: "Arlington" },
+  79: { date: "2026-07-01T01:00:00Z", venue: "Mexico City" },
+  80: { date: "2026-07-01T16:00:00Z", venue: "Atlanta" },
+  81: { date: "2026-07-02T00:00:00Z", venue: "Santa Clara" },
+  82: { date: "2026-07-01T20:00:00Z", venue: "Seattle" },
+  83: { date: "2026-07-02T23:00:00Z", venue: "Toronto" },
+  84: { date: "2026-07-02T19:00:00Z", venue: "Inglewood" },
+  85: { date: "2026-07-03T03:00:00Z", venue: "Vancouver" },
+  86: { date: "2026-07-03T22:00:00Z", venue: "Miami Gardens" },
+  87: { date: "2026-07-04T01:30:00Z", venue: "Kansas City" },
+  88: { date: "2026-07-03T18:00:00Z", venue: "Arlington" },
+  89: { date: "2026-07-04T21:00:00Z", venue: "Philadelphia" },
+  90: { date: "2026-07-04T17:00:00Z", venue: "Houston" },
+  91: { date: "2026-07-05T20:00:00Z", venue: "East Rutherford" },
+  92: { date: "2026-07-06T00:00:00Z", venue: "Mexico City" },
+  93: { date: "2026-07-06T19:00:00Z", venue: "Arlington" },
+  94: { date: "2026-07-07T00:00:00Z", venue: "Seattle" },
+  95: { date: "2026-07-07T16:00:00Z", venue: "Atlanta" },
+  96: { date: "2026-07-07T20:00:00Z", venue: "Vancouver" },
+  97: { date: "2026-07-09T20:00:00Z", venue: "Foxborough" },
+  98: { date: "2026-07-10T19:00:00Z", venue: "Inglewood" },
+  99: { date: "2026-07-11T21:00:00Z", venue: "Miami Gardens" },
+  100: { date: "2026-07-12T01:00:00Z", venue: "Kansas City" },
+  101: { date: "2026-07-14T19:00:00Z", venue: "Arlington" },
+  102: { date: "2026-07-15T19:00:00Z", venue: "Atlanta" },
+  103: { date: "2026-07-18T21:00:00Z", venue: "Miami Gardens" },
+  104: { date: "2026-07-19T19:00:00Z", venue: "East Rutherford" },
+};
+
 function knockoutBracket(d) {
   const liveRows = liveKnockoutRows(d);
   const liveByMatch = new Map(liveRows.map((match, index) => [match.match || `live-${index + 1}`, match]));
@@ -305,15 +340,19 @@ function knockoutBracket(d) {
     { title: "Round of 16", count: 8, start: 89 },
     { title: "Quarter-finals", count: 4, start: 97 },
     { title: "Semi-finals", count: 2, start: 101 },
+    { title: "Third Place", count: 1, start: 103 },
     { title: "Final", count: 1, start: 104 },
   ];
   return `<section class="bracket-shell"><div class="bracket-scroll">${rounds.map((round) => {
     const rows = knockoutSlotRows(round.count);
     return `<section class="bracket-round"><h4>${esc(round.title)}</h4>${rows.map((slot) => {
-      const live = liveByMatch.get(`M${round.start + slot.id - 1}`) || null;
-      const dateText = live?.date ? formatSgtDate(live.date) : "Date/time TBD (SGT)";
+      const matchId = round.start + slot.id - 1;
+      const live = liveByMatch.get(`M${matchId}`) || null;
+      const schedule = knockoutSchedule[matchId] || null;
+      const dateText = live?.date ? formatSgtDate(live.date) : formatSgtDate(schedule?.date);
+      const venueText = schedule?.venue ? `<div class="bracket-venue">${esc(schedule.venue)}</div>` : "";
       return `<article class="bracket-match">
-        <div class="bracket-date">${esc(dateText)}</div>
+        <div class="bracket-date">M${matchId} · ${esc(dateText)}</div>${venueText}
         <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.home || slot.teamA)}</strong><span>${esc(live?.home_score ?? "")}</span></div>
         <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.away || slot.teamB)}</strong><span>${esc(live?.away_score ?? "")}</span></div>
       </article>`;
@@ -596,8 +635,8 @@ function requestAskAi() {
     setAiResult(`<p class="warn">Ask a question first.</p>`);
     return;
   }
-  if (question.length > 280) {
-    setAiResult(`<p class="warn">Keep the question under 280 characters.</p>`);
+  if (question.length > 1500) {
+    setAiResult(`<p class="warn">Keep the question under 1500 characters.</p>`);
     return;
   }
   state.aiCooldownUntil = Date.now() + AI_COOLDOWN_MS;
@@ -624,7 +663,7 @@ function askAi(d) {
     bindAskAiControls();
     updateAiCooldownTimer();
   }, 0);
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="1500" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 1500 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {

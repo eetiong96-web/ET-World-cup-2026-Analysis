@@ -4,7 +4,7 @@ const DEEPSEEK_CHAT_URL = "https://api.deepseek.com/chat/completions";
 const LIVE_CACHE_SECONDS = 300;
 const ASK_AI_CACHE_SECONDS = 21600;
 const MAX_AI_REQUEST_BYTES = 30000;
-const MAX_AI_QUESTION_CHARS = 280;
+const MAX_AI_QUESTION_CHARS = 1500;
 const ASK_AI_COOLDOWN_SECONDS = 10;
 
 const TEAM_ALIASES = {

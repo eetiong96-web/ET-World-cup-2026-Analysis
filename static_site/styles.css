@@ -698,8 +698,15 @@ th {
 }
 
 .bracket-date {
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   color: var(--muted);
+  font-weight: 800;
+}
+
+.bracket-venue {
+  margin-bottom: 8px;
+  color: var(--blue);
+  font-size: 0.95rem;
   font-weight: 800;
 }
 
