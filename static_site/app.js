@@ -659,6 +659,7 @@ function requestAskAi() {
     .then(({ ok, body }) => {
       if (!ok) throw new Error(body.error || "Ask AI failed.");
       state.aiLastResult = body;
+      if (input) input.value = "";
       setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
     })
     .catch((err) => {
