@@ -5,7 +5,6 @@ const LIVE_CACHE_SECONDS = 300;
 const ASK_AI_CACHE_SECONDS = 21600;
 const MAX_AI_REQUEST_BYTES = 30000;
 const MAX_AI_QUESTION_CHARS = 1500;
-const ASK_AI_COOLDOWN_SECONDS = 10;
 
 const TEAM_ALIASES = {
   "United States": "USA",
@@ -289,13 +288,6 @@ async function askAi(request, env) {
   }
 
   const cache = globalThis.caches?.default;
-  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "local";
-  const rateHash = await hashText(ip);
-  const rateKey = new Request(new URL(request.url).origin + `/api/ask-ai-rate/${rateHash}`);
-  if (cache && await cache.match(rateKey)) {
-    return jsonResponse({ error: `Please wait ${ASK_AI_COOLDOWN_SECONDS} seconds before asking another AI question.` }, 429);
-  }
-
   const context = compactWebsiteContext(body.context);
   const cacheSeed = JSON.stringify({ question: question.toLowerCase(), context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
   const cacheHash = await hashText(cacheSeed);
@@ -304,9 +296,6 @@ async function askAi(request, env) {
   if (cached) return cached;
 
   try {
-    if (cache) {
-      await cache.put(rateKey, jsonResponse({ ok: true }, 200, ASK_AI_COOLDOWN_SECONDS));
-    }
     const answer = await callDeepSeek(env, question, context);
     const response = jsonResponse({
       question,

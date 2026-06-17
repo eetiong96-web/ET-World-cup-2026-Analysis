@@ -229,6 +229,42 @@ h3 {
   color: #8a5a05;
 }
 
+.recent-ai {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-soft);
+}
+
+.recent-ai h3 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+
+.recent-ai-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.recent-ai-list button {
+  padding: 9px 11px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: #eef5ff;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+
+.recent-ai-list button:hover {
+  background: #e1edfb;
+}
+
 .ask-ai-label {
   display: block;
   margin-bottom: 8px;
@@ -1151,6 +1187,10 @@ select {
   }
   .ai-cooldown {
     justify-content: center;
+  }
+  .recent-ai-list {
+    display: grid;
+    grid-template-columns: 1fr;
   }
   .qual-row {
     grid-template-columns: minmax(92px, 1fr) minmax(96px, 1fr) 54px;

@@ -11,9 +11,10 @@ const pages = [
   "Methodology and Caveats",
 ];
 
-const AI_COOLDOWN_MS = 10000;
+const ASK_AI_RECENT_KEY = "wc2026_recent_ai_questions";
+const ASK_AI_RECENT_LIMIT = 8;
 
-const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiCooldownUntil: 0, aiLastResult: null, countryPathSort: "az", countryPathTeam: null };
+const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiLastResult: null, countryPathSort: "az", countryPathTeam: null };
 
 function loadingSkeleton() {
   return `<div class="skeleton-page"><div class="skeleton-line title"></div><div class="skeleton-line subtitle"></div><div class="skeleton-grid">${Array.from({ length: 6 }, () => `<div class="skeleton-card"><div></div><span></span><span></span><span></span></div>`).join("")}</div></div>`;
@@ -100,25 +101,13 @@ function updateAiCooldownTimer() {
   const timer = document.getElementById("ai-cooldown-timer");
   const button = document.getElementById("ask-ai-submit");
   if (!timer && !button) return;
-  const remaining = state.aiCooldownUntil - Date.now();
-  if (remaining > 0) {
-    if (timer) {
-      timer.textContent = `Next question in ${formatDuration(remaining)}`;
-      timer.classList.add("active");
-    }
-    if (button) {
-      button.disabled = true;
-      button.textContent = `Wait ${formatDuration(remaining)}`;
-    }
-  } else {
-    if (timer) {
-      timer.textContent = "Ready to ask";
-      timer.classList.remove("active");
-    }
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Ask AI";
-    }
+  if (timer) {
+    timer.textContent = "Ready to ask";
+    timer.classList.remove("active");
+  }
+  if (button) {
+    button.disabled = false;
+    button.textContent = "Ask AI";
   }
 }
 
@@ -624,6 +613,17 @@ function bindAskAiControls() {
     event.preventDefault();
     requestAskAi();
   });
+  bindRecentAiQuestions();
+}
+
+function bindRecentAiQuestions() {
+  document.querySelectorAll("[data-recent-question]").forEach((button) => button.addEventListener("click", () => {
+    const input = document.getElementById("ask-ai-question");
+    if (input) {
+      input.value = button.dataset.recentQuestion || "";
+      input.focus();
+    }
+  }));
 }
 
 function setAiResult(html) {
@@ -631,12 +631,38 @@ function setAiResult(html) {
   if (el) el.innerHTML = html;
 }
 
-function requestAskAi() {
-  if (Date.now() < state.aiCooldownUntil) {
-    updateAiCooldownTimer();
-    setAiResult(`<p class="warn">Please wait ${formatDuration(state.aiCooldownUntil - Date.now())} before asking again.</p>`);
-    return;
+function recentAiQuestions() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ASK_AI_RECENT_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed.filter(Boolean).slice(0, ASK_AI_RECENT_LIMIT) : [];
+  } catch {
+    return [];
   }
+}
+
+function saveRecentAiQuestion(question) {
+  try {
+    const next = [question, ...recentAiQuestions().filter((item) => item.toLowerCase() !== question.toLowerCase())].slice(0, ASK_AI_RECENT_LIMIT);
+    localStorage.setItem(ASK_AI_RECENT_KEY, JSON.stringify(next));
+  } catch {
+    // Browser storage can be disabled; Ask AI should still work.
+  }
+}
+
+function recentAiQuestionsHtml() {
+  const questions = recentAiQuestions();
+  if (!questions.length) return "";
+  return `<div class="recent-ai"><h3>Recent Questions</h3><div class="recent-ai-list">${questions.map((question) => `<button type="button" data-recent-question="${esc(question)}">${esc(question)}</button>`).join("")}</div></div>`;
+}
+
+function refreshRecentAiQuestions() {
+  const el = document.getElementById("recent-ai-slot");
+  if (!el) return;
+  el.innerHTML = recentAiQuestionsHtml();
+  bindRecentAiQuestions();
+}
+
+function requestAskAi() {
   const input = document.getElementById("ask-ai-question");
   const question = String(input?.value || "").trim();
   if (!question) {
@@ -647,7 +673,6 @@ function requestAskAi() {
     setAiResult(`<p class="warn">Keep the question under 1500 characters.</p>`);
     return;
   }
-  state.aiCooldownUntil = Date.now() + AI_COOLDOWN_MS;
   updateAiCooldownTimer();
   setAiResult(`<p class="muted">Asking AI using this dashboard's data...</p>`);
   fetch("/api/ask-ai", {
@@ -659,8 +684,10 @@ function requestAskAi() {
     .then(({ ok, body }) => {
       if (!ok) throw new Error(body.error || "Ask AI failed.");
       state.aiLastResult = body;
+      saveRecentAiQuestion(question);
       if (input) input.value = "";
       setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
+      refreshRecentAiQuestions();
     })
     .catch((err) => {
       setAiResult(`<p class="warn">${esc(err.message)}</p>`);
@@ -672,7 +699,7 @@ function askAi(d) {
     bindAskAiControls();
     updateAiCooldownTimer();
   }, 0);
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="1500" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 1500 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="1500" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 1500 characters, and cached repeated answers.</p></form><div id="recent-ai-slot">${recentAiQuestionsHtml()}</div><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {
