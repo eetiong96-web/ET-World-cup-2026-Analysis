@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-17T16:56:28+00:00",
+  "generated_at": "2026-06-17T19:27:03+00:00",
   "refresh_cadences": {
     "live_results_minutes": 5,
     "transfermarkt_values_hours": 1,
@@ -23,435 +23,435 @@
       "seed": 26,
       "simulation_probabilities": [
         {
-          "team": "Argentina",
-          "group": "J",
-          "Round of 32": 0.8945,
-          "Quarter-finals": 0.4065,
-          "Semi-finals": 0.2585,
-          "Final": 0.1585,
-          "Champion": 0.1045
-        },
-        {
           "team": "France",
           "group": "I",
-          "Round of 32": 0.8865,
-          "Quarter-finals": 0.421,
-          "Semi-finals": 0.274,
+          "Round of 32": 0.87,
+          "Quarter-finals": 0.4035,
+          "Semi-finals": 0.2605,
           "Final": 0.163,
-          "Champion": 0.0985
+          "Champion": 0.1065
+        },
+        {
+          "team": "Argentina",
+          "group": "J",
+          "Round of 32": 0.897,
+          "Quarter-finals": 0.4145,
+          "Semi-finals": 0.268,
+          "Final": 0.1665,
+          "Champion": 0.095
+        },
+        {
+          "team": "England",
+          "group": "L",
+          "Round of 32": 0.8705,
+          "Quarter-finals": 0.38,
+          "Semi-finals": 0.2285,
+          "Final": 0.1375,
+          "Champion": 0.0915
         },
         {
           "team": "Spain",
           "group": "H",
           "Round of 32": 0.885,
-          "Quarter-finals": 0.381,
-          "Semi-finals": 0.254,
-          "Final": 0.1515,
-          "Champion": 0.084
-        },
-        {
-          "team": "England",
-          "group": "L",
-          "Round of 32": 0.87,
-          "Quarter-finals": 0.383,
-          "Semi-finals": 0.2255,
-          "Final": 0.1275,
-          "Champion": 0.0785
+          "Quarter-finals": 0.3845,
+          "Semi-finals": 0.2555,
+          "Final": 0.1505,
+          "Champion": 0.0855
         },
         {
           "team": "Portugal",
           "group": "K",
-          "Round of 32": 0.875,
-          "Quarter-finals": 0.39,
-          "Semi-finals": 0.233,
-          "Final": 0.1345,
-          "Champion": 0.0755
-        },
-        {
-          "team": "Brazil",
-          "group": "C",
-          "Round of 32": 0.856,
-          "Quarter-finals": 0.3775,
-          "Semi-finals": 0.215,
-          "Final": 0.1205,
-          "Champion": 0.059
+          "Round of 32": 0.868,
+          "Quarter-finals": 0.3725,
+          "Semi-finals": 0.2265,
+          "Final": 0.129,
+          "Champion": 0.066
         },
         {
           "team": "Netherlands",
           "group": "F",
-          "Round of 32": 0.828,
-          "Quarter-finals": 0.303,
-          "Semi-finals": 0.1795,
-          "Final": 0.1125,
-          "Champion": 0.052
+          "Round of 32": 0.837,
+          "Quarter-finals": 0.336,
+          "Semi-finals": 0.1985,
+          "Final": 0.111,
+          "Champion": 0.0585
+        },
+        {
+          "team": "Brazil",
+          "group": "C",
+          "Round of 32": 0.8805,
+          "Quarter-finals": 0.3495,
+          "Semi-finals": 0.214,
+          "Final": 0.1095,
+          "Champion": 0.057
         },
         {
           "team": "Germany",
           "group": "E",
-          "Round of 32": 0.8855,
-          "Quarter-finals": 0.322,
-          "Semi-finals": 0.19,
-          "Final": 0.11,
-          "Champion": 0.0505
-        },
-        {
-          "team": "Belgium",
-          "group": "G",
-          "Round of 32": 0.8505,
-          "Quarter-finals": 0.339,
-          "Semi-finals": 0.18,
-          "Final": 0.0975,
-          "Champion": 0.049
+          "Round of 32": 0.8835,
+          "Quarter-finals": 0.3545,
+          "Semi-finals": 0.2065,
+          "Final": 0.111,
+          "Champion": 0.051
         },
         {
           "team": "Morocco",
           "group": "C",
-          "Round of 32": 0.8375,
-          "Quarter-finals": 0.302,
-          "Semi-finals": 0.1675,
-          "Final": 0.084,
-          "Champion": 0.0425
+          "Round of 32": 0.851,
+          "Quarter-finals": 0.3235,
+          "Semi-finals": 0.1835,
+          "Final": 0.1015,
+          "Champion": 0.0445
+        },
+        {
+          "team": "Belgium",
+          "group": "G",
+          "Round of 32": 0.8435,
+          "Quarter-finals": 0.321,
+          "Semi-finals": 0.1795,
+          "Final": 0.086,
+          "Champion": 0.044
         },
         {
           "team": "Croatia",
           "group": "L",
-          "Round of 32": 0.817,
-          "Quarter-finals": 0.2915,
-          "Semi-finals": 0.163,
-          "Final": 0.0755,
-          "Champion": 0.041
+          "Round of 32": 0.7915,
+          "Quarter-finals": 0.286,
+          "Semi-finals": 0.1475,
+          "Final": 0.0745,
+          "Champion": 0.0395
         },
         {
           "team": "Colombia",
           "group": "K",
-          "Round of 32": 0.819,
-          "Quarter-finals": 0.2795,
-          "Semi-finals": 0.147,
-          "Final": 0.0675,
-          "Champion": 0.035
+          "Round of 32": 0.8355,
+          "Quarter-finals": 0.295,
+          "Semi-finals": 0.1505,
+          "Final": 0.0715,
+          "Champion": 0.0375
         },
         {
           "team": "USA",
           "group": "D",
-          "Round of 32": 0.785,
-          "Quarter-finals": 0.2595,
-          "Semi-finals": 0.136,
-          "Final": 0.072,
-          "Champion": 0.031
+          "Round of 32": 0.79,
+          "Quarter-finals": 0.254,
+          "Semi-finals": 0.1415,
+          "Final": 0.0695,
+          "Champion": 0.0295
         },
         {
           "team": "Senegal",
           "group": "I",
-          "Round of 32": 0.7825,
-          "Quarter-finals": 0.2375,
-          "Semi-finals": 0.1185,
-          "Final": 0.058,
-          "Champion": 0.0275
+          "Round of 32": 0.7795,
+          "Quarter-finals": 0.2435,
+          "Semi-finals": 0.124,
+          "Final": 0.0545,
+          "Champion": 0.0255
         },
         {
           "team": "Mexico",
           "group": "A",
-          "Round of 32": 0.8265,
-          "Quarter-finals": 0.288,
-          "Semi-finals": 0.1445,
-          "Final": 0.0575,
-          "Champion": 0.02
+          "Round of 32": 0.829,
+          "Quarter-finals": 0.266,
+          "Semi-finals": 0.1335,
+          "Final": 0.064,
+          "Champion": 0.025
         },
         {
           "team": "Uruguay",
           "group": "H",
-          "Round of 32": 0.8025,
-          "Quarter-finals": 0.223,
-          "Semi-finals": 0.121,
-          "Final": 0.049,
-          "Champion": 0.0195
+          "Round of 32": 0.8,
+          "Quarter-finals": 0.199,
+          "Semi-finals": 0.097,
+          "Final": 0.043,
+          "Champion": 0.0205
         },
         {
           "team": "Switzerland",
           "group": "B",
-          "Round of 32": 0.8495,
-          "Quarter-finals": 0.2285,
-          "Semi-finals": 0.105,
-          "Final": 0.0435,
-          "Champion": 0.0195
+          "Round of 32": 0.835,
+          "Quarter-finals": 0.2245,
+          "Semi-finals": 0.0925,
+          "Final": 0.038,
+          "Champion": 0.016
         },
         {
           "team": "Japan",
           "group": "F",
-          "Round of 32": 0.7085,
-          "Quarter-finals": 0.187,
-          "Semi-finals": 0.0845,
-          "Final": 0.0345,
-          "Champion": 0.017
-        },
-        {
-          "team": "Iran",
-          "group": "G",
-          "Round of 32": 0.747,
-          "Quarter-finals": 0.173,
-          "Semi-finals": 0.067,
-          "Final": 0.03,
-          "Champion": 0.0135
+          "Round of 32": 0.693,
+          "Quarter-finals": 0.183,
+          "Semi-finals": 0.0765,
+          "Final": 0.032,
+          "Champion": 0.0155
         },
         {
           "team": "Austria",
           "group": "J",
-          "Round of 32": 0.7645,
-          "Quarter-finals": 0.1665,
-          "Semi-finals": 0.074,
-          "Final": 0.0325,
-          "Champion": 0.0125
+          "Round of 32": 0.7535,
+          "Quarter-finals": 0.1635,
+          "Semi-finals": 0.0755,
+          "Final": 0.0295,
+          "Champion": 0.0135
         },
         {
           "team": "Turkey",
           "group": "D",
-          "Round of 32": 0.7195,
-          "Quarter-finals": 0.1765,
-          "Semi-finals": 0.0775,
-          "Final": 0.03,
-          "Champion": 0.0105
+          "Round of 32": 0.7335,
+          "Quarter-finals": 0.1895,
+          "Semi-finals": 0.0745,
+          "Final": 0.032,
+          "Champion": 0.012
         },
         {
-          "team": "Ecuador",
-          "group": "E",
-          "Round of 32": 0.751,
-          "Quarter-finals": 0.1655,
-          "Semi-finals": 0.0715,
-          "Final": 0.025,
-          "Champion": 0.009
+          "team": "Iran",
+          "group": "G",
+          "Round of 32": 0.756,
+          "Quarter-finals": 0.185,
+          "Semi-finals": 0.0765,
+          "Final": 0.027,
+          "Champion": 0.0095
         },
         {
           "team": "South Korea",
           "group": "A",
-          "Round of 32": 0.739,
-          "Quarter-finals": 0.157,
-          "Semi-finals": 0.0555,
-          "Final": 0.02,
-          "Champion": 0.008
+          "Round of 32": 0.765,
+          "Quarter-finals": 0.1505,
+          "Semi-finals": 0.0615,
+          "Final": 0.028,
+          "Champion": 0.009
         },
         {
-          "team": "Australia",
-          "group": "D",
-          "Round of 32": 0.633,
-          "Quarter-finals": 0.136,
-          "Semi-finals": 0.049,
-          "Final": 0.019,
-          "Champion": 0.008
-        },
-        {
-          "team": "Qatar",
-          "group": "B",
-          "Round of 32": 0.741,
-          "Quarter-finals": 0.1135,
-          "Semi-finals": 0.0435,
-          "Final": 0.017,
-          "Champion": 0.0065
-        },
-        {
-          "team": "Norway",
-          "group": "I",
-          "Round of 32": 0.641,
-          "Quarter-finals": 0.124,
-          "Semi-finals": 0.0465,
-          "Final": 0.0175,
-          "Champion": 0.0055
+          "team": "Ecuador",
+          "group": "E",
+          "Round of 32": 0.7525,
+          "Quarter-finals": 0.16,
+          "Semi-finals": 0.0605,
+          "Final": 0.023,
+          "Champion": 0.0085
         },
         {
           "team": "Sweden",
           "group": "F",
-          "Round of 32": 0.63,
-          "Quarter-finals": 0.1115,
-          "Semi-finals": 0.0465,
-          "Final": 0.0165,
-          "Champion": 0.0055
+          "Round of 32": 0.6235,
+          "Quarter-finals": 0.1105,
+          "Semi-finals": 0.0415,
+          "Final": 0.018,
+          "Champion": 0.008
         },
         {
-          "team": "Paraguay",
+          "team": "Norway",
+          "group": "I",
+          "Round of 32": 0.6375,
+          "Quarter-finals": 0.1365,
+          "Semi-finals": 0.054,
+          "Final": 0.0205,
+          "Champion": 0.006
+        },
+        {
+          "team": "Australia",
           "group": "D",
-          "Round of 32": 0.5645,
-          "Quarter-finals": 0.07,
-          "Semi-finals": 0.0205,
-          "Final": 0.0075,
-          "Champion": 0.003
+          "Round of 32": 0.6315,
+          "Quarter-finals": 0.13,
+          "Semi-finals": 0.045,
+          "Final": 0.0165,
+          "Champion": 0.005
         },
         {
-          "team": "Egypt",
-          "group": "G",
-          "Round of 32": 0.6395,
-          "Quarter-finals": 0.109,
-          "Semi-finals": 0.031,
-          "Final": 0.009,
+          "team": "Qatar",
+          "group": "B",
+          "Round of 32": 0.737,
+          "Quarter-finals": 0.1225,
+          "Semi-finals": 0.0375,
+          "Final": 0.012,
+          "Champion": 0.0035
+        },
+        {
+          "team": "Panama",
+          "group": "L",
+          "Round of 32": 0.4465,
+          "Quarter-finals": 0.0405,
+          "Semi-finals": 0.011,
+          "Final": 0.005,
           "Champion": 0.002
         },
         {
           "team": "Scotland",
           "group": "C",
-          "Round of 32": 0.581,
-          "Quarter-finals": 0.074,
-          "Semi-finals": 0.0195,
-          "Final": 0.006,
-          "Champion": 0.002
-        },
-        {
-          "team": "Panama",
-          "group": "L",
-          "Round of 32": 0.446,
-          "Quarter-finals": 0.044,
-          "Semi-finals": 0.008,
-          "Final": 0.004,
-          "Champion": 0.002
+          "Round of 32": 0.5845,
+          "Quarter-finals": 0.0685,
+          "Semi-finals": 0.0255,
+          "Final": 0.009,
+          "Champion": 0.0015
         },
         {
           "team": "Tunisia",
           "group": "F",
-          "Round of 32": 0.512,
-          "Quarter-finals": 0.068,
+          "Round of 32": 0.532,
+          "Quarter-finals": 0.0755,
           "Semi-finals": 0.0225,
-          "Final": 0.0065,
+          "Final": 0.008,
           "Champion": 0.0015
         },
         {
-          "team": "Haiti",
-          "group": "C",
-          "Round of 32": 0.371,
-          "Quarter-finals": 0.0265,
-          "Semi-finals": 0.006,
-          "Final": 0.0025,
+          "team": "Paraguay",
+          "group": "D",
+          "Round of 32": 0.5415,
+          "Quarter-finals": 0.0665,
+          "Semi-finals": 0.0245,
+          "Final": 0.007,
+          "Champion": 0.0015
+        },
+        {
+          "team": "Egypt",
+          "group": "G",
+          "Round of 32": 0.66,
+          "Quarter-finals": 0.1155,
+          "Semi-finals": 0.0365,
+          "Final": 0.0095,
+          "Champion": 0.0015
+        },
+        {
+          "team": "Algeria",
+          "group": "J",
+          "Round of 32": 0.571,
+          "Quarter-finals": 0.0665,
+          "Semi-finals": 0.019,
+          "Final": 0.0045,
           "Champion": 0.0015
         },
         {
           "team": "Ivory Coast",
           "group": "E",
-          "Round of 32": 0.575,
-          "Quarter-finals": 0.0735,
-          "Semi-finals": 0.018,
-          "Final": 0.0055,
+          "Round of 32": 0.596,
+          "Quarter-finals": 0.075,
+          "Semi-finals": 0.0215,
+          "Final": 0.008,
           "Champion": 0.0015
         },
         {
           "team": "Saudi Arabia",
           "group": "H",
-          "Round of 32": 0.5665,
-          "Quarter-finals": 0.0585,
-          "Semi-finals": 0.01,
-          "Final": 0.002,
-          "Champion": 0.001
+          "Round of 32": 0.5495,
+          "Quarter-finals": 0.0535,
+          "Semi-finals": 0.012,
+          "Final": 0.003,
+          "Champion": 0.0015
         },
         {
-          "team": "Algeria",
-          "group": "J",
-          "Round of 32": 0.569,
-          "Quarter-finals": 0.062,
-          "Semi-finals": 0.022,
-          "Final": 0.005,
+          "team": "DR Congo",
+          "group": "K",
+          "Round of 32": 0.4875,
+          "Quarter-finals": 0.0405,
+          "Semi-finals": 0.0115,
+          "Final": 0.004,
           "Champion": 0.001
         },
         {
           "team": "Ghana",
           "group": "L",
-          "Round of 32": 0.5295,
-          "Quarter-finals": 0.0765,
-          "Semi-finals": 0.022,
-          "Final": 0.0065,
-          "Champion": 0.0005
-        },
-        {
-          "team": "Jordan",
-          "group": "J",
-          "Round of 32": 0.4255,
-          "Quarter-finals": 0.0235,
-          "Semi-finals": 0.0065,
-          "Final": 0.002,
+          "Round of 32": 0.547,
+          "Quarter-finals": 0.067,
+          "Semi-finals": 0.0175,
+          "Final": 0.003,
           "Champion": 0.0005
         },
         {
           "team": "Canada",
           "group": "B",
-          "Round of 32": 0.622,
-          "Quarter-finals": 0.0615,
-          "Semi-finals": 0.0195,
-          "Final": 0.005,
-          "Champion": 0.0
+          "Round of 32": 0.6215,
+          "Quarter-finals": 0.0695,
+          "Semi-finals": 0.022,
+          "Final": 0.0055,
+          "Champion": 0.0005
         },
         {
           "team": "Czechia",
           "group": "A",
-          "Round of 32": 0.5615,
-          "Quarter-finals": 0.07,
-          "Semi-finals": 0.0195,
-          "Final": 0.0055,
-          "Champion": 0.0
+          "Round of 32": 0.567,
+          "Quarter-finals": 0.0645,
+          "Semi-finals": 0.0175,
+          "Final": 0.004,
+          "Champion": 0.0005
         },
         {
           "team": "South Africa",
           "group": "A",
-          "Round of 32": 0.5355,
-          "Quarter-finals": 0.044,
-          "Semi-finals": 0.008,
-          "Final": 0.001,
-          "Champion": 0.0
-        },
-        {
-          "team": "Uzbekistan",
-          "group": "K",
-          "Round of 32": 0.484,
-          "Quarter-finals": 0.0375,
-          "Semi-finals": 0.009,
-          "Final": 0.0015,
-          "Champion": 0.0
-        },
-        {
-          "team": "DR Congo",
-          "group": "K",
-          "Round of 32": 0.4725,
-          "Quarter-finals": 0.0345,
-          "Semi-finals": 0.007,
+          "Round of 32": 0.514,
+          "Quarter-finals": 0.048,
+          "Semi-finals": 0.01,
           "Final": 0.002,
-          "Champion": 0.0
+          "Champion": 0.0005
+        },
+        {
+          "team": "Iraq",
+          "group": "I",
+          "Round of 32": 0.3875,
+          "Quarter-finals": 0.03,
+          "Semi-finals": 0.006,
+          "Final": 0.002,
+          "Champion": 0.0005
         },
         {
           "team": "New Zealand",
           "group": "G",
-          "Round of 32": 0.4285,
-          "Quarter-finals": 0.0275,
-          "Semi-finals": 0.004,
+          "Round of 32": 0.4135,
+          "Quarter-finals": 0.028,
+          "Semi-finals": 0.006,
           "Final": 0.0015,
+          "Champion": 0.0005
+        },
+        {
+          "team": "Uzbekistan",
+          "group": "K",
+          "Round of 32": 0.471,
+          "Quarter-finals": 0.0305,
+          "Semi-finals": 0.0055,
+          "Final": 0.001,
           "Champion": 0.0
         },
         {
           "team": "Cape Verde",
           "group": "H",
-          "Round of 32": 0.3995,
-          "Quarter-finals": 0.024,
+          "Round of 32": 0.4255,
+          "Quarter-finals": 0.0215,
           "Semi-finals": 0.006,
+          "Final": 0.002,
+          "Champion": 0.0
+        },
+        {
+          "team": "Jordan",
+          "group": "J",
+          "Round of 32": 0.4205,
+          "Quarter-finals": 0.0325,
+          "Semi-finals": 0.004,
           "Final": 0.0,
           "Champion": 0.0
         },
         {
-          "team": "Iraq",
-          "group": "I",
-          "Round of 32": 0.373,
-          "Quarter-finals": 0.033,
-          "Semi-finals": 0.0065,
-          "Final": 0.0015,
+          "team": "Haiti",
+          "group": "C",
+          "Round of 32": 0.3575,
+          "Quarter-finals": 0.015,
+          "Semi-finals": 0.0025,
+          "Final": 0.0005,
           "Champion": 0.0
         },
         {
           "team": "Bosnia & Herzegovina",
           "group": "B",
-          "Round of 32": 0.462,
-          "Quarter-finals": 0.0225,
-          "Semi-finals": 0.0045,
-          "Final": 0.001,
+          "Round of 32": 0.454,
+          "Quarter-finals": 0.027,
+          "Semi-finals": 0.005,
+          "Final": 0.0005,
           "Champion": 0.0
         },
         {
           "team": "Cura\u00e7ao",
           "group": "E",
-          "Round of 32": 0.457,
-          "Quarter-finals": 0.017,
-          "Semi-finals": 0.0025,
-          "Final": 0.0,
+          "Round of 32": 0.423,
+          "Quarter-finals": 0.026,
+          "Semi-finals": 0.0035,
+          "Final": 0.001,
           "Champion": 0.0
         }
       ],
@@ -849,12 +849,12 @@
           "team_a": "Switzerland",
           "team_b": "DR Congo",
           "favorite": "Switzerland",
-          "favorite_win_probability": 0.7475093072,
-          "team_a_win_probability": 0.7475093072,
-          "team_b_win_probability": 0.2524906928,
-          "team_a_expected_goals": 1.3601967386,
-          "team_b_expected_goals": 0.7931672178,
-          "strength_gap": 35.5447976205,
+          "favorite_win_probability": 0.7431226522,
+          "team_a_win_probability": 0.7431226522,
+          "team_b_win_probability": 0.2568773478,
+          "team_a_expected_goals": 1.352539846,
+          "team_b_expected_goals": 0.7970839935,
+          "strength_gap": 34.3651001481,
           "analysis": "Switzerland is a clear favorite; DR Congo likely needs a low-scoring match or penalties."
         },
         {
@@ -877,12 +877,12 @@
           "team_a": "Portugal",
           "team_b": "Croatia",
           "favorite": "Portugal",
-          "favorite_win_probability": 0.5789899475,
-          "team_a_win_probability": 0.5789899475,
-          "team_b_win_probability": 0.4210100525,
-          "team_a_expected_goals": 1.2439401491,
-          "team_b_expected_goals": 1.0878057039,
-          "strength_gap": 10.7621413972,
+          "favorite_win_probability": 0.571058621,
+          "team_a_win_probability": 0.571058621,
+          "team_b_win_probability": 0.428941379,
+          "team_a_expected_goals": 1.2297039078,
+          "team_b_expected_goals": 1.0895395348,
+          "strength_gap": 9.5824439248,
           "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
@@ -906,7 +906,7 @@
     "base": "EUR",
     "quote": "SGD",
     "eur_to_sgd": 1.4876,
-    "fetched_at": "2026-06-17T16:55:16+00:00",
+    "fetched_at": "2026-06-17T19:26:06+00:00",
     "note": "Transfermarkt squad values are stored in EUR millions and converted to SGD for display only."
   },
   "sources": [
@@ -914,7 +914,7 @@
       "name": "groups_2026",
       "url": "https://github.com/openfootball/worldcup",
       "status": "live",
-      "fetched_at": "2026-06-17T16:55:15+00:00",
+      "fetched_at": "2026-06-17T19:26:04+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://github.com/openfootball/worldcup"
@@ -923,7 +923,7 @@
       "name": "fifa_rankings",
       "url": "https://inside.fifa.com/fifa-world-ranking/men",
       "status": "live",
-      "fetched_at": "2026-06-17T16:55:15+00:00",
+      "fetched_at": "2026-06-17T19:26:05+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://inside.fifa.com/fifa-world-ranking/men"
@@ -932,7 +932,7 @@
       "name": "elo_ratings",
       "url": "https://www.eloratings.net/",
       "status": "seed",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:05+00:00",
       "rows": 48,
       "note": "Using bundled starter data. The public page loads this table dynamically, so the app cannot read it from the initial HTML.",
       "citation": "https://www.eloratings.net/"
@@ -941,7 +941,7 @@
       "name": "transfermarkt_values",
       "url": "https://www.transfermarkt.com/statistik/weltrangliste",
       "status": "cached",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:05+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://www.transfermarkt.com/statistik/weltrangliste"
@@ -950,7 +950,7 @@
       "name": "espn_scoreboard",
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
       "status": "live",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 28,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
@@ -959,7 +959,7 @@
       "name": "fifa_schedule",
       "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule",
       "status": "reference",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 0,
       "note": "Official tournament schedule and match path reference.",
       "citation": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule"
@@ -968,7 +968,7 @@
       "name": "format_cross_check",
       "url": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for",
       "status": "reference",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 0,
       "note": "Independent tournament-format cross-check.",
       "citation": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for"
@@ -977,7 +977,7 @@
       "name": "espn_world_cup",
       "url": "https://www.espn.com/soccer/league/_/name/fifa.world",
       "status": "reference",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 0,
       "note": "Readable live scores, fixtures, and World Cup news reference.",
       "citation": "https://www.espn.com/soccer/league/_/name/fifa.world"
@@ -986,7 +986,7 @@
       "name": "football_data_org",
       "url": "https://api.football-data.org/v4/competitions/WC/matches",
       "status": "optional_api",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 0,
       "note": "Optional free-token fallback for World Cup matches. Add FOOTBALL_DATA_TOKEN in Cloudflare to enable live fallback.",
       "citation": "https://api.football-data.org/v4/competitions/WC/matches"
@@ -995,7 +995,7 @@
       "name": "eur_sgd_fx",
       "url": "https://api.frankfurter.app/latest?from=EUR&to=SGD",
       "status": "live",
-      "fetched_at": "2026-06-17T16:55:16+00:00",
+      "fetched_at": "2026-06-17T19:26:06+00:00",
       "rows": 1,
       "note": "Live EUR to SGD display conversion refreshed successfully.",
       "citation": "https://api.frankfurter.app/latest?from=EUR&to=SGD"
@@ -1207,10 +1207,10 @@
       "match": "Congo DR at Portugal",
       "home": "Portugal",
       "away": "DR Congo",
-      "home_score": "0",
-      "away_score": "0",
-      "status": "Scheduled",
-      "completed": false
+      "home_score": "1",
+      "away_score": "1",
+      "status": "Full Time",
+      "completed": true
     },
     {
       "date": "2026-06-17T20:00Z",
@@ -1767,26 +1767,26 @@
     {
       "group": "K",
       "team": "Portugal",
-      "played": 0,
+      "played": 1,
       "won": 0,
-      "drawn": 0,
+      "drawn": 1,
       "lost": 0,
-      "goals_for": 0,
-      "goals_against": 0,
+      "goals_for": 1,
+      "goals_against": 1,
       "goal_difference": 0,
-      "points": 0
+      "points": 1
     },
     {
       "group": "K",
       "team": "DR Congo",
-      "played": 0,
+      "played": 1,
       "won": 0,
-      "drawn": 0,
+      "drawn": 1,
       "lost": 0,
-      "goals_for": 0,
-      "goals_against": 0,
+      "goals_for": 1,
+      "goals_against": 1,
       "goal_difference": 0,
-      "points": 0
+      "points": 1
     },
     {
       "group": "K",
@@ -2701,14 +2701,14 @@
       "host": 0,
       "world_cup_experience": 7.2082405308,
       "knockout_index": 319.5365139424,
-      "attack": 1.9254830677,
-      "defense": 0.45,
-      "strength_score": 88.4531303627,
-      "live_matches_played": 0,
+      "attack": 1.897010585,
+      "defense": 0.4534676618,
+      "strength_score": 87.2734328903,
+      "live_matches_played": 1,
       "live_goal_difference": 0.0,
-      "live_expected_goal_difference": 0.0,
-      "live_form_adjustment": 0.0,
-      "adjusted_by_live_results": false
+      "live_expected_goal_difference": 0.8847731043,
+      "live_form_adjustment": -1.1796974725,
+      "adjusted_by_live_results": true
     },
     {
       "team": "Brazil",
@@ -3391,6 +3391,26 @@
       "adjusted_by_live_results": false
     },
     {
+      "team": "DR Congo",
+      "group": "K",
+      "fifa_rank": 41.0,
+      "fifa_points": 1572.0,
+      "elo": 1250.0,
+      "market_value_m": 60.0,
+      "market_value_raw": null,
+      "host": 0,
+      "world_cup_experience": 5.2623303817,
+      "knockout_index": 160.9957295551,
+      "attack": 0.8973265438,
+      "defense": 1.1682423484,
+      "strength_score": 33.080365637,
+      "live_matches_played": 1,
+      "live_goal_difference": 0.0,
+      "live_expected_goal_difference": -0.8847731043,
+      "live_form_adjustment": 1.1796974725,
+      "adjusted_by_live_results": true
+    },
+    {
       "team": "South Africa",
       "group": "A",
       "fifa_rank": 39.0,
@@ -3409,26 +3429,6 @@
       "live_expected_goal_difference": -0.5844571507,
       "live_form_adjustment": -1.8873904657,
       "adjusted_by_live_results": true
-    },
-    {
-      "team": "DR Congo",
-      "group": "K",
-      "fifa_rank": 41.0,
-      "fifa_points": 1572.0,
-      "elo": 1250.0,
-      "market_value_m": 60.0,
-      "market_value_raw": null,
-      "host": 0,
-      "world_cup_experience": 5.2623303817,
-      "knockout_index": 160.9957295551,
-      "attack": 0.8894929925,
-      "defense": 1.1835561334,
-      "strength_score": 31.9006681645,
-      "live_matches_played": 0,
-      "live_goal_difference": 0.0,
-      "live_expected_goal_difference": 0.0,
-      "live_form_adjustment": 0.0,
-      "adjusted_by_live_results": false
     },
     {
       "team": "New Zealand",
@@ -3573,435 +3573,435 @@
   ],
   "simulation_probabilities": [
     {
-      "team": "Argentina",
-      "group": "J",
-      "Round of 32": 0.8945,
-      "Quarter-finals": 0.4065,
-      "Semi-finals": 0.2585,
-      "Final": 0.1585,
-      "Champion": 0.1045
-    },
-    {
       "team": "France",
       "group": "I",
-      "Round of 32": 0.8865,
-      "Quarter-finals": 0.421,
-      "Semi-finals": 0.274,
+      "Round of 32": 0.87,
+      "Quarter-finals": 0.4035,
+      "Semi-finals": 0.2605,
       "Final": 0.163,
-      "Champion": 0.0985
+      "Champion": 0.1065
+    },
+    {
+      "team": "Argentina",
+      "group": "J",
+      "Round of 32": 0.897,
+      "Quarter-finals": 0.4145,
+      "Semi-finals": 0.268,
+      "Final": 0.1665,
+      "Champion": 0.095
+    },
+    {
+      "team": "England",
+      "group": "L",
+      "Round of 32": 0.8705,
+      "Quarter-finals": 0.38,
+      "Semi-finals": 0.2285,
+      "Final": 0.1375,
+      "Champion": 0.0915
     },
     {
       "team": "Spain",
       "group": "H",
       "Round of 32": 0.885,
-      "Quarter-finals": 0.381,
-      "Semi-finals": 0.254,
-      "Final": 0.1515,
-      "Champion": 0.084
-    },
-    {
-      "team": "England",
-      "group": "L",
-      "Round of 32": 0.87,
-      "Quarter-finals": 0.383,
-      "Semi-finals": 0.2255,
-      "Final": 0.1275,
-      "Champion": 0.0785
+      "Quarter-finals": 0.3845,
+      "Semi-finals": 0.2555,
+      "Final": 0.1505,
+      "Champion": 0.0855
     },
     {
       "team": "Portugal",
       "group": "K",
-      "Round of 32": 0.875,
-      "Quarter-finals": 0.39,
-      "Semi-finals": 0.233,
-      "Final": 0.1345,
-      "Champion": 0.0755
-    },
-    {
-      "team": "Brazil",
-      "group": "C",
-      "Round of 32": 0.856,
-      "Quarter-finals": 0.3775,
-      "Semi-finals": 0.215,
-      "Final": 0.1205,
-      "Champion": 0.059
+      "Round of 32": 0.868,
+      "Quarter-finals": 0.3725,
+      "Semi-finals": 0.2265,
+      "Final": 0.129,
+      "Champion": 0.066
     },
     {
       "team": "Netherlands",
       "group": "F",
-      "Round of 32": 0.828,
-      "Quarter-finals": 0.303,
-      "Semi-finals": 0.1795,
-      "Final": 0.1125,
-      "Champion": 0.052
+      "Round of 32": 0.837,
+      "Quarter-finals": 0.336,
+      "Semi-finals": 0.1985,
+      "Final": 0.111,
+      "Champion": 0.0585
+    },
+    {
+      "team": "Brazil",
+      "group": "C",
+      "Round of 32": 0.8805,
+      "Quarter-finals": 0.3495,
+      "Semi-finals": 0.214,
+      "Final": 0.1095,
+      "Champion": 0.057
     },
     {
       "team": "Germany",
       "group": "E",
-      "Round of 32": 0.8855,
-      "Quarter-finals": 0.322,
-      "Semi-finals": 0.19,
-      "Final": 0.11,
-      "Champion": 0.0505
-    },
-    {
-      "team": "Belgium",
-      "group": "G",
-      "Round of 32": 0.8505,
-      "Quarter-finals": 0.339,
-      "Semi-finals": 0.18,
-      "Final": 0.0975,
-      "Champion": 0.049
+      "Round of 32": 0.8835,
+      "Quarter-finals": 0.3545,
+      "Semi-finals": 0.2065,
+      "Final": 0.111,
+      "Champion": 0.051
     },
     {
       "team": "Morocco",
       "group": "C",
-      "Round of 32": 0.8375,
-      "Quarter-finals": 0.302,
-      "Semi-finals": 0.1675,
-      "Final": 0.084,
-      "Champion": 0.0425
+      "Round of 32": 0.851,
+      "Quarter-finals": 0.3235,
+      "Semi-finals": 0.1835,
+      "Final": 0.1015,
+      "Champion": 0.0445
+    },
+    {
+      "team": "Belgium",
+      "group": "G",
+      "Round of 32": 0.8435,
+      "Quarter-finals": 0.321,
+      "Semi-finals": 0.1795,
+      "Final": 0.086,
+      "Champion": 0.044
     },
     {
       "team": "Croatia",
       "group": "L",
-      "Round of 32": 0.817,
-      "Quarter-finals": 0.2915,
-      "Semi-finals": 0.163,
-      "Final": 0.0755,
-      "Champion": 0.041
+      "Round of 32": 0.7915,
+      "Quarter-finals": 0.286,
+      "Semi-finals": 0.1475,
+      "Final": 0.0745,
+      "Champion": 0.0395
     },
     {
       "team": "Colombia",
       "group": "K",
-      "Round of 32": 0.819,
-      "Quarter-finals": 0.2795,
-      "Semi-finals": 0.147,
-      "Final": 0.0675,
-      "Champion": 0.035
+      "Round of 32": 0.8355,
+      "Quarter-finals": 0.295,
+      "Semi-finals": 0.1505,
+      "Final": 0.0715,
+      "Champion": 0.0375
     },
     {
       "team": "USA",
       "group": "D",
-      "Round of 32": 0.785,
-      "Quarter-finals": 0.2595,
-      "Semi-finals": 0.136,
-      "Final": 0.072,
-      "Champion": 0.031
+      "Round of 32": 0.79,
+      "Quarter-finals": 0.254,
+      "Semi-finals": 0.1415,
+      "Final": 0.0695,
+      "Champion": 0.0295
     },
     {
       "team": "Senegal",
       "group": "I",
-      "Round of 32": 0.7825,
-      "Quarter-finals": 0.2375,
-      "Semi-finals": 0.1185,
-      "Final": 0.058,
-      "Champion": 0.0275
+      "Round of 32": 0.7795,
+      "Quarter-finals": 0.2435,
+      "Semi-finals": 0.124,
+      "Final": 0.0545,
+      "Champion": 0.0255
     },
     {
       "team": "Mexico",
       "group": "A",
-      "Round of 32": 0.8265,
-      "Quarter-finals": 0.288,
-      "Semi-finals": 0.1445,
-      "Final": 0.0575,
-      "Champion": 0.02
+      "Round of 32": 0.829,
+      "Quarter-finals": 0.266,
+      "Semi-finals": 0.1335,
+      "Final": 0.064,
+      "Champion": 0.025
     },
     {
       "team": "Uruguay",
       "group": "H",
-      "Round of 32": 0.8025,
-      "Quarter-finals": 0.223,
-      "Semi-finals": 0.121,
-      "Final": 0.049,
-      "Champion": 0.0195
+      "Round of 32": 0.8,
+      "Quarter-finals": 0.199,
+      "Semi-finals": 0.097,
+      "Final": 0.043,
+      "Champion": 0.0205
     },
     {
       "team": "Switzerland",
       "group": "B",
-      "Round of 32": 0.8495,
-      "Quarter-finals": 0.2285,
-      "Semi-finals": 0.105,
-      "Final": 0.0435,
-      "Champion": 0.0195
+      "Round of 32": 0.835,
+      "Quarter-finals": 0.2245,
+      "Semi-finals": 0.0925,
+      "Final": 0.038,
+      "Champion": 0.016
     },
     {
       "team": "Japan",
       "group": "F",
-      "Round of 32": 0.7085,
-      "Quarter-finals": 0.187,
-      "Semi-finals": 0.0845,
-      "Final": 0.0345,
-      "Champion": 0.017
-    },
-    {
-      "team": "Iran",
-      "group": "G",
-      "Round of 32": 0.747,
-      "Quarter-finals": 0.173,
-      "Semi-finals": 0.067,
-      "Final": 0.03,
-      "Champion": 0.0135
+      "Round of 32": 0.693,
+      "Quarter-finals": 0.183,
+      "Semi-finals": 0.0765,
+      "Final": 0.032,
+      "Champion": 0.0155
     },
     {
       "team": "Austria",
       "group": "J",
-      "Round of 32": 0.7645,
-      "Quarter-finals": 0.1665,
-      "Semi-finals": 0.074,
-      "Final": 0.0325,
-      "Champion": 0.0125
+      "Round of 32": 0.7535,
+      "Quarter-finals": 0.1635,
+      "Semi-finals": 0.0755,
+      "Final": 0.0295,
+      "Champion": 0.0135
     },
     {
       "team": "Turkey",
       "group": "D",
-      "Round of 32": 0.7195,
-      "Quarter-finals": 0.1765,
-      "Semi-finals": 0.0775,
-      "Final": 0.03,
-      "Champion": 0.0105
+      "Round of 32": 0.7335,
+      "Quarter-finals": 0.1895,
+      "Semi-finals": 0.0745,
+      "Final": 0.032,
+      "Champion": 0.012
     },
     {
-      "team": "Ecuador",
-      "group": "E",
-      "Round of 32": 0.751,
-      "Quarter-finals": 0.1655,
-      "Semi-finals": 0.0715,
-      "Final": 0.025,
-      "Champion": 0.009
+      "team": "Iran",
+      "group": "G",
+      "Round of 32": 0.756,
+      "Quarter-finals": 0.185,
+      "Semi-finals": 0.0765,
+      "Final": 0.027,
+      "Champion": 0.0095
     },
     {
       "team": "South Korea",
       "group": "A",
-      "Round of 32": 0.739,
-      "Quarter-finals": 0.157,
-      "Semi-finals": 0.0555,
-      "Final": 0.02,
-      "Champion": 0.008
+      "Round of 32": 0.765,
+      "Quarter-finals": 0.1505,
+      "Semi-finals": 0.0615,
+      "Final": 0.028,
+      "Champion": 0.009
     },
     {
-      "team": "Australia",
-      "group": "D",
-      "Round of 32": 0.633,
-      "Quarter-finals": 0.136,
-      "Semi-finals": 0.049,
-      "Final": 0.019,
-      "Champion": 0.008
-    },
-    {
-      "team": "Qatar",
-      "group": "B",
-      "Round of 32": 0.741,
-      "Quarter-finals": 0.1135,
-      "Semi-finals": 0.0435,
-      "Final": 0.017,
-      "Champion": 0.0065
-    },
-    {
-      "team": "Norway",
-      "group": "I",
-      "Round of 32": 0.641,
-      "Quarter-finals": 0.124,
-      "Semi-finals": 0.0465,
-      "Final": 0.0175,
-      "Champion": 0.0055
+      "team": "Ecuador",
+      "group": "E",
+      "Round of 32": 0.7525,
+      "Quarter-finals": 0.16,
+      "Semi-finals": 0.0605,
+      "Final": 0.023,
+      "Champion": 0.0085
     },
     {
       "team": "Sweden",
       "group": "F",
-      "Round of 32": 0.63,
-      "Quarter-finals": 0.1115,
-      "Semi-finals": 0.0465,
-      "Final": 0.0165,
-      "Champion": 0.0055
+      "Round of 32": 0.6235,
+      "Quarter-finals": 0.1105,
+      "Semi-finals": 0.0415,
+      "Final": 0.018,
+      "Champion": 0.008
     },
     {
-      "team": "Paraguay",
+      "team": "Norway",
+      "group": "I",
+      "Round of 32": 0.6375,
+      "Quarter-finals": 0.1365,
+      "Semi-finals": 0.054,
+      "Final": 0.0205,
+      "Champion": 0.006
+    },
+    {
+      "team": "Australia",
       "group": "D",
-      "Round of 32": 0.5645,
-      "Quarter-finals": 0.07,
-      "Semi-finals": 0.0205,
-      "Final": 0.0075,
-      "Champion": 0.003
+      "Round of 32": 0.6315,
+      "Quarter-finals": 0.13,
+      "Semi-finals": 0.045,
+      "Final": 0.0165,
+      "Champion": 0.005
     },
     {
-      "team": "Egypt",
-      "group": "G",
-      "Round of 32": 0.6395,
-      "Quarter-finals": 0.109,
-      "Semi-finals": 0.031,
-      "Final": 0.009,
+      "team": "Qatar",
+      "group": "B",
+      "Round of 32": 0.737,
+      "Quarter-finals": 0.1225,
+      "Semi-finals": 0.0375,
+      "Final": 0.012,
+      "Champion": 0.0035
+    },
+    {
+      "team": "Panama",
+      "group": "L",
+      "Round of 32": 0.4465,
+      "Quarter-finals": 0.0405,
+      "Semi-finals": 0.011,
+      "Final": 0.005,
       "Champion": 0.002
     },
     {
       "team": "Scotland",
       "group": "C",
-      "Round of 32": 0.581,
-      "Quarter-finals": 0.074,
-      "Semi-finals": 0.0195,
-      "Final": 0.006,
-      "Champion": 0.002
-    },
-    {
-      "team": "Panama",
-      "group": "L",
-      "Round of 32": 0.446,
-      "Quarter-finals": 0.044,
-      "Semi-finals": 0.008,
-      "Final": 0.004,
-      "Champion": 0.002
+      "Round of 32": 0.5845,
+      "Quarter-finals": 0.0685,
+      "Semi-finals": 0.0255,
+      "Final": 0.009,
+      "Champion": 0.0015
     },
     {
       "team": "Tunisia",
       "group": "F",
-      "Round of 32": 0.512,
-      "Quarter-finals": 0.068,
+      "Round of 32": 0.532,
+      "Quarter-finals": 0.0755,
       "Semi-finals": 0.0225,
-      "Final": 0.0065,
+      "Final": 0.008,
       "Champion": 0.0015
     },
     {
-      "team": "Haiti",
-      "group": "C",
-      "Round of 32": 0.371,
-      "Quarter-finals": 0.0265,
-      "Semi-finals": 0.006,
-      "Final": 0.0025,
+      "team": "Paraguay",
+      "group": "D",
+      "Round of 32": 0.5415,
+      "Quarter-finals": 0.0665,
+      "Semi-finals": 0.0245,
+      "Final": 0.007,
+      "Champion": 0.0015
+    },
+    {
+      "team": "Egypt",
+      "group": "G",
+      "Round of 32": 0.66,
+      "Quarter-finals": 0.1155,
+      "Semi-finals": 0.0365,
+      "Final": 0.0095,
+      "Champion": 0.0015
+    },
+    {
+      "team": "Algeria",
+      "group": "J",
+      "Round of 32": 0.571,
+      "Quarter-finals": 0.0665,
+      "Semi-finals": 0.019,
+      "Final": 0.0045,
       "Champion": 0.0015
     },
     {
       "team": "Ivory Coast",
       "group": "E",
-      "Round of 32": 0.575,
-      "Quarter-finals": 0.0735,
-      "Semi-finals": 0.018,
-      "Final": 0.0055,
+      "Round of 32": 0.596,
+      "Quarter-finals": 0.075,
+      "Semi-finals": 0.0215,
+      "Final": 0.008,
       "Champion": 0.0015
     },
     {
       "team": "Saudi Arabia",
       "group": "H",
-      "Round of 32": 0.5665,
-      "Quarter-finals": 0.0585,
-      "Semi-finals": 0.01,
-      "Final": 0.002,
-      "Champion": 0.001
+      "Round of 32": 0.5495,
+      "Quarter-finals": 0.0535,
+      "Semi-finals": 0.012,
+      "Final": 0.003,
+      "Champion": 0.0015
     },
     {
-      "team": "Algeria",
-      "group": "J",
-      "Round of 32": 0.569,
-      "Quarter-finals": 0.062,
-      "Semi-finals": 0.022,
-      "Final": 0.005,
+      "team": "DR Congo",
+      "group": "K",
+      "Round of 32": 0.4875,
+      "Quarter-finals": 0.0405,
+      "Semi-finals": 0.0115,
+      "Final": 0.004,
       "Champion": 0.001
     },
     {
       "team": "Ghana",
       "group": "L",
-      "Round of 32": 0.5295,
-      "Quarter-finals": 0.0765,
-      "Semi-finals": 0.022,
-      "Final": 0.0065,
-      "Champion": 0.0005
-    },
-    {
-      "team": "Jordan",
-      "group": "J",
-      "Round of 32": 0.4255,
-      "Quarter-finals": 0.0235,
-      "Semi-finals": 0.0065,
-      "Final": 0.002,
+      "Round of 32": 0.547,
+      "Quarter-finals": 0.067,
+      "Semi-finals": 0.0175,
+      "Final": 0.003,
       "Champion": 0.0005
     },
     {
       "team": "Canada",
       "group": "B",
-      "Round of 32": 0.622,
-      "Quarter-finals": 0.0615,
-      "Semi-finals": 0.0195,
-      "Final": 0.005,
-      "Champion": 0.0
+      "Round of 32": 0.6215,
+      "Quarter-finals": 0.0695,
+      "Semi-finals": 0.022,
+      "Final": 0.0055,
+      "Champion": 0.0005
     },
     {
       "team": "Czechia",
       "group": "A",
-      "Round of 32": 0.5615,
-      "Quarter-finals": 0.07,
-      "Semi-finals": 0.0195,
-      "Final": 0.0055,
-      "Champion": 0.0
+      "Round of 32": 0.567,
+      "Quarter-finals": 0.0645,
+      "Semi-finals": 0.0175,
+      "Final": 0.004,
+      "Champion": 0.0005
     },
     {
       "team": "South Africa",
       "group": "A",
-      "Round of 32": 0.5355,
-      "Quarter-finals": 0.044,
-      "Semi-finals": 0.008,
-      "Final": 0.001,
-      "Champion": 0.0
-    },
-    {
-      "team": "Uzbekistan",
-      "group": "K",
-      "Round of 32": 0.484,
-      "Quarter-finals": 0.0375,
-      "Semi-finals": 0.009,
-      "Final": 0.0015,
-      "Champion": 0.0
-    },
-    {
-      "team": "DR Congo",
-      "group": "K",
-      "Round of 32": 0.4725,
-      "Quarter-finals": 0.0345,
-      "Semi-finals": 0.007,
+      "Round of 32": 0.514,
+      "Quarter-finals": 0.048,
+      "Semi-finals": 0.01,
       "Final": 0.002,
-      "Champion": 0.0
+      "Champion": 0.0005
+    },
+    {
+      "team": "Iraq",
+      "group": "I",
+      "Round of 32": 0.3875,
+      "Quarter-finals": 0.03,
+      "Semi-finals": 0.006,
+      "Final": 0.002,
+      "Champion": 0.0005
     },
     {
       "team": "New Zealand",
       "group": "G",
-      "Round of 32": 0.4285,
-      "Quarter-finals": 0.0275,
-      "Semi-finals": 0.004,
+      "Round of 32": 0.4135,
+      "Quarter-finals": 0.028,
+      "Semi-finals": 0.006,
       "Final": 0.0015,
+      "Champion": 0.0005
+    },
+    {
+      "team": "Uzbekistan",
+      "group": "K",
+      "Round of 32": 0.471,
+      "Quarter-finals": 0.0305,
+      "Semi-finals": 0.0055,
+      "Final": 0.001,
       "Champion": 0.0
     },
     {
       "team": "Cape Verde",
       "group": "H",
-      "Round of 32": 0.3995,
-      "Quarter-finals": 0.024,
+      "Round of 32": 0.4255,
+      "Quarter-finals": 0.0215,
       "Semi-finals": 0.006,
+      "Final": 0.002,
+      "Champion": 0.0
+    },
+    {
+      "team": "Jordan",
+      "group": "J",
+      "Round of 32": 0.4205,
+      "Quarter-finals": 0.0325,
+      "Semi-finals": 0.004,
       "Final": 0.0,
       "Champion": 0.0
     },
     {
-      "team": "Iraq",
-      "group": "I",
-      "Round of 32": 0.373,
-      "Quarter-finals": 0.033,
-      "Semi-finals": 0.0065,
-      "Final": 0.0015,
+      "team": "Haiti",
+      "group": "C",
+      "Round of 32": 0.3575,
+      "Quarter-finals": 0.015,
+      "Semi-finals": 0.0025,
+      "Final": 0.0005,
       "Champion": 0.0
     },
     {
       "team": "Bosnia & Herzegovina",
       "group": "B",
-      "Round of 32": 0.462,
-      "Quarter-finals": 0.0225,
-      "Semi-finals": 0.0045,
-      "Final": 0.001,
+      "Round of 32": 0.454,
+      "Quarter-finals": 0.027,
+      "Semi-finals": 0.005,
+      "Final": 0.0005,
       "Champion": 0.0
     },
     {
       "team": "Cura\u00e7ao",
       "group": "E",
-      "Round of 32": 0.457,
-      "Quarter-finals": 0.017,
-      "Semi-finals": 0.0025,
-      "Final": 0.0,
+      "Round of 32": 0.423,
+      "Quarter-finals": 0.026,
+      "Semi-finals": 0.0035,
+      "Final": 0.001,
       "Champion": 0.0
     }
   ],
@@ -4045,7 +4045,7 @@
     {
       "team": "Portugal",
       "group": "K",
-      "strength_score": 88.4531303627,
+      "strength_score": 87.2734328903,
       "Quarter-finals": 0.7023666655,
       "Semi-finals": 0.5885866761,
       "Final": 0.2254030276,
@@ -4090,7 +4090,7 @@
     {
       "team": "DR Congo",
       "group": "K",
-      "strength_score": 31.9006681645,
+      "strength_score": 33.080365637,
       "Quarter-finals": 0.2948162152,
       "Semi-finals": 0.2529280292,
       "Final": 0.2072193624,
@@ -4833,12 +4833,12 @@
       "team_a": "Switzerland",
       "team_b": "DR Congo",
       "favorite": "Switzerland",
-      "favorite_win_probability": 0.7475093072,
-      "team_a_win_probability": 0.7475093072,
-      "team_b_win_probability": 0.2524906928,
-      "team_a_expected_goals": 1.3601967386,
-      "team_b_expected_goals": 0.7931672178,
-      "strength_gap": 35.5447976205,
+      "favorite_win_probability": 0.7431226522,
+      "team_a_win_probability": 0.7431226522,
+      "team_b_win_probability": 0.2568773478,
+      "team_a_expected_goals": 1.352539846,
+      "team_b_expected_goals": 0.7970839935,
+      "strength_gap": 34.3651001481,
       "analysis": "Switzerland is a clear favorite; DR Congo likely needs a low-scoring match or penalties."
     },
     {
@@ -4861,12 +4861,12 @@
       "team_a": "Portugal",
       "team_b": "Croatia",
       "favorite": "Portugal",
-      "favorite_win_probability": 0.5789899475,
-      "team_a_win_probability": 0.5789899475,
-      "team_b_win_probability": 0.4210100525,
-      "team_a_expected_goals": 1.2439401491,
-      "team_b_expected_goals": 1.0878057039,
-      "strength_gap": 10.7621413972,
+      "favorite_win_probability": 0.571058621,
+      "team_a_win_probability": 0.571058621,
+      "team_b_win_probability": 0.428941379,
+      "team_a_expected_goals": 1.2297039078,
+      "team_b_expected_goals": 1.0895395348,
+      "strength_gap": 9.5824439248,
       "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
@@ -6089,21 +6089,21 @@
       "group": "K",
       "team_a": "Colombia",
       "team_b": "DR Congo",
-      "team_a_expected_goals": 1.4354928669,
-      "team_b_expected_goals": 0.7398670192,
-      "team_a_win": 0.5368405602,
-      "draw": 0.2702566493,
-      "team_b_win": 0.1929027905
+      "team_a_expected_goals": 1.4278359743,
+      "team_b_expected_goals": 0.7437837949,
+      "team_a_win": 0.5337253655,
+      "draw": 0.2712556017,
+      "team_b_win": 0.1950190328
     },
     {
       "group": "K",
       "team_a": "Colombia",
       "team_b": "Portugal",
-      "team_a_expected_goals": 1.0687148002,
-      "team_b_expected_goals": 1.2578620568,
-      "team_a_win": 0.3135076395,
-      "draw": 0.2801544878,
-      "team_b_win": 0.4063378727
+      "team_a_expected_goals": 1.070448631,
+      "team_b_expected_goals": 1.2436258155,
+      "team_a_win": 0.3167404078,
+      "draw": 0.2813090377,
+      "team_b_win": 0.4019505545
     },
     {
       "group": "K",
@@ -6119,61 +6119,61 @@
       "group": "K",
       "team_a": "DR Congo",
       "team_b": "Colombia",
-      "team_a_expected_goals": 0.7398670192,
-      "team_b_expected_goals": 1.4354928669,
-      "team_a_win": 0.1929027905,
-      "draw": 0.2702566493,
-      "team_b_win": 0.5368405602
+      "team_a_expected_goals": 0.7437837949,
+      "team_b_expected_goals": 1.4278359743,
+      "team_a_win": 0.1950190328,
+      "draw": 0.2712556017,
+      "team_b_win": 0.5337253655
     },
     {
       "group": "K",
       "team_a": "DR Congo",
       "team_b": "Portugal",
-      "team_a_expected_goals": 0.6697464962,
-      "team_b_expected_goals": 1.5545196006,
-      "team_a_win": 0.1593845465,
-      "draw": 0.2536782897,
-      "team_b_win": 0.5869371638
+      "team_a_expected_goals": 0.6753971028,
+      "team_b_expected_goals": 1.5326264667,
+      "team_a_win": 0.1634223141,
+      "draw": 0.2567643905,
+      "team_b_win": 0.5798132954
     },
     {
       "group": "K",
       "team_a": "DR Congo",
       "team_b": "Uzbekistan",
-      "team_a_expected_goals": 1.0264346421,
-      "team_b_expected_goals": 1.0500803746,
-      "team_a_win": 0.3431180313,
-      "draw": 0.3015700091,
-      "team_b_win": 0.3553119597
+      "team_a_expected_goals": 1.0303514178,
+      "team_b_expected_goals": 1.0424234821,
+      "team_a_win": 0.345925382,
+      "draw": 0.3019189762,
+      "team_b_win": 0.3521556418
     },
     {
       "group": "K",
       "team_a": "Portugal",
       "team_b": "Colombia",
-      "team_a_expected_goals": 1.2578620568,
-      "team_b_expected_goals": 1.0687148002,
-      "team_a_win": 0.4063378727,
-      "draw": 0.2801544878,
-      "team_b_win": 0.3135076395
+      "team_a_expected_goals": 1.2436258155,
+      "team_b_expected_goals": 1.070448631,
+      "team_a_win": 0.4019505545,
+      "draw": 0.2813090377,
+      "team_b_win": 0.3167404078
     },
     {
       "group": "K",
       "team_a": "Portugal",
       "team_b": "DR Congo",
-      "team_a_expected_goals": 1.5545196006,
-      "team_b_expected_goals": 0.6697464962,
-      "team_a_win": 0.5869371638,
-      "draw": 0.2536782897,
-      "team_b_win": 0.1593845465
+      "team_a_expected_goals": 1.5326264667,
+      "team_b_expected_goals": 0.6753971028,
+      "team_a_win": 0.5798132954,
+      "draw": 0.2567643905,
+      "team_b_win": 0.1634223141
     },
     {
       "group": "K",
       "team_a": "Portugal",
       "team_b": "Uzbekistan",
-      "team_a_expected_goals": 1.5444296797,
-      "team_b_expected_goals": 0.6833023079,
-      "team_a_win": 0.580687152,
-      "draw": 0.255281926,
-      "team_b_win": 0.164030922
+      "team_a_expected_goals": 1.5301934383,
+      "team_b_expected_goals": 0.6850361388,
+      "team_a_win": 0.5765697803,
+      "draw": 0.2572371591,
+      "team_b_win": 0.1661930606
     },
     {
       "group": "K",
@@ -6189,21 +6189,21 @@
       "group": "K",
       "team_a": "Uzbekistan",
       "team_b": "DR Congo",
-      "team_a_expected_goals": 1.0500803746,
-      "team_b_expected_goals": 1.0264346421,
-      "team_a_win": 0.3553119597,
-      "draw": 0.3015700091,
-      "team_b_win": 0.3431180313
+      "team_a_expected_goals": 1.0424234821,
+      "team_b_expected_goals": 1.0303514178,
+      "team_a_win": 0.3521556418,
+      "draw": 0.3019189762,
+      "team_b_win": 0.345925382
     },
     {
       "group": "K",
       "team_a": "Uzbekistan",
       "team_b": "Portugal",
-      "team_a_expected_goals": 0.6833023079,
-      "team_b_expected_goals": 1.5444296797,
-      "team_a_win": 0.164030922,
-      "draw": 0.255281926,
-      "team_b_win": 0.580687152
+      "team_a_expected_goals": 0.6850361388,
+      "team_b_expected_goals": 1.5301934383,
+      "team_a_win": 0.1661930606,
+      "draw": 0.2572371591,
+      "team_b_win": 0.5765697803
     },
     {
       "group": "L",
@@ -6872,9 +6872,9 @@
       "match_id": "K1",
       "home": "Portugal",
       "away": "DR Congo",
-      "home_expected_goals": 1.5545196006,
-      "away_expected_goals": 0.6697464962,
-      "total_expected_goals": 2.2242660968
+      "home_expected_goals": 1.5326264667,
+      "away_expected_goals": 0.6753971028,
+      "total_expected_goals": 2.2080235695
     },
     {
       "group": "K",
@@ -6890,36 +6890,36 @@
       "match_id": "K3",
       "home": "Portugal",
       "away": "Uzbekistan",
-      "home_expected_goals": 1.5444296797,
-      "away_expected_goals": 0.6833023079,
-      "total_expected_goals": 2.2277319876
+      "home_expected_goals": 1.5301934383,
+      "away_expected_goals": 0.6850361388,
+      "total_expected_goals": 2.2152295771
     },
     {
       "group": "K",
       "match_id": "K4",
       "home": "Colombia",
       "away": "DR Congo",
-      "home_expected_goals": 1.4354928669,
-      "away_expected_goals": 0.7398670192,
-      "total_expected_goals": 2.1753598861
+      "home_expected_goals": 1.4278359743,
+      "away_expected_goals": 0.7437837949,
+      "total_expected_goals": 2.1716197692
     },
     {
       "group": "K",
       "match_id": "K5",
       "home": "Colombia",
       "away": "Portugal",
-      "home_expected_goals": 1.0687148002,
-      "away_expected_goals": 1.2578620568,
-      "total_expected_goals": 2.326576857
+      "home_expected_goals": 1.070448631,
+      "away_expected_goals": 1.2436258155,
+      "total_expected_goals": 2.3140744465
     },
     {
       "group": "K",
       "match_id": "K6",
       "home": "DR Congo",
       "away": "Uzbekistan",
-      "home_expected_goals": 1.0264346421,
-      "away_expected_goals": 1.0500803746,
-      "total_expected_goals": 2.0765150166
+      "home_expected_goals": 1.0303514178,
+      "away_expected_goals": 1.0424234821,
+      "total_expected_goals": 2.0727748998
     },
     {
       "group": "L",
@@ -7260,30 +7260,30 @@
     {
       "team": "Portugal",
       "group": "K",
-      "expected_goals_for": 4.3568113371,
-      "expected_goals_against": 2.4217636043,
-      "expected_goal_difference": 1.9350477329
+      "expected_goals_for": 4.3064457205,
+      "expected_goals_against": 2.4308818726,
+      "expected_goal_difference": 1.8755638479
     },
     {
       "team": "Colombia",
       "group": "K",
-      "expected_goals_for": 3.929610613,
-      "expected_goals_against": 2.7511519069,
-      "expected_goal_difference": 1.1784587061
+      "expected_goals_for": 3.9236875514,
+      "expected_goals_against": 2.7408324412,
+      "expected_goal_difference": 1.1828551102
     },
     {
       "team": "Uzbekistan",
       "group": "K",
-      "expected_goals_for": 2.4868055133,
-      "expected_goals_against": 3.9962672677,
-      "expected_goal_difference": -1.5094617544
+      "expected_goals_for": 2.4808824517,
+      "expected_goals_against": 3.9859478021,
+      "expected_goal_difference": -1.5050653504
     },
     {
       "team": "DR Congo",
       "group": "K",
-      "expected_goals_for": 2.4360481575,
-      "expected_goals_against": 4.040092842,
-      "expected_goal_difference": -1.6040446845
+      "expected_goals_for": 2.4495323155,
+      "expected_goals_against": 4.0028859231,
+      "expected_goal_difference": -1.5533536076
     },
     {
       "team": "England",
@@ -7378,17 +7378,17 @@
       "elo": 2042.0,
       "fifa_rank": 5.0,
       "market_value_m": 1010.0,
-      "defense": 0.45,
+      "defense": 0.4534676618,
       "knockout_index": 319.5365139424,
       "host": 0,
       "squad_quality": 65.974443077,
       "team_composure": 91.3043478261,
       "ranking_strength": 94.9367088608,
-      "keeper_defense_proxy": 100.0,
+      "keeper_defense_proxy": 98.8337698011,
       "knockout_experience_proxy": 93.8202314446,
-      "player_condition_proxy": 82.3401310522,
-      "penalty_shootout_rating": 87.5130215071,
-      "win_vs_average_penalty_team": 0.9579559987,
+      "player_condition_proxy": 82.2235080323,
+      "penalty_shootout_rating": 87.2307937989,
+      "win_vs_average_penalty_team": 0.9569984722,
       "profile": "Elite shootout profile"
     },
     {
@@ -8081,17 +8081,17 @@
       "elo": 1250.0,
       "fifa_rank": 41.0,
       "market_value_m": 60.0,
-      "defense": 1.1835561334,
+      "defense": 1.1682423484,
       "knockout_index": 160.9957295551,
       "host": 0,
       "squad_quality": 2.5935037105,
       "team_composure": 13.0434782609,
       "ranking_strength": 49.3670886076,
-      "keeper_defense_proxy": 5.4768112919,
+      "keeper_defense_proxy": 6.236904982,
       "knockout_experience_proxy": 43.1918584926,
-      "player_condition_proxy": 16.2449749291,
-      "penalty_shootout_rating": 16.0782765593,
-      "win_vs_average_penalty_team": 0.0558924761,
+      "player_condition_proxy": 16.3209842982,
+      "penalty_shootout_rating": 16.2622192323,
+      "win_vs_average_penalty_team": 0.0567068692,
       "profile": "Risky shootout profile"
     },
     {
