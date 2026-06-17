@@ -573,10 +573,6 @@ function bindAskAiControls() {
     event.preventDefault();
     requestAskAi();
   });
-  document.querySelectorAll("[data-ai-example]").forEach((button) => button.addEventListener("click", () => {
-    const input = document.getElementById("ask-ai-question");
-    if (input) input.value = button.dataset.aiExample;
-  }));
 }
 
 function setAiResult(html) {
@@ -624,14 +620,7 @@ function askAi(d) {
     bindAskAiControls();
     updateAiCooldownTimer();
   }, 0);
-  const examples = [
-    "Which team is most likely to win and why?",
-    "How many goals are expected in France vs Senegal?",
-    "Which group looks hardest?",
-    "Can Mexico reach the quarter-finals?",
-    "Who are good upset picks?",
-  ];
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {
