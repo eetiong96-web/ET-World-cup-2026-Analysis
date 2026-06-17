@@ -1,5 +1,6 @@
 import pandas as pd
 
+from build_static import apply_live_result_adjustments
 from wc2026.data_fetch import build_group_fixtures, parse_money_to_millions, seed_groups, seed_rankings, seed_values
 from wc2026.features import build_team_strength, make_training_frame
 from wc2026.models import validate_groupkfold
@@ -59,3 +60,26 @@ def test_team_strength_uses_seed_rankings_when_live_rankings_have_no_rank_column
 
     assert {"fifa_rank", "fifa_points", "elo", "market_value_m"}.issubset(teams.columns)
     assert teams["fifa_rank"].notna().all()
+
+
+def test_live_result_adjustment_nudges_completed_match_winner():
+    groups = seed_groups()
+    rankings = seed_rankings()
+    values = seed_values()
+    elo = rankings.assign(elo=2000 - rankings["fifa_rank"] * 10)[["team", "elo"]]
+    teams = build_team_strength(groups, rankings, elo, values)
+    before = float(teams.loc[teams["team"] == "Mexico", "strength_score"].iloc[0])
+    live = pd.DataFrame([{
+        "home": "Mexico",
+        "away": "South Africa",
+        "home_score": 4,
+        "away_score": 0,
+        "completed": True,
+    }])
+
+    adjusted = apply_live_result_adjustments(teams, live)
+    mexico = adjusted.loc[adjusted["team"] == "Mexico"].iloc[0]
+
+    assert mexico["strength_score"] > before
+    assert mexico["live_matches_played"] == 1
+    assert bool(mexico["adjusted_by_live_results"]) is True

@@ -422,10 +422,12 @@ function teamPower(d) {
   const rows = [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score);
   const maxScore = Math.max(...rows.map((r) => Number(r.strength_score) || 0));
   const ratingBars = rows.slice(0, 20).map((r) => `<div class="qual-row"><strong>${esc(r.team)}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, (Number(r.strength_score) / maxScore) * 100)}%"></div></div><span>${num(r.strength_score, 1)}</span></div>`).join("");
-  return `<h2>Team Power Ratings</h2><p class="muted">Strength is a 0-100 style rating, not a percentage. Squad value is shown in SGD for easier reading.</p><div class="card">${ratingBars}</div>${table(rows, [
+  return `<h2>Team Power Ratings</h2><p class="muted">Strength is a 0-100 style rating, not a percentage. Completed match results now lightly adjust team power as the tournament develops. Squad value is shown in SGD for easier reading.</p><div class="card">${ratingBars}</div>${table(rows, [
     { key: "team", label: "Team" },
     { key: "group", label: "Group" },
     { key: "strength_score", label: "Strength", format: (v) => num(v, 1) },
+    { key: "live_form_adjustment", label: "Live Adj", format: (v) => Number(v || 0) === 0 ? "-" : `${Number(v) > 0 ? "+" : ""}${num(v, 1)}` },
+    { key: "live_matches_played", label: "Played", format: (v) => num(v, 0) },
     { key: "elo", label: "Elo", format: (v) => num(v, 0) },
     { key: "fifa_rank", label: "FIFA Rank", format: (v) => num(v, 0) },
     { key: "market_value_m", label: "Value SGD", format: sgdMillions },
@@ -701,7 +703,7 @@ function simulationControls(d) {
 }
 
 function methodology(d) {
-  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>ESPN live match data refreshes through a Cloudflare API route every ${cadenceMinutes()} minutes.</li><li>football-data.org is an optional fallback API when a Cloudflare token is configured.</li><li>Transfermarkt market values and the static prediction model refresh during the scheduled build every ${modelRefreshHours()} hours.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled below.</li></ul></div>${sourceDetails(d)}`;
+  return `<h2>Methodology and Caveats</h2><h3>Simulation Settings</h3>${simulationControls(d)}<div class="card"><p>This static build precomputes the tournament model at deploy time. The browser then renders the dashboard without a Python server.</p><ul><li>ESPN live match data refreshes through a Cloudflare API route every ${cadenceMinutes()} minutes.</li><li>football-data.org is an optional fallback API when a Cloudflare token is configured.</li><li>Transfermarkt market values and the static prediction model refresh during the scheduled build every ${modelRefreshHours()} hours.</li><li>Completed match scores lightly adjust team strength, attack, and defense before simulations are rerun.</li><li>Random Forest models estimate stage probabilities.</li><li>Poisson goal models drive match result probabilities.</li><li>Simulation choices are precomputed static presets, not live Python runs.</li><li>Public sites may block build-time fetches; cached/seed data is labeled below.</li></ul></div>${sourceDetails(d)}`;
 }
 
 function render() {

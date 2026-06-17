@@ -159,6 +159,65 @@ def group_goal_projection(fixtures: pd.DataFrame, team_strength: pd.DataFrame) -
     return pd.DataFrame(match_rows), pd.DataFrame(total_rows).sort_values(["group", "expected_goals_for"], ascending=[True, False])
 
 
+def apply_live_result_adjustments(team_strength: pd.DataFrame, live_results: pd.DataFrame) -> pd.DataFrame:
+    adjusted = team_strength.copy()
+    adjusted["live_matches_played"] = 0
+    adjusted["live_goal_difference"] = 0.0
+    adjusted["live_expected_goal_difference"] = 0.0
+    adjusted["live_form_adjustment"] = 0.0
+    adjusted["adjusted_by_live_results"] = False
+    if live_results.empty:
+        return adjusted
+
+    by_team = adjusted.set_index("team")
+    metrics: dict[str, dict[str, float]] = {}
+    completed = live_results[live_results["completed"].astype(bool, errors="ignore") == True].copy()
+    for match in completed.itertuples():
+        home = getattr(match, "home", None)
+        away = getattr(match, "away", None)
+        if home not in by_team.index or away not in by_team.index:
+            continue
+        try:
+            home_score = float(getattr(match, "home_score"))
+            away_score = float(getattr(match, "away_score"))
+        except (TypeError, ValueError):
+            continue
+        home_xg, away_xg = expected_goals(by_team.loc[home], by_team.loc[away])
+        for team, goals_for, goals_against, xg_for, xg_against in [
+            (home, home_score, away_score, home_xg, away_xg),
+            (away, away_score, home_score, away_xg, home_xg),
+        ]:
+            row = metrics.setdefault(team, {"played": 0.0, "gf": 0.0, "ga": 0.0, "xgf": 0.0, "xga": 0.0})
+            row["played"] += 1
+            row["gf"] += goals_for
+            row["ga"] += goals_against
+            row["xgf"] += xg_for
+            row["xga"] += xg_against
+
+    for team, metric in metrics.items():
+        played = max(metric["played"], 1.0)
+        weight = min(1.0, played / 3.0)
+        actual_gd = metric["gf"] - metric["ga"]
+        expected_gd = metric["xgf"] - metric["xga"]
+        gd_surprise_per_match = (actual_gd - expected_gd) / played
+        attack_surprise = (metric["gf"] - metric["xgf"]) / played
+        defense_surprise = (metric["ga"] - metric["xga"]) / played
+        strength_adjustment = float(np.clip(gd_surprise_per_match * 4.0, -8.0, 8.0) * weight)
+        attack_multiplier = 1 + float(np.clip(attack_surprise * 0.08, -0.12, 0.12) * weight)
+        defense_multiplier = 1 + float(np.clip(defense_surprise * 0.07, -0.10, 0.10) * weight)
+        mask = adjusted["team"] == team
+        adjusted.loc[mask, "strength_score"] = (adjusted.loc[mask, "strength_score"] + strength_adjustment).clip(0, 100)
+        adjusted.loc[mask, "attack"] = (adjusted.loc[mask, "attack"] * attack_multiplier).clip(0.55, 2.4)
+        adjusted.loc[mask, "defense"] = (adjusted.loc[mask, "defense"] * defense_multiplier).clip(0.45, 1.45)
+        adjusted.loc[mask, "live_matches_played"] = int(played)
+        adjusted.loc[mask, "live_goal_difference"] = actual_gd
+        adjusted.loc[mask, "live_expected_goal_difference"] = expected_gd
+        adjusted.loc[mask, "live_form_adjustment"] = strength_adjustment
+        adjusted.loc[mask, "adjusted_by_live_results"] = True
+
+    return adjusted.sort_values("strength_score", ascending=False)
+
+
 def current_group_tables(groups: pd.DataFrame, live_results: pd.DataFrame) -> pd.DataFrame:
     rows = []
     team_to_group = dict(zip(groups["team"], groups["group"]))
@@ -283,6 +342,7 @@ def main() -> None:
     data = load_all_data()
     currency, currency_source = fetch_eur_to_sgd_rate()
     team_strength = build_team_strength(data["groups"], data["rankings"], data["elo"], data["values"])
+    team_strength = apply_live_result_adjustments(team_strength, data["live_results"])
     models = train_stage_models(make_training_frame())
     model_probs = predict_stage_probabilities(models, team_strength)
     validation, importances = validate_groupkfold(make_training_frame())
