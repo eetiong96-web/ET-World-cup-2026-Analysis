@@ -72,6 +72,13 @@ function modelNextRefreshAt() {
   return nextFromTimestamp(state.data?.generated_at, modelRefreshHours() * 60 * 60 * 1000);
 }
 
+function modelCountdownText() {
+  const nextAt = modelNextRefreshAt();
+  if (!nextAt) return `${modelRefreshHours()}h schedule`;
+  const remaining = nextAt - Date.now();
+  return remaining > 0 ? formatDuration(remaining) : "waiting for next build";
+}
+
 function countdownBadge(source) {
   const refreshMs = sourceRefreshMs(source);
   if (!refreshMs || !source.fetched_at) return "Reference";
@@ -125,8 +132,7 @@ function updateRefreshTimer() {
   }
   const remaining = nextAt - Date.now();
   if (remaining > 0) {
-    const modelNextAt = modelNextRefreshAt();
-    const modelText = modelNextAt ? formatDuration(modelNextAt - Date.now()) : `${modelRefreshHours()}h`;
+    const modelText = modelCountdownText();
     el.textContent = `Live match API refresh in ${formatDuration(remaining)} | model and predictions refresh in ${modelText}`;
     el.classList.remove("checking");
     updateCountdownBadges();
