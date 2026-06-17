@@ -3,7 +3,7 @@ const FOOTBALL_DATA_MATCHES_URL = "https://api.football-data.org/v4/competitions
 const DEEPSEEK_CHAT_URL = "https://api.deepseek.com/chat/completions";
 const LIVE_CACHE_SECONDS = 300;
 const ASK_AI_CACHE_SECONDS = 21600;
-const MAX_AI_REQUEST_BYTES = 12000;
+const MAX_AI_REQUEST_BYTES = 30000;
 const MAX_AI_QUESTION_CHARS = 280;
 const ASK_AI_COOLDOWN_SECONDS = 10;
 
@@ -210,6 +210,8 @@ function compactWebsiteContext(context = {}) {
     round32: pickRows(context.round32, 10, ["m", "fx", "fav", "p"]),
     bracket: pickRows(context.bracket, 16, ["rd", "m", "a", "b", "w"]),
     team_power: pickRows(context.team_power, 16, ["t", "g", "s"]),
+    goal_matches: pickRows(context.goal_matches, 72, ["g", "m", "h", "hg", "a", "ag", "tg"]),
+    goal_totals: pickRows(context.goal_totals, 48, ["t", "g", "gf", "ga", "gd"]),
     penalties: pickRows(context.penalties, 10, ["t", "rating"]),
   };
 }
@@ -223,6 +225,8 @@ function buildDeepSeekPrompt(question, context) {
     "Use plain language for casual football fans.",
     "Keep it concise: direct answer, 3-5 bullets when useful, and one caveat if needed.",
     "Compact field hints: t/team, g/group, p/position or probability depending on section, pts/points, ch/champion probability, qf/quarter-final probability.",
+    "Goal field hints: h/home team, a/away team, hg/home expected goals, ag/away expected goals, tg/total expected goals, gf/team expected goals for, ga/team expected goals against, gd/expected goal difference.",
+    "For goal questions, answer with expected goals for each team and total expected goals. Make clear these are model estimates, not guaranteed scores.",
     `Question: ${question}`,
     `Data: ${JSON.stringify(context)}`,
   ].join("\n");

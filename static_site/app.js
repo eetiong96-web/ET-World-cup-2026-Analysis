@@ -562,6 +562,8 @@ function askAiContext(d) {
     round32: sim.round32_analysis.slice(0, 10).map((r) => ({ m: r.match, fx: r.fixture, fav: r.favorite, p: Number(r.favorite_win_probability || 0).toFixed(3) })),
     bracket: sim.bracket.slice(0, 16).map((r) => ({ rd: r.round, m: r.match, a: r.team_a, b: r.team_b, w: r.winner })),
     team_power: [...d.team_strength].sort((a, b) => b.strength_score - a.strength_score).slice(0, 16).map((r) => ({ t: r.team, g: r.group, s: Number(r.strength_score || 0).toFixed(1) })),
+    goal_matches: d.goal_matches.map((r) => ({ g: r.group, m: r.match_id, h: r.home, hg: Number(r.home_expected_goals || 0).toFixed(2), a: r.away, ag: Number(r.away_expected_goals || 0).toFixed(2), tg: Number(r.total_expected_goals || 0).toFixed(2) })),
+    goal_totals: d.goal_totals.map((r) => ({ t: r.team, g: r.group, gf: Number(r.expected_goals_for || 0).toFixed(2), ga: Number(r.expected_goals_against || 0).toFixed(2), gd: Number(r.expected_goal_difference || 0).toFixed(2) })),
     penalties: [...d.penalties].sort((a, b) => b.penalty_shootout_rating - a.penalty_shootout_rating).slice(0, 10).map((r) => ({ t: r.team, rating: Number(r.penalty_shootout_rating || 0).toFixed(1) })),
   };
 }
@@ -624,11 +626,12 @@ function askAi(d) {
   }, 0);
   const examples = [
     "Which team is most likely to win and why?",
+    "How many goals are expected in France vs Senegal?",
     "Which group looks hardest?",
     "Can Mexico reach the quarter-finals?",
     "Who are good upset picks?",
   ];
-  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
+  return `<h2>Ask AI</h2><p class="muted">Ask about this dashboard's data only: model odds, goals, groups, simulated bracket, live score feed, sources, team power, and penalty ratings.</p><form id="ask-ai-form" class="card ai-panel"><label class="ask-ai-label" for="ask-ai-question">Question</label><textarea id="ask-ai-question" maxlength="280" rows="4" placeholder="Ask something about the World Cup model..."></textarea><div class="ai-actions">${examples.map((q) => `<button type="button" data-ai-example="${esc(q)}">${esc(q)}</button>`).join("")}</div><div class="ai-submit-row"><button id="ask-ai-submit" class="primary-action" type="submit">Ask AI</button><span id="ai-cooldown-timer" class="ai-cooldown">Ready to ask</span></div><p class="muted mini">AI is limited to website data, max 280 characters, one question every 10 seconds, and cached repeated answers.</p></form><div id="ai-result" class="card"><p class="muted">Ask a question to see an answer.</p></div>`;
 }
 
 function championOdds(d) {
