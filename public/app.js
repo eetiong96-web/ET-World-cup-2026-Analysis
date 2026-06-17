@@ -15,6 +15,10 @@ const AI_COOLDOWN_MS = 10000;
 
 const state = { page: pages[0], data: null, live: null, simCount: null, simSeed: null, refreshTimer: null, liveRefreshPending: false, lastLiveRefreshCheck: 0, aiCooldownUntil: 0, aiLastResult: null, countryPathSort: "az", countryPathTeam: null };
 
+function loadingSkeleton() {
+  return `<div class="skeleton-page"><div class="skeleton-line title"></div><div class="skeleton-line subtitle"></div><div class="skeleton-grid">${Array.from({ length: 6 }, () => `<div class="skeleton-card"><div></div><span></span><span></span><span></span></div>`).join("")}</div></div>`;
+}
+
 const pct = (v) => `${Math.round((Number(v) || 0) * 100)}%`;
 const pct1 = (v) => `${((Number(v) || 0) * 100).toFixed(1)}%`;
 const num = (v, d = 1) => Number(v || 0).toFixed(d);
@@ -658,6 +662,11 @@ function methodology(d) {
 function render() {
   renderNav();
   const d = state.data;
+  const content = document.getElementById("content");
+  if (!d) {
+    content.innerHTML = loadingSkeleton();
+    return;
+  }
   const sim = activeSimulation();
   updateRefreshTimer();
   const views = {
@@ -674,7 +683,9 @@ function render() {
   };
   const view = views[state.page] || views[pages[0]];
   if (!views[state.page]) state.page = pages[0];
-  document.getElementById("content").innerHTML = view(d);
+  content.classList.remove("content-enter");
+  content.innerHTML = view(d);
+  requestAnimationFrame(() => content.classList.add("content-enter"));
   updateCountdownBadges();
 }
 
@@ -727,3 +738,4 @@ function loadData({ silent = false } = {}) {
 }
 
 loadData();
+render();
