@@ -5,6 +5,7 @@ const LIVE_CACHE_SECONDS = 300;
 const ASK_AI_CACHE_SECONDS = 21600;
 const MAX_AI_REQUEST_BYTES = 30000;
 const MAX_AI_QUESTION_CHARS = 1500;
+const ASK_AI_MAX_OUTPUT_TOKENS = 900;
 const AI_USAGE_EVENT_LIMIT = 80;
 
 const TEAM_ALIASES = {
@@ -404,7 +405,7 @@ async function callDeepSeek(env, question, context) {
         { role: "user", content: prompt },
       ],
       temperature: 0.35,
-      max_tokens: 520,
+      max_tokens: ASK_AI_MAX_OUTPUT_TOKENS,
       stream: false,
     }),
   });
@@ -413,12 +414,14 @@ async function callDeepSeek(env, question, context) {
     throw new Error(`DeepSeek returned ${response.status}: ${text.slice(0, 180)}`);
   }
   const payload = await response.json();
+  const choice = payload.choices?.[0] || {};
   return {
-    answer: payload.choices?.[0]?.message?.content || "No answer was returned.",
+    answer: choice.message?.content || "No answer was returned.",
+    finish_reason: choice.finish_reason || "",
     usage: payload.usage || {
       prompt_tokens: estimateTokens(prompt),
-      completion_tokens: 520,
-      total_tokens: estimateTokens(prompt) + 520,
+      completion_tokens: ASK_AI_MAX_OUTPUT_TOKENS,
+      total_tokens: estimateTokens(prompt) + ASK_AI_MAX_OUTPUT_TOKENS,
     },
     model: payload.model || deepseekModel(env),
   };
@@ -471,6 +474,8 @@ async function askAi(request, env) {
       question,
       generated_at: new Date().toISOString(),
       cache_seconds: ASK_AI_CACHE_SECONDS,
+      finish_reason: result.finish_reason,
+      truncated: result.finish_reason === "length",
       answer: result.answer,
     }, 200, ASK_AI_CACHE_SECONDS);
     if (cache) await cache.put(cacheKey, response.clone());

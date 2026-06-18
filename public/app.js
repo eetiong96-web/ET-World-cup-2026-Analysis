@@ -704,7 +704,8 @@ function requestAskAi() {
       state.aiLastResult = body;
       saveRecentAiQuestion(question);
       if (input) input.value = "";
-      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}</div>`);
+      const truncatedNote = body.truncated ? `<p class="warn">AI stopped early. Ask again with a shorter question for a fuller answer.</p>` : "";
+      setAiResult(`<div class="ai-answer"><div class="tag">Cached for ${Math.round((body.cache_seconds || 0) / 3600)} hours</div>${esc(body.answer).replace(/\n/g, "<br>")}${truncatedNote}</div>`);
       refreshRecentAiQuestions();
     })
     .catch((err) => {
