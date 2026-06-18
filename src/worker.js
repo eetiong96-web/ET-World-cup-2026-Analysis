@@ -386,11 +386,17 @@ async function aiUsagePayload(request, env) {
   }
   const usersList = await store.list({ prefix: "ai-usage:", limit: 1000 });
   const eventList = await store.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
-  const users = (await Promise.all(usersList.keys.map((item) => store.get(item.name, "json"))))
+  const rawUsers = (await Promise.all(usersList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
     .sort((a, b) => Number(b.estimated_cost_usd || 0) - Number(a.estimated_cost_usd || 0));
+  const nicknames = Object.fromEntries(await Promise.all(rawUsers.map(async (user) => [
+    user.visitor,
+    await store.get(`ai-nickname:${user.visitor}`).catch(() => ""),
+  ])));
+  const users = rawUsers.map((user) => ({ ...user, nickname: nicknames[user.visitor] || "" }));
   const events = (await Promise.all(eventList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
+    .map((event) => ({ ...event, nickname: nicknames[event.visitor] || "" }))
     .sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const totals = users.reduce((out, row) => {
     out.requests += Number(row.requests || 0);
@@ -404,8 +410,97 @@ async function aiUsagePayload(request, env) {
   return { status: 200, body: { generated_at: new Date().toISOString(), totals, users, events } };
 }
 
+async function aiUsageNickname(request, env) {
+  const token = adminToken(env);
+  const store = usageStore(env);
+  if (!token || bearerToken(request) !== token) {
+    return jsonResponse({ error: "Admin token required." }, 401);
+  }
+  if (!store) {
+    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Use POST." }, 405);
+  }
+  const form = await request.formData();
+  const visitor = String(form.get("visitor") || "").replace(/[^a-f0-9]/gi, "").slice(0, 32);
+  const nickname = String(form.get("nickname") || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  if (!visitor) {
+    return jsonResponse({ error: "Missing visitor." }, 400);
+  }
+  if (nickname) {
+    await store.put(`ai-nickname:${visitor}`, nickname);
+  } else {
+    await store.delete(`ai-nickname:${visitor}`);
+  }
+  return new Response(null, {
+    status: 303,
+    headers: {
+      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}`,
+    },
+  });
+}
+
 function deviceLabel(device = {}) {
   return [device.model, device.os, device.browser].filter(Boolean).join(" / ") || "-";
+}
+
+function deviceGroupLabel(user = {}) {
+  const device = user.device || {};
+  return [device.model || device.device || "Unknown device", device.os, device.browser, user.country]
+    .filter(Boolean)
+    .join(" / ");
+}
+
+function groupedDeviceHtml(users, token) {
+  if (!users.length) return `<div class="empty card">No Ask AI usage recorded yet.</div>`;
+  const groups = new Map();
+  for (const user of users) {
+    const key = deviceGroupLabel(user);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(user);
+  }
+  return [...groups.entries()].map(([label, rows], index) => {
+    const totals = rows.reduce((out, row) => {
+      out.requests += Number(row.requests || 0);
+      out.tokens += Number(row.total_tokens || 0);
+      out.cost += Number(row.estimated_cost_usd || 0);
+      return out;
+    }, { requests: 0, tokens: 0, cost: 0 });
+    const body = rows.map((user) => {
+      const device = user.device || {};
+      return `<tr>
+        <td>
+          <form class="nickname-form" method="post" action="/api/ai-usage-nickname?token=${token}">
+            <input type="hidden" name="visitor" value="${escapeHtml(user.visitor || "")}">
+            <input name="nickname" maxlength="40" value="${escapeHtml(user.nickname || "")}" placeholder="Add nickname">
+            <button type="submit">Save</button>
+          </form>
+        </td>
+        <td>${escapeHtml(device.model || device.device || "-")}</td>
+        <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
+        <td>${escapeHtml(device.os || "-")}</td>
+        <td>${escapeHtml(device.browser || "-")}</td>
+        <td>${escapeHtml(user.visitor || "-")}</td>
+        <td class="num">${formatNumber(user.requests)}</td>
+        <td class="num">${formatNumber(user.total_tokens)}</td>
+        <td class="num">${formatCost(user.estimated_cost_usd)}</td>
+        <td>${formatSgt(user.last_seen)}</td>
+      </tr>`;
+    }).join("");
+    return `<details class="device-group" ${index < 3 ? "open" : ""}>
+      <summary>
+        <strong>${escapeHtml(label)}</strong>
+        <span>${formatNumber(totals.requests)} calls</span>
+        <span>${formatNumber(totals.tokens)} tokens</span>
+        <span>${formatCost(totals.cost)}</span>
+      </summary>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nickname</th><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table></div>
+    </details>`;
+  }).join("");
 }
 
 function usageDashboardHtml(payload, request) {
@@ -413,25 +508,11 @@ function usageDashboardHtml(payload, request) {
   const users = payload.users || [];
   const events = payload.events || [];
   const totals = payload.totals || {};
-  const deviceRows = users.map((user) => {
-    const device = user.device || {};
-    return `<tr>
-      <td>${escapeHtml(device.model || device.device || "-")}</td>
-      <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
-      <td>${escapeHtml(device.os || "-")}</td>
-      <td>${escapeHtml(device.browser || "-")}</td>
-      <td>${escapeHtml(user.visitor || "-")}</td>
-      <td class="num">${formatNumber(user.requests)}</td>
-      <td class="num">${formatNumber(user.total_tokens)}</td>
-      <td class="num">${formatCost(user.estimated_cost_usd)}</td>
-      <td>${formatSgt(user.last_seen)}</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="9" class="empty">No Ask AI usage recorded yet.</td></tr>`;
   const eventRows = events.map((event) => `<tr>
       <td>${formatSgt(event.at)}</td>
       <td>${escapeHtml(event.country || "-")}${event.city ? ` / ${escapeHtml(event.city)}` : ""}</td>
       <td>${escapeHtml(event.model || "-")}</td>
-      <td>${escapeHtml(deviceLabel(event.device))}</td>
+      <td>${escapeHtml(event.nickname || deviceLabel(event.device))}</td>
       <td>${escapeHtml(event.question || "-")}</td>
       <td class="num">${formatNumber(event.input_tokens)}</td>
       <td class="num">${formatNumber(event.output_tokens)}</td>
@@ -459,7 +540,16 @@ function usageDashboardHtml(payload, request) {
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: 0 14px 30px rgba(16,24,39,.07); }
     .card span { display:block; color: var(--muted); font-size: 1rem; margin-bottom: 8px; }
     .card strong { display:block; font-size: 2rem; line-height: 1; }
+    .device-groups { display: grid; gap: 12px; }
+    .device-group { border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); overflow: hidden; }
+    .device-group summary { cursor: pointer; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 16px 18px; background: #fff; }
+    .device-group summary strong { min-width: min(420px, 100%); }
+    .device-group summary span { color: var(--muted); font-weight: 800; }
+    .nickname-form { display: flex; gap: 8px; min-width: 260px; }
+    .nickname-form input { width: 170px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: inherit; }
+    .nickname-form button { border: 1px solid #bdd0e9; border-radius: 8px; padding: 8px 10px; background: #eef5ff; color: var(--blue); font: inherit; font-weight: 900; cursor: pointer; }
     .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); }
+    .device-group .table-wrap { border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; }
     table { width: 100%; min-width: 980px; border-collapse: collapse; }
     th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     th { background: #eaf0f7; color: #5d6d82; font-weight: 900; }
@@ -471,6 +561,7 @@ function usageDashboardHtml(payload, request) {
       body { padding: 18px; font-size: 17px; }
       .cards { grid-template-columns: 1fr 1fr; }
       .card strong { font-size: 1.55rem; }
+      .nickname-form { min-width: 0; }
     }
     @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
   </style>
@@ -493,11 +584,8 @@ function usageDashboardHtml(payload, request) {
     <div class="card"><span>Est. Cost</span><strong>${formatCost(totals.estimated_cost_usd)}</strong></div>
   </section>
   <h2>By Device</h2>
-  <p class="note">Browsers often hide exact phone or laptop model for privacy. Android may show a model number; iPhone normally only shows iPhone.</p>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
-    <tbody>${deviceRows}</tbody>
-  </table></div>
+  <p class="note">Add nicknames to remember whose device is whose. Similar devices are grouped together; expand each group to see the individual visitors.</p>
+  <div class="device-groups">${groupedDeviceHtml(users, token)}</div>
   <h2>Recent Calls</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Time</th><th>Location</th><th>Model</th><th>Device</th><th>Question</th><th>Input</th><th>Output</th><th>Tokens</th><th>Cost</th></tr></thead>
@@ -663,6 +751,9 @@ export default {
     }
     if (url.pathname === "/api/ai-usage") {
       return aiUsage(request, env);
+    }
+    if (url.pathname === "/api/ai-usage-nickname") {
+      return aiUsageNickname(request, env);
     }
     if (url.pathname === "/admin/usage") {
       return aiUsageDashboard(request, env);
