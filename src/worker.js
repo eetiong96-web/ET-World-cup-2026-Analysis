@@ -5,6 +5,7 @@ const LIVE_CACHE_SECONDS = 300;
 const ASK_AI_CACHE_SECONDS = 21600;
 const MAX_AI_REQUEST_BYTES = 30000;
 const MAX_AI_QUESTION_CHARS = 1500;
+const AI_USAGE_EVENT_LIMIT = 80;
 
 const TEAM_ALIASES = {
   "United States": "USA",
@@ -30,6 +31,12 @@ function jsonResponse(body, status = 200, cacheSeconds = 0) {
       "access-control-allow-origin": "*",
     },
   });
+}
+
+function bearerToken(request) {
+  const auth = request.headers.get("authorization") || "";
+  if (auth.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim();
+  return new URL(request.url).searchParams.get("token") || "";
 }
 
 function corsPreflight() {
@@ -192,6 +199,139 @@ async function hashText(text) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+function estimateTokens(text) {
+  return Math.max(1, Math.ceil(String(text || "").length / 4));
+}
+
+function parseDeviceFromUserAgent(userAgent) {
+  const ua = String(userAgent || "");
+  let os = "Unknown";
+  let browser = "Unknown";
+  let device = "Desktop";
+  let model = "";
+
+  if (/iPhone/i.test(ua)) {
+    os = "iOS";
+    device = "Phone";
+    model = "iPhone";
+  } else if (/iPad/i.test(ua)) {
+    os = "iPadOS";
+    device = "Tablet";
+    model = "iPad";
+  } else if (/Android/i.test(ua)) {
+    os = "Android";
+    device = /Mobile/i.test(ua) ? "Phone" : "Tablet";
+    const match = ua.match(/Android [^;]+;\s*([^;)]+)\s+Build/i);
+    model = match?.[1]?.trim() || "Android device";
+  } else if (/Windows/i.test(ua)) {
+    os = "Windows";
+  } else if (/Mac OS X/i.test(ua)) {
+    os = "macOS";
+  }
+
+  if (/Edg\//i.test(ua)) browser = "Edge";
+  else if (/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) browser = "Chrome";
+  else if (/Firefox\//i.test(ua)) browser = "Firefox";
+  else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) browser = "Safari";
+
+  return { os, browser, device, model };
+}
+
+function deviceInfo(request, bodyDevice = {}) {
+  const ua = request.headers.get("user-agent") || "";
+  const parsed = parseDeviceFromUserAgent(ua);
+  const clientModel = request.headers.get("sec-ch-ua-model")?.replaceAll("\"", "") || "";
+  const hintedModel = String(bodyDevice.model || clientModel || "").trim();
+  const hintedPlatform = String(bodyDevice.platform || "").trim();
+  const hintedMobile = bodyDevice.mobile === true;
+  return {
+    browser: String(bodyDevice.browser || parsed.browser).slice(0, 80),
+    os: String(hintedPlatform || parsed.os).slice(0, 80),
+    device: hintedMobile ? "Phone" : parsed.device,
+    model: String(hintedModel || parsed.model || parsed.device).slice(0, 120),
+    user_agent_short: ua.slice(0, 180),
+  };
+}
+
+async function recordAiUsage(request, env, detail) {
+  if (!env.AI_USAGE) return;
+  const now = new Date().toISOString();
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "local";
+  const ua = request.headers.get("user-agent") || "";
+  const visitorHash = await hashText(`${ip}|${ua}`);
+  const key = `ai-usage:${visitorHash}`;
+  const existing = await env.AI_USAGE.get(key, "json").catch(() => null);
+  const current = existing || {
+    visitor: visitorHash.slice(0, 16),
+    first_seen: now,
+    requests: 0,
+    input_tokens: 0,
+    output_tokens: 0,
+    total_tokens: 0,
+    estimated_cost_usd: 0,
+  };
+  const inputTokens = Number(detail.usage?.prompt_tokens || detail.estimated_input_tokens || 0);
+  const outputTokens = Number(detail.usage?.completion_tokens || detail.estimated_output_tokens || 0);
+  const totalTokens = Number(detail.usage?.total_tokens || inputTokens + outputTokens);
+  const inputCost = inputTokens * 0.435 / 1000000;
+  const outputCost = outputTokens * 0.87 / 1000000;
+
+  current.requests += 1;
+  current.last_seen = now;
+  current.country = request.cf?.country || "unknown";
+  current.city = request.cf?.city || "";
+  current.device = detail.device;
+  current.last_question = String(detail.question || "").slice(0, 160);
+  current.model = detail.model || "deepseek-v4-pro";
+  current.input_tokens += inputTokens;
+  current.output_tokens += outputTokens;
+  current.total_tokens += totalTokens;
+  current.estimated_cost_usd = Number((Number(current.estimated_cost_usd || 0) + inputCost + outputCost).toFixed(6));
+  await env.AI_USAGE.put(key, JSON.stringify(current));
+
+  const eventKey = `ai-event:${Date.now()}:${visitorHash.slice(0, 12)}`;
+  await env.AI_USAGE.put(eventKey, JSON.stringify({
+    at: now,
+    visitor: current.visitor,
+    country: current.country,
+    city: current.city,
+    device: current.device,
+    model: current.model,
+    question: current.last_question,
+    input_tokens: inputTokens,
+    output_tokens: outputTokens,
+    total_tokens: totalTokens,
+    estimated_cost_usd: Number((inputCost + outputCost).toFixed(6)),
+  }), { expirationTtl: 60 * 60 * 24 * 14 });
+}
+
+async function aiUsage(request, env) {
+  if (!env.ADMIN_TOKEN || bearerToken(request) !== env.ADMIN_TOKEN) {
+    return jsonResponse({ error: "Admin token required." }, 401);
+  }
+  if (!env.AI_USAGE) {
+    return jsonResponse({ error: "AI_USAGE KV binding is not configured." }, 503);
+  }
+  const usersList = await env.AI_USAGE.list({ prefix: "ai-usage:", limit: 1000 });
+  const eventList = await env.AI_USAGE.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
+  const users = (await Promise.all(usersList.keys.map((item) => env.AI_USAGE.get(item.name, "json"))))
+    .filter(Boolean)
+    .sort((a, b) => Number(b.estimated_cost_usd || 0) - Number(a.estimated_cost_usd || 0));
+  const events = (await Promise.all(eventList.keys.map((item) => env.AI_USAGE.get(item.name, "json"))))
+    .filter(Boolean)
+    .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const totals = users.reduce((out, row) => {
+    out.requests += Number(row.requests || 0);
+    out.input_tokens += Number(row.input_tokens || 0);
+    out.output_tokens += Number(row.output_tokens || 0);
+    out.total_tokens += Number(row.total_tokens || 0);
+    out.estimated_cost_usd += Number(row.estimated_cost_usd || 0);
+    return out;
+  }, { requests: 0, input_tokens: 0, output_tokens: 0, total_tokens: 0, estimated_cost_usd: 0 });
+  totals.estimated_cost_usd = Number(totals.estimated_cost_usd.toFixed(6));
+  return jsonResponse({ generated_at: new Date().toISOString(), totals, users, events });
+}
+
 function compactWebsiteContext(context = {}) {
   const pickRows = (rows, limit, keys) => (Array.isArray(rows) ? rows.slice(0, limit).map((row) => {
     const out = {};
@@ -232,6 +372,7 @@ function buildDeepSeekPrompt(question, context) {
 }
 
 async function callDeepSeek(env, question, context) {
+  const prompt = buildDeepSeekPrompt(question, context);
   const response = await fetch(DEEPSEEK_CHAT_URL, {
     method: "POST",
     headers: {
@@ -245,7 +386,7 @@ async function callDeepSeek(env, question, context) {
           role: "system",
           content: "You answer questions about a World Cup dashboard using only the provided JSON context. If the answer is outside the context, say so.",
         },
-        { role: "user", content: buildDeepSeekPrompt(question, context) },
+        { role: "user", content: prompt },
       ],
       temperature: 0.35,
       max_tokens: 520,
@@ -257,7 +398,15 @@ async function callDeepSeek(env, question, context) {
     throw new Error(`DeepSeek returned ${response.status}: ${text.slice(0, 180)}`);
   }
   const payload = await response.json();
-  return payload.choices?.[0]?.message?.content || "No answer was returned.";
+  return {
+    answer: payload.choices?.[0]?.message?.content || "No answer was returned.",
+    usage: payload.usage || {
+      prompt_tokens: estimateTokens(prompt),
+      completion_tokens: 520,
+      total_tokens: estimateTokens(prompt) + 520,
+    },
+    model: payload.model || env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+  };
 }
 
 async function askAi(request, env) {
@@ -296,12 +445,18 @@ async function askAi(request, env) {
   if (cached) return cached;
 
   try {
-    const answer = await callDeepSeek(env, question, context);
+    const result = await callDeepSeek(env, question, context);
+    await recordAiUsage(request, env, {
+      question,
+      model: result.model,
+      usage: result.usage,
+      device: deviceInfo(request, body.device || {}),
+    });
     const response = jsonResponse({
       question,
       generated_at: new Date().toISOString(),
       cache_seconds: ASK_AI_CACHE_SECONDS,
-      answer,
+      answer: result.answer,
     }, 200, ASK_AI_CACHE_SECONDS);
     if (cache) await cache.put(cacheKey, response.clone());
     return response;
@@ -318,6 +473,9 @@ export default {
     }
     if (url.pathname === "/api/ask-ai") {
       return askAi(request, env);
+    }
+    if (url.pathname === "/api/ai-usage") {
+      return aiUsage(request, env);
     }
     if (url.pathname === "/api/health") {
       return jsonResponse({ ok: true, generated_at: new Date().toISOString() });

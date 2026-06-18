@@ -662,6 +662,24 @@ function refreshRecentAiQuestions() {
   bindRecentAiQuestions();
 }
 
+async function browserDeviceInfo() {
+  const base = {
+    browser: navigator.userAgentData?.brands?.map((brand) => brand.brand).join(", ") || "",
+    platform: navigator.userAgentData?.platform || navigator.platform || "",
+    mobile: Boolean(navigator.userAgentData?.mobile),
+    userAgent: navigator.userAgent || "",
+  };
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hint = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "platformVersion", "uaFullVersion", "mobile"]);
+      return { ...base, ...hint };
+    }
+  } catch {
+    // Device hints are optional and browser-dependent.
+  }
+  return base;
+}
+
 function requestAskAi() {
   const input = document.getElementById("ask-ai-question");
   const question = String(input?.value || "").trim();
@@ -675,11 +693,11 @@ function requestAskAi() {
   }
   updateAiCooldownTimer();
   setAiResult(`<p class="muted">Asking AI using this dashboard's data...</p>`);
-  fetch("/api/ask-ai", {
+  browserDeviceInfo().then((device) => fetch("/api/ask-ai", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ question, context: askAiContext(state.data) }),
-  })
+    body: JSON.stringify({ question, context: askAiContext(state.data), device }),
+  }))
     .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
     .then(({ ok, body }) => {
       if (!ok) throw new Error(body.error || "Ask AI failed.");
