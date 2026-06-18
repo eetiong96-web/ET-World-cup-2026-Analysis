@@ -365,7 +365,14 @@ async function recordAiUsage(request, env, detail) {
 
 async function aiUsage(request, env) {
   const result = await aiUsagePayload(request, env);
-  return jsonResponse(result.body, result.status);
+  const url = new URL(request.url);
+  if (url.searchParams.get("format") === "json") {
+    return jsonResponse(result.body, result.status);
+  }
+  if (result.status !== 200) {
+    return htmlResponse(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Usage Admin</title></head><body><h1>Usage Admin</h1><p>${escapeHtml(result.body.error)}</p></body></html>`, result.status);
+  }
+  return htmlResponse(usageDashboardHtml(result.body, request));
 }
 
 async function aiUsagePayload(request, env) {
@@ -475,7 +482,7 @@ function usageDashboardHtml(payload, request) {
       <p class="muted">Latest ${AI_USAGE_EVENT_LIMIT} calls. Generated ${formatSgt(payload.generated_at)}.</p>
     </div>
     <div class="actions">
-      <a class="button" href="/api/ai-usage?token=${token}">Open JSON</a>
+      <a class="button" href="/api/ai-usage?token=${token}&format=json">Open JSON</a>
       <a class="button" href="/">Back to Dashboard</a>
     </div>
   </div>
