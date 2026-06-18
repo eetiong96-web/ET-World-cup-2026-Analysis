@@ -365,7 +365,14 @@ async function recordAiUsage(request, env, detail) {
 
 async function aiUsage(request, env) {
   const result = await aiUsagePayload(request, env);
-  return jsonResponse(result.body, result.status);
+  const url = new URL(request.url);
+  if (url.searchParams.get("format") === "json") {
+    return jsonResponse(result.body, result.status);
+  }
+  if (result.status !== 200) {
+    return htmlResponse(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Usage Admin</title></head><body><h1>Usage Admin</h1><p>${escapeHtml(result.body.error)}</p></body></html>`, result.status);
+  }
+  return htmlResponse(usageDashboardHtml(result.body, request));
 }
 
 async function aiUsagePayload(request, env) {
@@ -379,11 +386,17 @@ async function aiUsagePayload(request, env) {
   }
   const usersList = await store.list({ prefix: "ai-usage:", limit: 1000 });
   const eventList = await store.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
-  const users = (await Promise.all(usersList.keys.map((item) => store.get(item.name, "json"))))
+  const rawUsers = (await Promise.all(usersList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
     .sort((a, b) => Number(b.estimated_cost_usd || 0) - Number(a.estimated_cost_usd || 0));
+  const nicknames = Object.fromEntries(await Promise.all(rawUsers.map(async (user) => [
+    user.visitor,
+    await store.get(`ai-nickname:${user.visitor}`).catch(() => ""),
+  ])));
+  const users = rawUsers.map((user) => ({ ...user, nickname: nicknames[user.visitor] || "" }));
   const events = (await Promise.all(eventList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
+    .map((event) => ({ ...event, nickname: nicknames[event.visitor] || "" }))
     .sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const totals = users.reduce((out, row) => {
     out.requests += Number(row.requests || 0);
@@ -397,34 +410,150 @@ async function aiUsagePayload(request, env) {
   return { status: 200, body: { generated_at: new Date().toISOString(), totals, users, events } };
 }
 
+async function aiUsageNickname(request, env) {
+  const token = adminToken(env);
+  const store = usageStore(env);
+  if (!token || bearerToken(request) !== token) {
+    return jsonResponse({ error: "Admin token required." }, 401);
+  }
+  if (!store) {
+    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Use POST." }, 405);
+  }
+  const form = await request.formData();
+  const visitor = String(form.get("visitor") || "").replace(/[^a-f0-9]/gi, "").slice(0, 32);
+  const nickname = String(form.get("nickname") || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  if (!visitor) {
+    return jsonResponse({ error: "Missing visitor." }, 400);
+  }
+  if (nickname) {
+    await store.put(`ai-nickname:${visitor}`, nickname);
+  } else {
+    await store.delete(`ai-nickname:${visitor}`);
+  }
+  return new Response(null, {
+    status: 303,
+    headers: {
+      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}`,
+    },
+  });
+}
+
+async function deleteKvPrefix(store, prefix) {
+  let cursor;
+  do {
+    const page = await store.list({ prefix, cursor, limit: 1000 });
+    await Promise.all(page.keys.map((item) => store.delete(item.name)));
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+}
+
+async function aiUsageClear(request, env) {
+  const token = adminToken(env);
+  const store = usageStore(env);
+  if (!token || bearerToken(request) !== token) {
+    return jsonResponse({ error: "Admin token required." }, 401);
+  }
+  if (!store) {
+    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Use POST." }, 405);
+  }
+  const form = await request.formData();
+  const confirm = String(form.get("confirm") || "").trim().toUpperCase();
+  if (confirm !== "CLEAR") {
+    return jsonResponse({ error: "Type CLEAR to confirm." }, 400);
+  }
+  await deleteKvPrefix(store, "ai-usage:");
+  await deleteKvPrefix(store, "ai-event:");
+  return new Response(null, {
+    status: 303,
+    headers: {
+      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}&cleared=1`,
+    },
+  });
+}
+
 function deviceLabel(device = {}) {
   return [device.model, device.os, device.browser].filter(Boolean).join(" / ") || "-";
 }
 
+function deviceGroupLabel(user = {}) {
+  const device = user.device || {};
+  return [device.model || device.device || "Unknown device", device.os, device.browser, user.country]
+    .filter(Boolean)
+    .join(" / ");
+}
+
+function groupedDeviceHtml(users, token) {
+  if (!users.length) return `<div class="empty card">No Ask AI usage recorded yet.</div>`;
+  const groups = new Map();
+  for (const user of users) {
+    const key = deviceGroupLabel(user);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(user);
+  }
+  return [...groups.entries()].map(([label, rows], index) => {
+    const totals = rows.reduce((out, row) => {
+      out.requests += Number(row.requests || 0);
+      out.tokens += Number(row.total_tokens || 0);
+      out.cost += Number(row.estimated_cost_usd || 0);
+      return out;
+    }, { requests: 0, tokens: 0, cost: 0 });
+    const body = rows.map((user) => {
+      const device = user.device || {};
+      return `<tr>
+        <td>
+          <form class="nickname-form" method="post" action="/api/ai-usage-nickname?token=${token}">
+            <input type="hidden" name="visitor" value="${escapeHtml(user.visitor || "")}">
+            <input name="nickname" maxlength="40" value="${escapeHtml(user.nickname || "")}" placeholder="Add nickname" aria-label="Device nickname">
+            <button type="submit">Save</button>
+          </form>
+          <div class="nickname-help">${escapeHtml(deviceLabel(device))}</div>
+        </td>
+        <td>${escapeHtml(device.model || device.device || "-")}</td>
+        <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
+        <td>${escapeHtml(device.os || "-")}</td>
+        <td>${escapeHtml(device.browser || "-")}</td>
+        <td>${escapeHtml(user.visitor || "-")}</td>
+        <td class="num">${formatNumber(user.requests)}</td>
+        <td class="num">${formatNumber(user.total_tokens)}</td>
+        <td class="num">${formatCost(user.estimated_cost_usd)}</td>
+        <td>${formatSgt(user.last_seen)}</td>
+      </tr>`;
+    }).join("");
+    return `<details class="device-group" ${index < 3 ? "open" : ""}>
+      <summary>
+        <strong>${escapeHtml(label)}</strong>
+        <span>${formatNumber(totals.requests)} calls</span>
+        <span>${formatNumber(totals.tokens)} tokens</span>
+        <span>${formatCost(totals.cost)}</span>
+        <span>Edit nicknames</span>
+      </summary>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Label / Nickname</th><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table></div>
+    </details>`;
+  }).join("");
+}
+
 function usageDashboardHtml(payload, request) {
   const token = encodeURIComponent(bearerToken(request));
+  const clearedNotice = new URL(request.url).searchParams.get("cleared") === "1"
+    ? `<div class="notice">Usage logs cleared. Nicknames were kept.</div>`
+    : "";
   const users = payload.users || [];
   const events = payload.events || [];
   const totals = payload.totals || {};
-  const deviceRows = users.map((user) => {
-    const device = user.device || {};
-    return `<tr>
-      <td>${escapeHtml(device.model || device.device || "-")}</td>
-      <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
-      <td>${escapeHtml(device.os || "-")}</td>
-      <td>${escapeHtml(device.browser || "-")}</td>
-      <td>${escapeHtml(user.visitor || "-")}</td>
-      <td class="num">${formatNumber(user.requests)}</td>
-      <td class="num">${formatNumber(user.total_tokens)}</td>
-      <td class="num">${formatCost(user.estimated_cost_usd)}</td>
-      <td>${formatSgt(user.last_seen)}</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="9" class="empty">No Ask AI usage recorded yet.</td></tr>`;
   const eventRows = events.map((event) => `<tr>
       <td>${formatSgt(event.at)}</td>
       <td>${escapeHtml(event.country || "-")}${event.city ? ` / ${escapeHtml(event.city)}` : ""}</td>
       <td>${escapeHtml(event.model || "-")}</td>
-      <td>${escapeHtml(deviceLabel(event.device))}</td>
+      <td>${escapeHtml(event.nickname || deviceLabel(event.device))}</td>
       <td>${escapeHtml(event.question || "-")}</td>
       <td class="num">${formatNumber(event.input_tokens)}</td>
       <td class="num">${formatNumber(event.output_tokens)}</td>
@@ -452,7 +581,17 @@ function usageDashboardHtml(payload, request) {
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: 0 14px 30px rgba(16,24,39,.07); }
     .card span { display:block; color: var(--muted); font-size: 1rem; margin-bottom: 8px; }
     .card strong { display:block; font-size: 2rem; line-height: 1; }
+    .device-groups { display: grid; gap: 12px; }
+    .device-group { border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); overflow: hidden; }
+    .device-group summary { cursor: pointer; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 16px 18px; background: #fff; }
+    .device-group summary strong { min-width: min(420px, 100%); }
+    .device-group summary span { color: var(--muted); font-weight: 800; }
+    .nickname-form { display: flex; gap: 8px; min-width: 300px; align-items: center; }
+    .nickname-form input { width: 210px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #fff; font: inherit; }
+    .nickname-form button { border: 0; border-radius: 8px; padding: 10px 14px; background: #0f8b83; color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
+    .nickname-help { margin-top: 7px; color: var(--muted); font-size: .9rem; }
     .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); }
+    .device-group .table-wrap { border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; }
     table { width: 100%; min-width: 980px; border-collapse: collapse; }
     th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     th { background: #eaf0f7; color: #5d6d82; font-weight: 900; }
@@ -460,10 +599,18 @@ function usageDashboardHtml(payload, request) {
     .num { text-align: right; white-space: nowrap; }
     .empty { color: var(--muted); text-align: center; padding: 26px; }
     .note { color: var(--muted); margin-top: 8px; max-width: 1100px; }
+    .notice { margin: 18px 0; padding: 14px 16px; border: 1px solid #9bd3b4; border-radius: 8px; background: #eefbf3; color: #10633b; font-weight: 900; }
+    .danger-zone { margin-top: 34px; border: 1px solid #efb2b2; background: #fff8f8; }
+    .danger-zone h2 { margin-top: 0; color: #9b1c1c; }
+    .danger-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .danger-form input { border: 1px solid #efb2b2; border-radius: 8px; padding: 10px 12px; font: inherit; min-width: 180px; }
+    .danger-form button { border: 0; border-radius: 8px; padding: 10px 14px; background: #b42318; color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
     @media (max-width: 820px) {
       body { padding: 18px; font-size: 17px; }
       .cards { grid-template-columns: 1fr 1fr; }
       .card strong { font-size: 1.55rem; }
+      .nickname-form { min-width: 0; }
+      .nickname-form input { width: min(58vw, 210px); }
     }
     @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
   </style>
@@ -474,11 +621,8 @@ function usageDashboardHtml(payload, request) {
       <h1>World Cup Ask AI Usage</h1>
       <p class="muted">Latest ${AI_USAGE_EVENT_LIMIT} calls. Generated ${formatSgt(payload.generated_at)}.</p>
     </div>
-    <div class="actions">
-      <a class="button" href="/api/ai-usage?token=${token}">Open JSON</a>
-      <a class="button" href="/">Back to Dashboard</a>
-    </div>
   </div>
+  ${clearedNotice}
   <section class="cards">
     <div class="card"><span>Calls</span><strong>${formatNumber(totals.requests)}</strong></div>
     <div class="card"><span>Total Tokens</span><strong>${formatNumber(totals.total_tokens)}</strong></div>
@@ -486,16 +630,21 @@ function usageDashboardHtml(payload, request) {
     <div class="card"><span>Est. Cost</span><strong>${formatCost(totals.estimated_cost_usd)}</strong></div>
   </section>
   <h2>By Device</h2>
-  <p class="note">Browsers often hide exact phone or laptop model for privacy. Android may show a model number; iPhone normally only shows iPhone.</p>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
-    <tbody>${deviceRows}</tbody>
-  </table></div>
+  <p class="note">Add nicknames to remember whose device is whose. Similar devices are grouped together; expand each group to see the individual visitors.</p>
+  <div class="device-groups">${groupedDeviceHtml(users, token)}</div>
   <h2>Recent Calls</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Time</th><th>Location</th><th>Model</th><th>Device</th><th>Question</th><th>Input</th><th>Output</th><th>Tokens</th><th>Cost</th></tr></thead>
     <tbody>${eventRows}</tbody>
   </table></div>
+  <section class="card danger-zone">
+    <h2>Clear Logs</h2>
+    <p class="note">This deletes usage totals and recent call history. Device nicknames are kept.</p>
+    <form class="danger-form" method="post" action="/api/ai-usage-clear?token=${token}">
+      <label>Type CLEAR to confirm <input name="confirm" autocomplete="off" placeholder="CLEAR"></label>
+      <button type="submit">Clear Usage Logs</button>
+    </form>
+  </section>
 </body>
 </html>`;
 }
@@ -656,6 +805,12 @@ export default {
     }
     if (url.pathname === "/api/ai-usage") {
       return aiUsage(request, env);
+    }
+    if (url.pathname === "/api/ai-usage-nickname") {
+      return aiUsageNickname(request, env);
+    }
+    if (url.pathname === "/api/ai-usage-clear") {
+      return aiUsageClear(request, env);
     }
     if (url.pathname === "/admin/usage") {
       return aiUsageDashboard(request, env);

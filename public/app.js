@@ -70,14 +70,19 @@ function sourceRefreshMs(source) {
 }
 
 function modelNextRefreshAt() {
-  return nextFromTimestamp(state.data?.generated_at, modelRefreshHours() * 60 * 60 * 1000);
+  const builtAt = new Date(state.data?.generated_at).getTime();
+  const intervalMs = modelRefreshHours() * 60 * 60 * 1000;
+  if (!Number.isFinite(builtAt) || !intervalMs) return null;
+  const firstRefresh = builtAt + intervalMs;
+  if (firstRefresh > Date.now()) return firstRefresh;
+  const elapsed = Date.now() - builtAt;
+  return builtAt + (Math.floor(elapsed / intervalMs) + 1) * intervalMs;
 }
 
 function modelCountdownText() {
   const nextAt = modelNextRefreshAt();
   if (!nextAt) return `${modelRefreshHours()}h schedule`;
-  const remaining = nextAt - Date.now();
-  return remaining > 0 ? formatDuration(remaining) : "waiting for next build";
+  return formatDuration(nextAt - Date.now());
 }
 
 function countdownBadge(source) {
