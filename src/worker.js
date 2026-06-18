@@ -441,6 +441,42 @@ async function aiUsageNickname(request, env) {
   });
 }
 
+async function deleteKvPrefix(store, prefix) {
+  let cursor;
+  do {
+    const page = await store.list({ prefix, cursor, limit: 1000 });
+    await Promise.all(page.keys.map((item) => store.delete(item.name)));
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+}
+
+async function aiUsageClear(request, env) {
+  const token = adminToken(env);
+  const store = usageStore(env);
+  if (!token || bearerToken(request) !== token) {
+    return jsonResponse({ error: "Admin token required." }, 401);
+  }
+  if (!store) {
+    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Use POST." }, 405);
+  }
+  const form = await request.formData();
+  const confirm = String(form.get("confirm") || "").trim().toUpperCase();
+  if (confirm !== "CLEAR") {
+    return jsonResponse({ error: "Type CLEAR to confirm." }, 400);
+  }
+  await deleteKvPrefix(store, "ai-usage:");
+  await deleteKvPrefix(store, "ai-event:");
+  return new Response(null, {
+    status: 303,
+    headers: {
+      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}&cleared=1`,
+    },
+  });
+}
+
 function deviceLabel(device = {}) {
   return [device.model, device.os, device.browser].filter(Boolean).join(" / ") || "-";
 }
@@ -507,6 +543,9 @@ function groupedDeviceHtml(users, token) {
 
 function usageDashboardHtml(payload, request) {
   const token = encodeURIComponent(bearerToken(request));
+  const clearedNotice = new URL(request.url).searchParams.get("cleared") === "1"
+    ? `<div class="notice">Usage logs cleared. Nicknames were kept.</div>`
+    : "";
   const users = payload.users || [];
   const events = payload.events || [];
   const totals = payload.totals || {};
@@ -560,6 +599,12 @@ function usageDashboardHtml(payload, request) {
     .num { text-align: right; white-space: nowrap; }
     .empty { color: var(--muted); text-align: center; padding: 26px; }
     .note { color: var(--muted); margin-top: 8px; max-width: 1100px; }
+    .notice { margin: 18px 0; padding: 14px 16px; border: 1px solid #9bd3b4; border-radius: 8px; background: #eefbf3; color: #10633b; font-weight: 900; }
+    .danger-zone { margin-top: 34px; border: 1px solid #efb2b2; background: #fff8f8; }
+    .danger-zone h2 { margin-top: 0; color: #9b1c1c; }
+    .danger-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .danger-form input { border: 1px solid #efb2b2; border-radius: 8px; padding: 10px 12px; font: inherit; min-width: 180px; }
+    .danger-form button { border: 0; border-radius: 8px; padding: 10px 14px; background: #b42318; color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
     @media (max-width: 820px) {
       body { padding: 18px; font-size: 17px; }
       .cards { grid-template-columns: 1fr 1fr; }
@@ -577,6 +622,7 @@ function usageDashboardHtml(payload, request) {
       <p class="muted">Latest ${AI_USAGE_EVENT_LIMIT} calls. Generated ${formatSgt(payload.generated_at)}.</p>
     </div>
   </div>
+  ${clearedNotice}
   <section class="cards">
     <div class="card"><span>Calls</span><strong>${formatNumber(totals.requests)}</strong></div>
     <div class="card"><span>Total Tokens</span><strong>${formatNumber(totals.total_tokens)}</strong></div>
@@ -591,6 +637,14 @@ function usageDashboardHtml(payload, request) {
     <thead><tr><th>Time</th><th>Location</th><th>Model</th><th>Device</th><th>Question</th><th>Input</th><th>Output</th><th>Tokens</th><th>Cost</th></tr></thead>
     <tbody>${eventRows}</tbody>
   </table></div>
+  <section class="card danger-zone">
+    <h2>Clear Logs</h2>
+    <p class="note">This deletes usage totals and recent call history. Device nicknames are kept.</p>
+    <form class="danger-form" method="post" action="/api/ai-usage-clear?token=${token}">
+      <label>Type CLEAR to confirm <input name="confirm" autocomplete="off" placeholder="CLEAR"></label>
+      <button type="submit">Clear Usage Logs</button>
+    </form>
+  </section>
 </body>
 </html>`;
 }
@@ -754,6 +808,9 @@ export default {
     }
     if (url.pathname === "/api/ai-usage-nickname") {
       return aiUsageNickname(request, env);
+    }
+    if (url.pathname === "/api/ai-usage-clear") {
+      return aiUsageClear(request, env);
     }
     if (url.pathname === "/admin/usage") {
       return aiUsageDashboard(request, env);
