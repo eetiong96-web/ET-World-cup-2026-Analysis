@@ -332,6 +332,10 @@ def write_static_assets() -> None:
         "/*\n"
         "  X-Content-Type-Options: nosniff\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        "  X-Frame-Options: DENY\n"
+        "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n"
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains\n"
+        "  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests\n"
         "/data.json\n"
         "  Cache-Control: no-cache, max-age=0\n",
         encoding="utf-8",

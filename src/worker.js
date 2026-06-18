@@ -7,6 +7,10 @@ const MAX_AI_REQUEST_BYTES = 30000;
 const MAX_AI_QUESTION_CHARS = 1500;
 const ASK_AI_MAX_OUTPUT_TOKENS = 900;
 const AI_USAGE_EVENT_LIMIT = 80;
+const ASK_AI_HOURLY_LIMIT = 20;
+const ASK_AI_DAILY_LIMIT = 100;
+const ADMIN_COOKIE_NAME = "wc_admin_token";
+const ADMIN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 const TEAM_ALIASES = {
   "United States": "USA",
@@ -23,24 +27,58 @@ const TEAM_ALIASES = {
   "Cabo Verde": "Cape Verde",
 };
 
+function applySecurityHeaders(headers) {
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+  );
+  return headers;
+}
+
+function secureHeaders(headers = {}) {
+  return applySecurityHeaders(new Headers(headers));
+}
+
+function withSecurityHeaders(response) {
+  const headers = secureHeaders(response.headers);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+function allowedCorsOrigin(request) {
+  const origin = request.headers.get("origin") || "";
+  if (!origin) return "";
+  const selfOrigin = new URL(request.url).origin;
+  if (origin === selfOrigin || origin === "https://etwc2026.eetiong96.workers.dev") return origin;
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) return origin;
+  return "";
+}
+
 function jsonResponse(body, status = 200, cacheSeconds = 0) {
   return new Response(JSON.stringify(body, null, 2), {
     status,
-    headers: {
+    headers: secureHeaders({
       "content-type": "application/json; charset=utf-8",
       "cache-control": cacheSeconds > 0 ? `public, max-age=${cacheSeconds}` : "no-store",
-      "access-control-allow-origin": "*",
-    },
+    }),
   });
 }
 
 function htmlResponse(html, status = 200) {
   return new Response(html, {
     status,
-    headers: {
+    headers: secureHeaders({
       "content-type": "text/html; charset=utf-8",
       "cache-control": "no-store",
-    },
+    }),
   });
 }
 
@@ -81,7 +119,11 @@ function formatSgt(value) {
 function bearerToken(request) {
   const auth = request.headers.get("authorization") || "";
   if (auth.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim();
-  return new URL(request.url).searchParams.get("token") || "";
+  const queryToken = new URL(request.url).searchParams.get("token") || "";
+  if (queryToken) return queryToken;
+  const cookie = request.headers.get("cookie") || "";
+  const match = cookie.match(new RegExp(`(?:^|;\\s*)${ADMIN_COOKIE_NAME}=([^;]+)`));
+  return match ? decodeURIComponent(match[1]) : "";
 }
 
 function usageStore(env) {
@@ -89,22 +131,48 @@ function usageStore(env) {
 }
 
 function adminToken(env) {
-  return env.ADMIN_TOKEN || env.ADMIN_PIN;
+  return env.ADMIN_TOKEN;
 }
 
 function deepseekModel(env) {
   return env.DEEPSEEK_MODEL || "deepseek-v4-pro";
 }
 
-function corsPreflight() {
+function adminCookie(request, token) {
+  const secureFlag = new URL(request.url).protocol === "https:" ? "; Secure" : "";
+  return `${ADMIN_COOKIE_NAME}=${encodeURIComponent(token)}; HttpOnly${secureFlag}; SameSite=Strict; Path=/; Max-Age=${ADMIN_COOKIE_MAX_AGE}`;
+}
+
+function maybeAdminTokenRedirect(request, env) {
+  const token = adminToken(env);
+  const url = new URL(request.url);
+  const queryToken = url.searchParams.get("token") || "";
+  if (!token || queryToken !== token || url.searchParams.get("format") === "json") return null;
+  url.searchParams.delete("token");
+  return new Response(null, {
+    status: 303,
+    headers: secureHeaders({
+      location: `${url.pathname}${url.search}`,
+      "set-cookie": adminCookie(request, token),
+      "cache-control": "no-store",
+    }),
+  });
+}
+
+function corsPreflight(request) {
+  const origin = allowedCorsOrigin(request);
+  if (!origin) {
+    return jsonResponse({ error: "CORS origin is not allowed." }, 403);
+  }
   return new Response(null, {
     status: 204,
-    headers: {
-      "access-control-allow-origin": "*",
+    headers: secureHeaders({
+      "access-control-allow-origin": origin,
+      "vary": "Origin",
       "access-control-allow-methods": "GET, POST, OPTIONS",
-      "access-control-allow-headers": "content-type",
+      "access-control-allow-headers": "content-type, authorization",
       "access-control-max-age": "86400",
-    },
+    }),
   });
 }
 
@@ -363,7 +431,37 @@ async function recordAiUsage(request, env, detail) {
   }), { expirationTtl: 60 * 60 * 24 * 14 });
 }
 
+async function enforceAskAiRateLimit(request, env) {
+  const store = usageStore(env);
+  if (!store) return { ok: true };
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "local";
+  const ua = request.headers.get("user-agent") || "";
+  const visitorHash = (await hashText(`${ip}|${ua}`)).slice(0, 24);
+  const now = new Date();
+  const hour = now.toISOString().slice(0, 13);
+  const day = now.toISOString().slice(0, 10);
+  const checks = [
+    { key: `ai-rate:${visitorHash}:h:${hour}`, limit: ASK_AI_HOURLY_LIMIT, ttl: 60 * 60 + 120, retryAfter: 60 * 10 },
+    { key: `ai-rate:${visitorHash}:d:${day}`, limit: ASK_AI_DAILY_LIMIT, ttl: 60 * 60 * 26, retryAfter: 60 * 60 },
+  ];
+
+  for (const check of checks) {
+    const current = Number(await store.get(check.key).catch(() => 0) || 0);
+    if (current >= check.limit) {
+      return { ok: false, retryAfter: check.retryAfter };
+    }
+  }
+
+  await Promise.all(checks.map(async (check) => {
+    const current = Number(await store.get(check.key).catch(() => 0) || 0);
+    await store.put(check.key, String(current + 1), { expirationTtl: check.ttl });
+  }));
+  return { ok: true };
+}
+
 async function aiUsage(request, env) {
+  const redirect = maybeAdminTokenRedirect(request, env);
+  if (redirect) return redirect;
   const result = await aiUsagePayload(request, env);
   const url = new URL(request.url);
   if (url.searchParams.get("format") === "json") {
@@ -435,9 +533,7 @@ async function aiUsageNickname(request, env) {
   }
   return new Response(null, {
     status: 303,
-    headers: {
-      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}`,
-    },
+    headers: secureHeaders({ location: "/api/ai-usage" }),
   });
 }
 
@@ -471,9 +567,7 @@ async function aiUsageClear(request, env) {
   await deleteKvPrefix(store, "ai-event:");
   return new Response(null, {
     status: 303,
-    headers: {
-      location: `/api/ai-usage?token=${encodeURIComponent(bearerToken(request))}&cleared=1`,
-    },
+    headers: secureHeaders({ location: "/api/ai-usage?cleared=1" }),
   });
 }
 
@@ -488,7 +582,7 @@ function deviceGroupLabel(user = {}) {
     .join(" / ");
 }
 
-function groupedDeviceHtml(users, token) {
+function groupedDeviceHtml(users) {
   if (!users.length) return `<div class="empty card">No Ask AI usage recorded yet.</div>`;
   const groups = new Map();
   for (const user of users) {
@@ -507,7 +601,7 @@ function groupedDeviceHtml(users, token) {
       const device = user.device || {};
       return `<tr>
         <td>
-          <form class="nickname-form" method="post" action="/api/ai-usage-nickname?token=${token}">
+          <form class="nickname-form" method="post" action="/api/ai-usage-nickname">
             <input type="hidden" name="visitor" value="${escapeHtml(user.visitor || "")}">
             <input name="nickname" maxlength="40" value="${escapeHtml(user.nickname || "")}" placeholder="Add nickname" aria-label="Device nickname">
             <button type="submit">Save</button>
@@ -542,7 +636,6 @@ function groupedDeviceHtml(users, token) {
 }
 
 function usageDashboardHtml(payload, request) {
-  const token = encodeURIComponent(bearerToken(request));
   const clearedNotice = new URL(request.url).searchParams.get("cleared") === "1"
     ? `<div class="notice">Usage logs cleared. Nicknames were kept.</div>`
     : "";
@@ -631,7 +724,7 @@ function usageDashboardHtml(payload, request) {
   </section>
   <h2>By Device</h2>
   <p class="note">Add nicknames to remember whose device is whose. Similar devices are grouped together; expand each group to see the individual visitors.</p>
-  <div class="device-groups">${groupedDeviceHtml(users, token)}</div>
+  <div class="device-groups">${groupedDeviceHtml(users)}</div>
   <h2>Recent Calls</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Time</th><th>Location</th><th>Model</th><th>Device</th><th>Question</th><th>Input</th><th>Output</th><th>Tokens</th><th>Cost</th></tr></thead>
@@ -640,7 +733,7 @@ function usageDashboardHtml(payload, request) {
   <section class="card danger-zone">
     <h2>Clear Logs</h2>
     <p class="note">This deletes usage totals and recent call history. Device nicknames are kept.</p>
-    <form class="danger-form" method="post" action="/api/ai-usage-clear?token=${token}">
+    <form class="danger-form" method="post" action="/api/ai-usage-clear">
       <label>Type CLEAR to confirm <input name="confirm" autocomplete="off" placeholder="CLEAR"></label>
       <button type="submit">Clear Usage Logs</button>
     </form>
@@ -650,6 +743,8 @@ function usageDashboardHtml(payload, request) {
 }
 
 async function aiUsageDashboard(request, env) {
+  const redirect = maybeAdminTokenRedirect(request, env);
+  if (redirect) return redirect;
   const result = await aiUsagePayload(request, env);
   if (result.status !== 200) {
     return htmlResponse(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Usage Admin</title></head><body><h1>Usage Admin</h1><p>${escapeHtml(result.body.error)}</p></body></html>`, result.status);
@@ -719,8 +814,8 @@ async function callDeepSeek(env, question, context) {
     }),
   });
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`DeepSeek returned ${response.status}: ${text.slice(0, 180)}`);
+    await response.text().catch(() => "");
+    throw new Error("AI_PROVIDER_ERROR");
   }
   const payload = await response.json();
   const choice = payload.choices?.[0] || {};
@@ -737,7 +832,7 @@ async function callDeepSeek(env, question, context) {
 }
 
 async function askAi(request, env) {
-  if (request.method === "OPTIONS") return corsPreflight();
+  if (request.method === "OPTIONS") return corsPreflight(request);
   if (request.method !== "POST") {
     return jsonResponse({ error: "Use POST." }, 405);
   }
@@ -771,6 +866,18 @@ async function askAi(request, env) {
   const cached = cache ? await cache.match(cacheKey) : null;
   if (cached) return cached;
 
+  const rateLimit = await enforceAskAiRateLimit(request, env);
+  if (!rateLimit.ok) {
+    return new Response(JSON.stringify({ error: "Too many AI questions right now. Please try again later." }, null, 2), {
+      status: 429,
+      headers: secureHeaders({
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "retry-after": String(rateLimit.retryAfter || 600),
+      }),
+    });
+  }
+
   try {
     const result = await callDeepSeek(env, question, context);
     await recordAiUsage(request, env, {
@@ -790,7 +897,7 @@ async function askAi(request, env) {
     if (cache) await cache.put(cacheKey, response.clone());
     return response;
   } catch (error) {
-    return jsonResponse({ error: error.message }, 502);
+    return jsonResponse({ error: "AI is busy right now. Please try again later." }, 502);
   }
 }
 
@@ -818,6 +925,6 @@ export default {
     if (url.pathname === "/api/health") {
       return jsonResponse({ ok: true, generated_at: new Date().toISOString() });
     }
-    return env.ASSETS.fetch(request);
+    return withSecurityHeaders(await env.ASSETS.fetch(request));
   },
 };
