@@ -473,9 +473,10 @@ function groupedDeviceHtml(users, token) {
         <td>
           <form class="nickname-form" method="post" action="/api/ai-usage-nickname?token=${token}">
             <input type="hidden" name="visitor" value="${escapeHtml(user.visitor || "")}">
-            <input name="nickname" maxlength="40" value="${escapeHtml(user.nickname || "")}" placeholder="Add nickname">
+            <input name="nickname" maxlength="40" value="${escapeHtml(user.nickname || "")}" placeholder="Add nickname" aria-label="Device nickname">
             <button type="submit">Save</button>
           </form>
+          <div class="nickname-help">${escapeHtml(deviceLabel(device))}</div>
         </td>
         <td>${escapeHtml(device.model || device.device || "-")}</td>
         <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
@@ -494,9 +495,10 @@ function groupedDeviceHtml(users, token) {
         <span>${formatNumber(totals.requests)} calls</span>
         <span>${formatNumber(totals.tokens)} tokens</span>
         <span>${formatCost(totals.cost)}</span>
+        <span>Edit nicknames</span>
       </summary>
       <div class="table-wrap"><table>
-        <thead><tr><th>Nickname</th><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
+        <thead><tr><th>Label / Nickname</th><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
         <tbody>${body}</tbody>
       </table></div>
     </details>`;
@@ -545,9 +547,10 @@ function usageDashboardHtml(payload, request) {
     .device-group summary { cursor: pointer; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 16px 18px; background: #fff; }
     .device-group summary strong { min-width: min(420px, 100%); }
     .device-group summary span { color: var(--muted); font-weight: 800; }
-    .nickname-form { display: flex; gap: 8px; min-width: 260px; }
-    .nickname-form input { width: 170px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: inherit; }
-    .nickname-form button { border: 1px solid #bdd0e9; border-radius: 8px; padding: 8px 10px; background: #eef5ff; color: var(--blue); font: inherit; font-weight: 900; cursor: pointer; }
+    .nickname-form { display: flex; gap: 8px; min-width: 300px; align-items: center; }
+    .nickname-form input { width: 210px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #fff; font: inherit; }
+    .nickname-form button { border: 0; border-radius: 8px; padding: 10px 14px; background: #0f8b83; color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
+    .nickname-help { margin-top: 7px; color: var(--muted); font-size: .9rem; }
     .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); }
     .device-group .table-wrap { border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; }
     table { width: 100%; min-width: 980px; border-collapse: collapse; }
@@ -562,6 +565,7 @@ function usageDashboardHtml(payload, request) {
       .cards { grid-template-columns: 1fr 1fr; }
       .card strong { font-size: 1.55rem; }
       .nickname-form { min-width: 0; }
+      .nickname-form input { width: min(58vw, 210px); }
     }
     @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
   </style>
@@ -571,10 +575,6 @@ function usageDashboardHtml(payload, request) {
     <div>
       <h1>World Cup Ask AI Usage</h1>
       <p class="muted">Latest ${AI_USAGE_EVENT_LIMIT} calls. Generated ${formatSgt(payload.generated_at)}.</p>
-    </div>
-    <div class="actions">
-      <a class="button" href="/api/ai-usage?token=${token}&format=json">Open JSON</a>
-      <a class="button" href="/">Back to Dashboard</a>
     </div>
   </div>
   <section class="cards">
