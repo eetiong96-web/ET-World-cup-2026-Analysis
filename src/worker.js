@@ -34,6 +34,50 @@ function jsonResponse(body, status = 200, cacheSeconds = 0) {
   });
 }
 
+function htmlResponse(html, status = 200) {
+  return new Response(html, {
+    status,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+    },
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;",
+  }[char]));
+}
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("en-SG");
+}
+
+function formatCost(value) {
+  return `$${Number(value || 0).toFixed(5)}`;
+}
+
+function formatSgt(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString("en-SG", {
+    timeZone: "Asia/Singapore",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).replace(",", "") + " SGT";
+}
+
 function bearerToken(request) {
   const auth = request.headers.get("authorization") || "";
   if (auth.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim();
@@ -320,13 +364,18 @@ async function recordAiUsage(request, env, detail) {
 }
 
 async function aiUsage(request, env) {
+  const result = await aiUsagePayload(request, env);
+  return jsonResponse(result.body, result.status);
+}
+
+async function aiUsagePayload(request, env) {
   const token = adminToken(env);
   const store = usageStore(env);
   if (!token || bearerToken(request) !== token) {
-    return jsonResponse({ error: "Admin token required." }, 401);
+    return { status: 401, body: { error: "Admin token required." } };
   }
   if (!store) {
-    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
+    return { status: 503, body: { error: "Usage KV binding is not configured." } };
   }
   const usersList = await store.list({ prefix: "ai-usage:", limit: 1000 });
   const eventList = await store.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
@@ -345,7 +394,118 @@ async function aiUsage(request, env) {
     return out;
   }, { requests: 0, input_tokens: 0, output_tokens: 0, total_tokens: 0, estimated_cost_usd: 0 });
   totals.estimated_cost_usd = Number(totals.estimated_cost_usd.toFixed(6));
-  return jsonResponse({ generated_at: new Date().toISOString(), totals, users, events });
+  return { status: 200, body: { generated_at: new Date().toISOString(), totals, users, events } };
+}
+
+function deviceLabel(device = {}) {
+  return [device.model, device.os, device.browser].filter(Boolean).join(" / ") || "-";
+}
+
+function usageDashboardHtml(payload, request) {
+  const token = encodeURIComponent(bearerToken(request));
+  const users = payload.users || [];
+  const events = payload.events || [];
+  const totals = payload.totals || {};
+  const deviceRows = users.map((user) => {
+    const device = user.device || {};
+    return `<tr>
+      <td>${escapeHtml(device.model || device.device || "-")}</td>
+      <td>${escapeHtml(user.country || "-")}${user.city ? ` / ${escapeHtml(user.city)}` : ""}</td>
+      <td>${escapeHtml(device.os || "-")}</td>
+      <td>${escapeHtml(device.browser || "-")}</td>
+      <td>${escapeHtml(user.visitor || "-")}</td>
+      <td class="num">${formatNumber(user.requests)}</td>
+      <td class="num">${formatNumber(user.total_tokens)}</td>
+      <td class="num">${formatCost(user.estimated_cost_usd)}</td>
+      <td>${formatSgt(user.last_seen)}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="9" class="empty">No Ask AI usage recorded yet.</td></tr>`;
+  const eventRows = events.map((event) => `<tr>
+      <td>${formatSgt(event.at)}</td>
+      <td>${escapeHtml(event.country || "-")}${event.city ? ` / ${escapeHtml(event.city)}` : ""}</td>
+      <td>${escapeHtml(event.model || "-")}</td>
+      <td>${escapeHtml(deviceLabel(event.device))}</td>
+      <td>${escapeHtml(event.question || "-")}</td>
+      <td class="num">${formatNumber(event.input_tokens)}</td>
+      <td class="num">${formatNumber(event.output_tokens)}</td>
+      <td class="num">${formatNumber(event.total_tokens)}</td>
+      <td class="num">${formatCost(event.estimated_cost_usd)}</td>
+    </tr>`).join("") || `<tr><td colspan="9" class="empty">No recent calls yet.</td></tr>`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Cup Ask AI Usage</title>
+  <style>
+    :root { color-scheme: light; --bg:#f4f7fb; --card:#fff; --text:#101827; --muted:#637187; --line:#dbe5f1; --blue:#2457a6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px; background: var(--bg); color: var(--text); font: 18px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    h1 { margin: 0 0 12px; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.05; }
+    h2 { margin: 34px 0 12px; font-size: 1.45rem; }
+    a { color: var(--blue); font-weight: 800; text-decoration: none; }
+    .muted { color: var(--muted); margin: 0 0 24px; }
+    .topbar { display: flex; justify-content: space-between; gap: 16px; align-items: start; flex-wrap: wrap; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .button { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; background: #fff; box-shadow: 0 8px 22px rgba(16,24,39,.06); }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 14px; margin: 28px 0; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: 0 14px 30px rgba(16,24,39,.07); }
+    .card span { display:block; color: var(--muted); font-size: 1rem; margin-bottom: 8px; }
+    .card strong { display:block; font-size: 2rem; line-height: 1; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,39,.06); }
+    table { width: 100%; min-width: 980px; border-collapse: collapse; }
+    th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eaf0f7; color: #5d6d82; font-weight: 900; }
+    tr:last-child td { border-bottom: 0; }
+    .num { text-align: right; white-space: nowrap; }
+    .empty { color: var(--muted); text-align: center; padding: 26px; }
+    .note { color: var(--muted); margin-top: 8px; max-width: 1100px; }
+    @media (max-width: 820px) {
+      body { padding: 18px; font-size: 17px; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .card strong { font-size: 1.55rem; }
+    }
+    @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>World Cup Ask AI Usage</h1>
+      <p class="muted">Latest ${AI_USAGE_EVENT_LIMIT} calls. Generated ${formatSgt(payload.generated_at)}.</p>
+    </div>
+    <div class="actions">
+      <a class="button" href="/api/ai-usage?token=${token}">Open JSON</a>
+      <a class="button" href="/">Back to Dashboard</a>
+    </div>
+  </div>
+  <section class="cards">
+    <div class="card"><span>Calls</span><strong>${formatNumber(totals.requests)}</strong></div>
+    <div class="card"><span>Total Tokens</span><strong>${formatNumber(totals.total_tokens)}</strong></div>
+    <div class="card"><span>Output Tokens</span><strong>${formatNumber(totals.output_tokens)}</strong></div>
+    <div class="card"><span>Est. Cost</span><strong>${formatCost(totals.estimated_cost_usd)}</strong></div>
+  </section>
+  <h2>By Device</h2>
+  <p class="note">Browsers often hide exact phone or laptop model for privacy. Android may show a model number; iPhone normally only shows iPhone.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Phone / Device</th><th>Location</th><th>OS</th><th>Browser</th><th>Visitor</th><th>Calls</th><th>Tokens</th><th>Cost</th><th>Last seen</th></tr></thead>
+    <tbody>${deviceRows}</tbody>
+  </table></div>
+  <h2>Recent Calls</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Time</th><th>Location</th><th>Model</th><th>Device</th><th>Question</th><th>Input</th><th>Output</th><th>Tokens</th><th>Cost</th></tr></thead>
+    <tbody>${eventRows}</tbody>
+  </table></div>
+</body>
+</html>`;
+}
+
+async function aiUsageDashboard(request, env) {
+  const result = await aiUsagePayload(request, env);
+  if (result.status !== 200) {
+    return htmlResponse(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Usage Admin</title></head><body><h1>Usage Admin</h1><p>${escapeHtml(result.body.error)}</p></body></html>`, result.status);
+  }
+  return htmlResponse(usageDashboardHtml(result.body, request));
 }
 
 function compactWebsiteContext(context = {}) {
@@ -496,6 +656,9 @@ export default {
     }
     if (url.pathname === "/api/ai-usage") {
       return aiUsage(request, env);
+    }
+    if (url.pathname === "/admin/usage") {
+      return aiUsageDashboard(request, env);
     }
     if (url.pathname === "/api/health") {
       return jsonResponse({ ok: true, generated_at: new Date().toISOString() });
