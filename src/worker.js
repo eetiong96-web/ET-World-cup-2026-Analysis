@@ -39,6 +39,18 @@ function bearerToken(request) {
   return new URL(request.url).searchParams.get("token") || "";
 }
 
+function usageStore(env) {
+  return env.AI_USAGE || env.USAGE_KV;
+}
+
+function adminToken(env) {
+  return env.ADMIN_TOKEN || env.ADMIN_PIN;
+}
+
+function deepseekModel(env) {
+  return env.DEEPSEEK_MODEL || "deepseek-v4-pro";
+}
+
 function corsPreflight() {
   return new Response(null, {
     status: 204,
@@ -254,13 +266,14 @@ function deviceInfo(request, bodyDevice = {}) {
 }
 
 async function recordAiUsage(request, env, detail) {
-  if (!env.AI_USAGE) return;
+  const store = usageStore(env);
+  if (!store) return;
   const now = new Date().toISOString();
   const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "local";
   const ua = request.headers.get("user-agent") || "";
   const visitorHash = await hashText(`${ip}|${ua}`);
   const key = `ai-usage:${visitorHash}`;
-  const existing = await env.AI_USAGE.get(key, "json").catch(() => null);
+  const existing = await store.get(key, "json").catch(() => null);
   const current = existing || {
     visitor: visitorHash.slice(0, 16),
     first_seen: now,
@@ -287,10 +300,10 @@ async function recordAiUsage(request, env, detail) {
   current.output_tokens += outputTokens;
   current.total_tokens += totalTokens;
   current.estimated_cost_usd = Number((Number(current.estimated_cost_usd || 0) + inputCost + outputCost).toFixed(6));
-  await env.AI_USAGE.put(key, JSON.stringify(current));
+  await store.put(key, JSON.stringify(current));
 
   const eventKey = `ai-event:${Date.now()}:${visitorHash.slice(0, 12)}`;
-  await env.AI_USAGE.put(eventKey, JSON.stringify({
+  await store.put(eventKey, JSON.stringify({
     at: now,
     visitor: current.visitor,
     country: current.country,
@@ -306,18 +319,20 @@ async function recordAiUsage(request, env, detail) {
 }
 
 async function aiUsage(request, env) {
-  if (!env.ADMIN_TOKEN || bearerToken(request) !== env.ADMIN_TOKEN) {
+  const token = adminToken(env);
+  const store = usageStore(env);
+  if (!token || bearerToken(request) !== token) {
     return jsonResponse({ error: "Admin token required." }, 401);
   }
-  if (!env.AI_USAGE) {
-    return jsonResponse({ error: "AI_USAGE KV binding is not configured." }, 503);
+  if (!store) {
+    return jsonResponse({ error: "Usage KV binding is not configured." }, 503);
   }
-  const usersList = await env.AI_USAGE.list({ prefix: "ai-usage:", limit: 1000 });
-  const eventList = await env.AI_USAGE.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
-  const users = (await Promise.all(usersList.keys.map((item) => env.AI_USAGE.get(item.name, "json"))))
+  const usersList = await store.list({ prefix: "ai-usage:", limit: 1000 });
+  const eventList = await store.list({ prefix: "ai-event:", limit: AI_USAGE_EVENT_LIMIT });
+  const users = (await Promise.all(usersList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
     .sort((a, b) => Number(b.estimated_cost_usd || 0) - Number(a.estimated_cost_usd || 0));
-  const events = (await Promise.all(eventList.keys.map((item) => env.AI_USAGE.get(item.name, "json"))))
+  const events = (await Promise.all(eventList.keys.map((item) => store.get(item.name, "json"))))
     .filter(Boolean)
     .sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const totals = users.reduce((out, row) => {
@@ -380,7 +395,7 @@ async function callDeepSeek(env, question, context) {
       authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
     },
     body: JSON.stringify({
-      model: env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+      model: deepseekModel(env),
       messages: [
         {
           role: "system",
@@ -405,7 +420,7 @@ async function callDeepSeek(env, question, context) {
       completion_tokens: 520,
       total_tokens: estimateTokens(prompt) + 520,
     },
-    model: payload.model || env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+    model: payload.model || deepseekModel(env),
   };
 }
 
@@ -438,7 +453,7 @@ async function askAi(request, env) {
 
   const cache = globalThis.caches?.default;
   const context = compactWebsiteContext(body.context);
-  const cacheSeed = JSON.stringify({ question: question.toLowerCase(), context, model: env.DEEPSEEK_MODEL || "deepseek-v4-flash" });
+  const cacheSeed = JSON.stringify({ question: question.toLowerCase(), context, model: deepseekModel(env) });
   const cacheHash = await hashText(cacheSeed);
   const cacheKey = new Request(new URL(request.url).origin + `/api/ask-ai-cache/${cacheHash}`);
   const cached = cache ? await cache.match(cacheKey) : null;

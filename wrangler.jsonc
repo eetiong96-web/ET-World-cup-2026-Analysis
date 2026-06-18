@@ -1,8 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "et-world-cup-2026-analysis",
+  "name": "etwc2026",
   "compatibility_date": "2026-06-15",
   "main": "src/worker.js",
+  "vars": {
+    "DEEPSEEK_MODEL": "deepseek-v4-pro"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "USAGE_KV",
+      "id": "e0699bc49eb54c1f975169862f9086f3"
+    }
+  ],
   "assets": {
     "directory": "./public",
     "not_found_handling": "single-page-application"

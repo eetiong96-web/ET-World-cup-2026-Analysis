@@ -328,7 +328,6 @@ def write_static_assets() -> None:
     PUBLIC.mkdir(exist_ok=True)
     (PUBLIC / "styles.css").write_text((STATIC / "styles.css").read_text(encoding="utf-8"), encoding="utf-8")
     (PUBLIC / "app.js").write_text((STATIC / "app.js").read_text(encoding="utf-8"), encoding="utf-8")
-    (PUBLIC / "_worker.js").write_text((ROOT / "src" / "worker.js").read_text(encoding="utf-8"), encoding="utf-8")
     (PUBLIC / "_headers").write_text(
         "/*\n"
         "  X-Content-Type-Options: nosniff\n"
