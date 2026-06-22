@@ -336,8 +336,6 @@ function rankedCurrentGroups(d) {
 
 function currentRoundOf32Projection(d) {
   const ranked = rankedCurrentGroups(d);
-  const hasAnyPlayed = Object.values(ranked).flat().some((row) => Number(row.played || 0) > 0);
-  if (!hasAnyPlayed) return new Map();
   const qualifiers = {};
   const thirdRows = [];
   Object.entries(ranked).forEach(([group, rows]) => {
@@ -377,7 +375,7 @@ function currentRoundOf32Projection(d) {
   return new Map(roundOf32Slots.map(([match, left, right]) => [match, {
     teamA: resolveSlot(left),
     teamB: resolveSlot(right),
-    source: "Current group table",
+    source: Object.values(ranked).flat().some((row) => Number(row.played || 0) > 0) ? "Current group table" : "Projected from group strength",
   }]));
 }
 
