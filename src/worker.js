@@ -219,21 +219,42 @@ function normalizeFootballData(payload) {
 }
 
 async function fetchEspn() {
-  const response = await fetch(ESPN_SCOREBOARD_URL, {
-    headers: { "user-agent": "WorldCup2026Analysis/1.0" },
-  });
-  if (!response.ok) {
-    throw new Error(`ESPN returned ${response.status}`);
+  const start = Date.UTC(2026, 5, 11);
+  const dayMs = 24 * 60 * 60 * 1000;
+  const days = Math.max(1, Math.min(45, Math.floor((Date.now() - start) / dayMs) + 2));
+  const urls = [ESPN_SCOREBOARD_URL];
+  for (let i = 0; i < days; i += 1) {
+    const date = new Date(start + i * dayMs).toISOString().slice(0, 10).replaceAll("-", "");
+    urls.push(`${ESPN_SCOREBOARD_URL}?dates=${date}`);
   }
-  const raw = await response.json();
+
+  const batches = await Promise.all(urls.map(async (url) => {
+    const response = await fetch(url, {
+      headers: { "user-agent": "WorldCup2026Analysis/1.0" },
+    });
+    if (!response.ok) return [];
+    return normalizeEspn(await response.json());
+  }));
+  const seen = new Set();
+  const matches = batches.flat().filter((match) => {
+    const key = `${match.date || ""}|${match.home || ""}|${match.away || ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+
+  if (!matches.length) {
+    throw new Error("ESPN returned no World Cup rows for the current date window");
+  }
+
   return {
     name: "espn_scoreboard",
     status: "live",
     url: ESPN_SCOREBOARD_URL,
     fetched_at: new Date().toISOString(),
-    rows: normalizeEspn(raw).length,
-    matches: normalizeEspn(raw),
-    note: "Live scoreboard API refreshed successfully.",
+    rows: matches.length,
+    matches,
+    note: "Live scoreboard API refreshed successfully across the tournament date window.",
   };
 }
 

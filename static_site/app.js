@@ -312,79 +312,56 @@ const roundOf32Slots = [
   ["M88", "2D", "2G"],
 ];
 
-function teamStrengthLookup(d) {
-  return new Map((d.team_strength || []).map((row) => [row.team, Number(row.strength_score || 0)]));
-}
-
-function rankedCurrentGroups(d) {
-  const strength = teamStrengthLookup(d);
-  const rows = currentStandings(d);
+function completedGroupQualifiers(d) {
+  const standings = currentStandings(d);
   const groups = [...new Set(d.groups.map((r) => r.group))].sort();
-  return Object.fromEntries(groups.map((group) => [
-    group,
-    rows
-      .filter((r) => r.group === group)
-      .sort((a, b) =>
-        Number(b.points) - Number(a.points)
-        || Number(b.goal_difference) - Number(a.goal_difference)
-        || Number(b.goals_for) - Number(a.goals_for)
-        || Number(strength.get(b.team) || 0) - Number(strength.get(a.team) || 0)
-        || a.team.localeCompare(b.team)
-      ),
-  ]));
-}
-
-function currentRoundOf32Projection(d) {
-  const ranked = rankedCurrentGroups(d);
   const qualifiers = {};
   const thirdRows = [];
-  Object.entries(ranked).forEach(([group, rows]) => {
-    if (rows[0]) qualifiers[`1${group}`] = rows[0].team;
-    if (rows[1]) qualifiers[`2${group}`] = rows[1].team;
-    if (rows[2]) thirdRows.push(rows[2]);
+  groups.forEach((group) => {
+    const rows = standings
+      .filter((r) => r.group === group)
+      .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team));
+    const groupComplete = rows.length === 4 && rows.every((row) => Number(row.played || 0) >= 3);
+    if (!groupComplete) return;
+    qualifiers[`1${group}`] = rows[0].team;
+    qualifiers[`2${group}`] = rows[1].team;
+    thirdRows.push(rows[2]);
   });
-  thirdRows
-    .sort((a, b) =>
-      Number(b.points) - Number(a.points)
-      || Number(b.goal_difference) - Number(a.goal_difference)
-      || Number(b.goals_for) - Number(a.goals_for)
-      || a.team.localeCompare(b.team)
-    )
-    .slice(0, 8)
-    .forEach((row) => {
-      qualifiers[`3${row.group}`] = row.team;
-    });
+  if (thirdRows.length >= 12) {
+    thirdRows
+      .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team))
+      .slice(0, 8)
+      .forEach((row) => {
+        qualifiers[`3${row.group}`] = row.team;
+      });
+  }
+  return qualifiers;
+}
 
-  const usedThirds = new Set();
-  const resolveSlot = (slot) => {
-    if (!slot.includes("/")) return qualifiers[slot] || "TBD";
-    const candidates = slot.slice(1).split("/");
-    for (const group of candidates) {
-      const key = `3${group}`;
-      if (qualifiers[key] && !usedThirds.has(key)) {
-        usedThirds.add(key);
-        return qualifiers[key];
-      }
+function resolvedConfirmedSlot(slot, qualifiers, usedThirds) {
+  if (!slot.includes("/")) return qualifiers[slot] || "TBD";
+  const candidates = slot.slice(1).split("/");
+  for (const group of candidates) {
+    const key = `3${group}`;
+    if (qualifiers[key] && !usedThirds.has(key)) {
+      usedThirds.add(key);
+      return qualifiers[key];
     }
-    const fallback = Object.keys(qualifiers).find((key) => key.startsWith("3") && !usedThirds.has(key));
-    if (!fallback) return "TBD";
-    usedThirds.add(fallback);
-    return qualifiers[fallback];
-  };
-
-  return new Map(roundOf32Slots.map(([match, left, right]) => [match, {
-    teamA: resolveSlot(left),
-    teamB: resolveSlot(right),
-    source: Object.values(ranked).flat().some((row) => Number(row.played || 0) > 0) ? "Current group table" : "Projected from group strength",
-  }]));
+  }
+  return "TBD";
 }
 
 function knockoutSlotRows(count, start, d) {
-  const projection = start === 73 ? currentRoundOf32Projection(d) : new Map();
+  const qualifiers = start === 73 ? completedGroupQualifiers(d) : {};
+  const usedThirds = new Set();
   return Array.from({ length: count }, (_, index) => {
     const match = `M${start + index}`;
-    const projected = projection.get(match);
-    return { id: index + 1, teamA: projected?.teamA || "TBD", teamB: projected?.teamB || "TBD", source: projected?.source || "" };
+    const slot = roundOf32Slots.find((row) => row[0] === match);
+    if (!slot) return { id: index + 1, teamA: "TBD", teamB: "TBD", source: "" };
+    const teamA = resolvedConfirmedSlot(slot[1], qualifiers, usedThirds);
+    const teamB = resolvedConfirmedSlot(slot[2], qualifiers, usedThirds);
+    const source = teamA !== "TBD" || teamB !== "TBD" ? "Confirmed group finish" : "";
+    return { id: index + 1, teamA, teamB, source };
   });
 }
 const knockoutSchedule = {
