@@ -293,10 +293,102 @@ function groupTables(d) {
   }).join("")}</div>`;
 }
 
-function knockoutSlotRows(count) {
-  return Array.from({ length: count }, (_, index) => ({ id: index + 1, teamA: "TBD", teamB: "TBD", date: "TBD" }));
+const roundOf32Slots = [
+  ["M73", "2A", "2B"],
+  ["M74", "1E", "3A/B/C/D/F"],
+  ["M75", "1F", "2C"],
+  ["M76", "1C", "2F"],
+  ["M77", "1I", "3C/D/F/G/H"],
+  ["M78", "2E", "2I"],
+  ["M79", "1A", "3C/E/F/H/I"],
+  ["M80", "1L", "3E/H/I/J/K"],
+  ["M81", "1D", "3B/E/F/I/J"],
+  ["M82", "1G", "3A/E/H/I/J"],
+  ["M83", "2K", "2L"],
+  ["M84", "1H", "2J"],
+  ["M85", "1B", "3E/F/G/I/J"],
+  ["M86", "1J", "2H"],
+  ["M87", "1K", "3D/E/I/J/L"],
+  ["M88", "2D", "2G"],
+];
+
+function teamStrengthLookup(d) {
+  return new Map((d.team_strength || []).map((row) => [row.team, Number(row.strength_score || 0)]));
 }
 
+function rankedCurrentGroups(d) {
+  const strength = teamStrengthLookup(d);
+  const rows = currentStandings(d);
+  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  return Object.fromEntries(groups.map((group) => [
+    group,
+    rows
+      .filter((r) => r.group === group)
+      .sort((a, b) =>
+        Number(b.points) - Number(a.points)
+        || Number(b.goal_difference) - Number(a.goal_difference)
+        || Number(b.goals_for) - Number(a.goals_for)
+        || Number(strength.get(b.team) || 0) - Number(strength.get(a.team) || 0)
+        || a.team.localeCompare(b.team)
+      ),
+  ]));
+}
+
+function currentRoundOf32Projection(d) {
+  const ranked = rankedCurrentGroups(d);
+  const hasAnyPlayed = Object.values(ranked).flat().some((row) => Number(row.played || 0) > 0);
+  if (!hasAnyPlayed) return new Map();
+  const qualifiers = {};
+  const thirdRows = [];
+  Object.entries(ranked).forEach(([group, rows]) => {
+    if (rows[0]) qualifiers[`1${group}`] = rows[0].team;
+    if (rows[1]) qualifiers[`2${group}`] = rows[1].team;
+    if (rows[2]) thirdRows.push(rows[2]);
+  });
+  thirdRows
+    .sort((a, b) =>
+      Number(b.points) - Number(a.points)
+      || Number(b.goal_difference) - Number(a.goal_difference)
+      || Number(b.goals_for) - Number(a.goals_for)
+      || a.team.localeCompare(b.team)
+    )
+    .slice(0, 8)
+    .forEach((row) => {
+      qualifiers[`3${row.group}`] = row.team;
+    });
+
+  const usedThirds = new Set();
+  const resolveSlot = (slot) => {
+    if (!slot.includes("/")) return qualifiers[slot] || "TBD";
+    const candidates = slot.slice(1).split("/");
+    for (const group of candidates) {
+      const key = `3${group}`;
+      if (qualifiers[key] && !usedThirds.has(key)) {
+        usedThirds.add(key);
+        return qualifiers[key];
+      }
+    }
+    const fallback = Object.keys(qualifiers).find((key) => key.startsWith("3") && !usedThirds.has(key));
+    if (!fallback) return "TBD";
+    usedThirds.add(fallback);
+    return qualifiers[fallback];
+  };
+
+  return new Map(roundOf32Slots.map(([match, left, right]) => [match, {
+    teamA: resolveSlot(left),
+    teamB: resolveSlot(right),
+    source: "Current group table",
+  }]));
+}
+
+function knockoutSlotRows(count, start, d) {
+  const projection = start === 73 ? currentRoundOf32Projection(d) : new Map();
+  return Array.from({ length: count }, (_, index) => {
+    const match = `M${start + index}`;
+    const projected = projection.get(match);
+    return { id: index + 1, teamA: projected?.teamA || "TBD", teamB: projected?.teamB || "TBD", source: projected?.source || "" };
+  });
+}
 const knockoutSchedule = {
   73: { date: "2026-06-28T19:00:00Z", venue: "Inglewood" },
   74: { date: "2026-06-29T20:30:00Z", venue: "Foxborough" },
@@ -334,7 +426,7 @@ const knockoutSchedule = {
 
 function knockoutBracket(d) {
   const liveRows = liveKnockoutRows(d);
-  const liveByMatch = new Map(liveRows.map((match, index) => [match.match || `live-${index + 1}`, match]));
+  const liveByMatch = new Map(liveRows.map((match, index) => [match.match_id || match.match || `live-${index + 1}`, match]));
   const rounds = [
     { title: "Round of 32", count: 16, start: 73 },
     { title: "Round of 16", count: 8, start: 89 },
@@ -344,13 +436,13 @@ function knockoutBracket(d) {
     { title: "Final", count: 1, start: 104 },
   ];
   return `<section class="bracket-shell"><div class="bracket-scroll">${rounds.map((round) => {
-    const rows = knockoutSlotRows(round.count);
+    const rows = knockoutSlotRows(round.count, round.start, d);
     return `<section class="bracket-round"><h4>${esc(round.title)}</h4>${rows.map((slot) => {
       const matchId = round.start + slot.id - 1;
       const live = liveByMatch.get(`M${matchId}`) || null;
       const schedule = knockoutSchedule[matchId] || null;
       const dateText = live?.date ? formatSgtDate(live.date) : formatSgtDate(schedule?.date);
-      const venueText = schedule?.venue ? `<div class="bracket-venue">${esc(schedule.venue)}</div>` : "";
+      const venueText = schedule?.venue ? `<div class="bracket-venue">${esc(schedule.venue)}${slot.source ? ` - ${esc(slot.source)}` : ""}</div>` : "";
       return `<article class="bracket-match">
         <div class="bracket-date">M${matchId} · ${esc(dateText)}</div>${venueText}
         <div class="bracket-team"><span class="team-shield"></span><strong>${esc(live?.home || slot.teamA)}</strong><span>${esc(live?.home_score ?? "")}</span></div>
@@ -360,6 +452,11 @@ function knockoutBracket(d) {
   }).join("")}</div></section>`;
 }
 
+function matchIdForLive(match, index) {
+  const text = [match.match, match.round, match.stage].filter(Boolean).join(" ");
+  const found = text.match(/\b(?:M|Match\s*)?(7[3-9]|8[0-9]|9[0-9]|10[0-4])\b/i);
+  return found ? `M${found[1]}` : `live-${index + 1}`;
+}
 function isKnockoutLiveMatch(match) {
   const descriptor = `${match.round || ""} ${match.stage || ""} ${match.match || ""}`;
   return /round of 32|round of 16|\br16\b|quarter|semi|final|third-place|knockout/i.test(descriptor)

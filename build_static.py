@@ -411,7 +411,7 @@ def main() -> None:
 <body>
   <aside class="sidebar">
     <div class="sidebar-head">
-      <h2>Settings</h2>
+      <h2>WC26 Menu</h2>
       <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
     </div>
     <nav id="nav" aria-label="Dashboard views"></nav>
