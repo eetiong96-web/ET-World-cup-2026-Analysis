@@ -312,20 +312,55 @@ const roundOf32Slots = [
   ["M88", "2D", "2G"],
 ];
 
-function completedGroupQualifiers(d) {
+function groupRowsForKnockout(d) {
   const standings = currentStandings(d);
-  const groups = [...new Set(d.groups.map((r) => r.group))].sort();
+  return [...new Set(d.groups.map((r) => r.group))].sort().map((group) => ({
+    group,
+    rows: standings
+      .filter((r) => r.group === group)
+      .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team)),
+  }));
+}
+
+function maxPossiblePoints(row) {
+  return Number(row.points || 0) + Math.max(0, 3 - Number(row.played || 0)) * 3;
+}
+
+function isGroupComplete(rows) {
+  return rows.length === 4 && rows.every((row) => Number(row.played || 0) >= 3);
+}
+
+function hasClinchedWinner(rows, row) {
+  const points = Number(row.points || 0);
+  return rows.every((other) => other.team === row.team || maxPossiblePoints(other) < points);
+}
+
+function hasClinchedTopTwo(rows, row) {
+  const points = Number(row.points || 0);
+  const teamsThatCanCatch = rows.filter((other) => other.team !== row.team && maxPossiblePoints(other) >= points).length;
+  return teamsThatCanCatch <= 1;
+}
+
+function hasClinchedRunnerUp(rows, row, winner) {
+  if (!winner || row.team === winner.team || maxPossiblePoints(row) >= Number(winner.points || 0)) return false;
+  const challengers = rows.filter((other) => other.team !== row.team && other.team !== winner.team && maxPossiblePoints(other) >= Number(row.points || 0)).length;
+  return challengers === 0;
+}
+
+function completedGroupQualifiers(d) {
   const qualifiers = {};
   const thirdRows = [];
-  groups.forEach((group) => {
-    const rows = standings
-      .filter((r) => r.group === group)
-      .sort((a, b) => Number(b.points) - Number(a.points) || Number(b.goal_difference) - Number(a.goal_difference) || Number(b.goals_for) - Number(a.goals_for) || a.team.localeCompare(b.team));
-    const groupComplete = rows.length === 4 && rows.every((row) => Number(row.played || 0) >= 3);
-    if (!groupComplete) return;
-    qualifiers[`1${group}`] = rows[0].team;
-    qualifiers[`2${group}`] = rows[1].team;
-    thirdRows.push(rows[2]);
+  groupRowsForKnockout(d).forEach(({ group, rows }) => {
+    if (isGroupComplete(rows)) {
+      qualifiers[`1${group}`] = rows[0].team;
+      qualifiers[`2${group}`] = rows[1].team;
+      thirdRows.push(rows[2]);
+      return;
+    }
+    const winner = rows.find((row) => hasClinchedWinner(rows, row));
+    if (winner) qualifiers[`1${group}`] = winner.team;
+    const runnerUp = rows.find((row) => hasClinchedRunnerUp(rows, row, winner));
+    if (runnerUp) qualifiers[`2${group}`] = runnerUp.team;
   });
   if (thirdRows.length >= 12) {
     thirdRows
@@ -336,6 +371,22 @@ function completedGroupQualifiers(d) {
       });
   }
   return qualifiers;
+}
+
+function confirmedQualifiedSummary(d) {
+  const qualified = [];
+  groupRowsForKnockout(d).forEach(({ group, rows }) => {
+    if (isGroupComplete(rows)) {
+      rows.slice(0, 2).forEach((row, index) => qualified.push({ team: row.team, group, note: index === 0 ? "Winner" : "Runner-up" }));
+      return;
+    }
+    rows.filter((row) => hasClinchedTopTwo(rows, row)).forEach((row) => {
+      qualified.push({ team: row.team, group, note: hasClinchedWinner(rows, row) ? "Winner" : "Top two" });
+    });
+  });
+  const unique = [...new Map(qualified.map((row) => [row.team, row])).values()].sort((a, b) => a.group.localeCompare(b.group) || a.team.localeCompare(b.team));
+  if (!unique.length) return `<p class="muted-note">No mathematically confirmed Round of 32 teams from the live group table yet.</p>`;
+  return `<div class="qualified-strip"><strong>Confirmed Round of 32 teams</strong><div>${unique.map((row) => `<span class="qualified-pill">${esc(row.team)} <small>Group ${esc(row.group)} - ${esc(row.note)}</small></span>`).join("")}</div></div>`;
 }
 
 function resolvedConfirmedSlot(slot, qualifiers, usedThirds) {
@@ -468,7 +519,7 @@ function knockoutOverview(d) {
 function dataSources(d) {
   const rows = mergedSources(d);
   const warnings = rows.filter((s) => !["live", "reference", "optional_api", "not_configured"].includes(s.status)).length;
-  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled in Methodology and Caveats.</p>` : ""}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${knockoutBracket(d)}${knockoutOverview(d)}`;
+  return `<h2>Data Sources and Refresh Status</h2>${warnings ? `<p class="warn">Some public sites block static build fetches. Cached or starter data is labeled in Methodology and Caveats.</p>` : ""}<h3>2026 Groups</h3>${groupTables(d)}<h3>Knockout Stage</h3>${confirmedQualifiedSummary(d)}${knockoutBracket(d)}${knockoutOverview(d)}`;
 }
 
 function sourceDetails(d) {
@@ -910,3 +961,4 @@ function loadData({ silent = false } = {}) {
 
 loadData();
 render();
+

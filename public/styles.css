@@ -691,17 +691,62 @@ th {
 
 .bracket-scroll {
   display: grid;
-  grid-template-columns: repeat(5, minmax(260px, 1fr));
+  grid-template-columns: repeat(6, minmax(260px, 1fr));
+  align-items: start;
   gap: 18px;
   width: max-content;
-  min-width: 1380px;
+  min-width: 1660px;
   padding: 18px;
 }
 
 .bracket-round {
   display: grid;
-  align-content: start;
+  align-content: center;
   gap: 14px;
+}
+
+.qualified-strip {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 14px;
+  padding: 14px;
+  border: 1px solid #bdd0e9;
+  border-radius: 8px;
+  background: #eef5ff;
+}
+
+.qualified-strip > strong {
+  color: var(--blue);
+  font-size: 1.05rem;
+}
+
+.qualified-strip > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.qualified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid #bdd0e9;
+  border-radius: 999px;
+  background: white;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.qualified-pill small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.muted-note {
+  color: var(--muted);
+  font-weight: 800;
 }
 
 .bracket-round h4 {
