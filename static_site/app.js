@@ -478,15 +478,46 @@ function knockoutBracket(d) {
   }).join("")}</div></section>`;
 }
 
+const knockoutStartTime = Date.parse("2026-06-28T00:00:00Z");
+
+function matchIdFromSchedule(match) {
+  const timestamp = Date.parse(match.date || "");
+  if (!Number.isFinite(timestamp)) return null;
+  let closest = null;
+  let closestDifference = Infinity;
+  Object.entries(knockoutSchedule).forEach(([number, schedule]) => {
+    const difference = Math.abs(Date.parse(schedule.date) - timestamp);
+    if (difference < closestDifference) {
+      closest = number;
+      closestDifference = difference;
+    }
+  });
+  return closest && closestDifference <= 14 * 60 * 60 * 1000 ? `M${closest}` : null;
+}
+
+function roundForMatchId(matchId) {
+  const number = Number(String(matchId || "").replace(/^M/, ""));
+  if (number >= 73 && number <= 88) return "Round of 32";
+  if (number >= 89 && number <= 96) return "Round of 16";
+  if (number >= 97 && number <= 100) return "Quarter-finals";
+  if (number >= 101 && number <= 102) return "Semi-finals";
+  if (number === 103) return "Third Place";
+  if (number === 104) return "Final";
+  return "Knockout";
+}
+
 function matchIdForLive(match, index) {
   const text = [match.match, match.round, match.stage].filter(Boolean).join(" ");
   const found = text.match(/\b(?:M|Match\s*)?(7[3-9]|8[0-9]|9[0-9]|10[0-4])\b/i);
-  return found ? `M${found[1]}` : `live-${index + 1}`;
+  return found ? `M${found[1]}` : matchIdFromSchedule(match) || `M${Math.min(104, 73 + index)}`;
 }
+
 function isKnockoutLiveMatch(match) {
   const descriptor = `${match.round || ""} ${match.stage || ""} ${match.match || ""}`;
-  return /round of 32|round of 16|\br16\b|quarter|semi|final|third-place|knockout/i.test(descriptor)
-    && !/group/i.test(descriptor);
+  if (/group/i.test(descriptor)) return false;
+  if (/round of 32|round of 16|\br16\b|quarter|semi|final|third-place|knockout/i.test(descriptor)) return true;
+  const timestamp = Date.parse(match.date || "");
+  return Number.isFinite(timestamp) && timestamp >= knockoutStartTime;
 }
 
 function liveKnockoutRows(d) {
@@ -500,7 +531,11 @@ function liveKnockoutRows(d) {
       seen.add(key);
       return true;
     })
-    .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+    .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")))
+    .map((match, index) => {
+      const match_id = matchIdForLive(match, index);
+      return { ...match, match_id, round: match.round || roundForMatchId(match_id) };
+    });
 }
 
 function knockoutOverview(d) {
