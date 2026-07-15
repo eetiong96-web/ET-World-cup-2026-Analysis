@@ -207,13 +207,85 @@ window.addEventListener("resize", () => {
 function activeSimulation() {
   const d = state.data;
   const key = `${state.simCount}-${state.simSeed}`;
-  return d.simulations?.[key] || {
+  const base = d.simulations?.[key] || {
     count: d.simulation_count,
     seed: d.simulation_seed,
     simulation_probabilities: d.simulation_probabilities,
     bracket: d.bracket,
     round32_analysis: d.round32_analysis,
   };
+  return applyCurrentResults(d, base);
+}
+
+const liveProbabilityStages = [
+  { key: "Round of 32", target: 32 },
+  { key: "Quarter-finals", target: 8 },
+  { key: "Semi-finals", target: 4 },
+  { key: "Final", target: 2 },
+  { key: "Champion", target: 1 },
+];
+
+function currentResultFacts(d) {
+  const reached = new Map();
+  const eliminatedAt = new Map();
+  const knockoutParticipants = new Set();
+  const rows = liveKnockoutRows(d);
+  rows.forEach((match) => {
+    const number = Number(String(match.match_id || "").replace(/^M/, ""));
+    if (!Number.isFinite(number) || number < 73 || number > 104) return;
+    const roundIndex = number <= 88 ? 0 : number <= 96 ? 1 : number <= 100 ? 2 : number <= 102 ? 3 : 4;
+    const participantIndex = Math.max(0, roundIndex - 1);
+    [match.home, match.away].filter(Boolean).forEach((team) => {
+      knockoutParticipants.add(team);
+      reached.set(team, Math.max(reached.get(team) ?? -1, participantIndex));
+    });
+    if (!match.completed) return;
+    const homeScore = Number(match.home_score);
+    const awayScore = Number(match.away_score);
+    if (!Number.isFinite(homeScore) || !Number.isFinite(awayScore) || homeScore === awayScore) return;
+    const winner = homeScore > awayScore ? match.home : match.away;
+    const loser = homeScore > awayScore ? match.away : match.home;
+    reached.set(winner, Math.max(reached.get(winner) ?? -1, roundIndex));
+    eliminatedAt.set(loser, Math.min(eliminatedAt.get(loser) ?? roundIndex, roundIndex));
+  });
+
+  const standings = currentStandings(d);
+  const groupComplete = standings.length > 0 && standings.every((row) => Number(row.played || 0) >= 3);
+  const groupEliminated = new Set();
+  if (groupComplete) {
+    standings.forEach((row) => {
+      if (!knockoutParticipants.has(row.team)) groupEliminated.add(row.team);
+    });
+  }
+  return { reached, eliminatedAt, groupEliminated };
+}
+
+function applyCurrentResults(d, base) {
+  if (!base?.simulation_probabilities?.length) return base;
+  const facts = currentResultFacts(d);
+  const rows = base.simulation_probabilities.map((row) => ({ ...row }));
+  rows.forEach((row) => {
+    if (facts.groupEliminated.has(row.team)) {
+      liveProbabilityStages.forEach((stage) => { row[stage.key] = 0; });
+      return;
+    }
+    const reached = facts.reached.get(row.team);
+    const eliminatedAt = facts.eliminatedAt.get(row.team);
+    liveProbabilityStages.forEach((stage, index) => {
+      if (reached !== undefined && index <= reached) row[stage.key] = 1;
+      if (eliminatedAt !== undefined && index > reached) row[stage.key] = 0;
+    });
+  });
+
+  liveProbabilityStages.forEach((stage) => {
+    const fixed = rows.filter((row) => row[stage.key] === 1).length;
+    const remaining = rows.filter((row) => row[stage.key] > 0 && row[stage.key] !== 1);
+    const residual = Math.max(0, stage.target - fixed);
+    const total = remaining.reduce((sum, row) => sum + Number(row[stage.key] || 0), 0);
+    if (!remaining.length || !total) return;
+    remaining.forEach((row) => { row[stage.key] = Number(row[stage.key] || 0) * residual / total; });
+  });
+  return { ...base, simulation_probabilities: rows, live_adjusted: true };
 }
 
 function mergedSources(d) {
@@ -696,6 +768,34 @@ function groupVisual(d) {
   return `<h2>Who May Make It Out Of Each Group</h2><div class="grid">${cards}</div>`;
 }
 
+function countryPathRoute(d, current, sim) {
+  const liveRoute = liveKnockoutRows(d)
+    .filter((match) => match.home === current || match.away === current)
+    .map((match) => {
+      const homeScore = Number(match.home_score);
+      const awayScore = Number(match.away_score);
+      const winner = match.completed && Number.isFinite(homeScore) && Number.isFinite(awayScore) && homeScore !== awayScore
+        ? (homeScore > awayScore ? match.home : match.away)
+        : "";
+      const number = String(match.match_id || "").replace(/^M/, "");
+      return {
+        round: match.round || "Knockout",
+        match: `M${number}`,
+        team_a: match.home,
+        team_b: match.away,
+        winner,
+        status: match.completed ? "Completed" : "Upcoming",
+      };
+    });
+  if (!liveRoute.length) return sim.bracket.filter((match) => match.team_a === current || match.team_b === current);
+  const liveIds = new Set(liveRoute.map((match) => match.match));
+  const eliminated = liveRoute.some((match) => match.winner && match.winner !== current);
+  if (eliminated) return liveRoute;
+  const future = sim.bracket
+    .filter((match) => (match.team_a === current || match.team_b === current) && !liveIds.has(String(match.match)));
+  return [...liveRoute, ...future];
+}
+
 function countryPath(d) {
   const sort = state.countryPathSort || document.getElementById("country-sort")?.value || "az";
   const sim = activeSimulation();
@@ -706,7 +806,7 @@ function countryPath(d) {
   const current = state.countryPathTeam && teams.some((team) => team.team === state.countryPathTeam) ? state.countryPathTeam : teams[0].team;
   const row = sim.simulation_probabilities.find((r) => r.team === current);
   const stages = [["Group", 1], ["Round of 32", row["Round of 32"]], ["Quarter-finals", row["Quarter-finals"]], ["Semi-finals", row["Semi-finals"]], ["Final", row.Final], ["Champion", row.Champion]];
-  const route = sim.bracket.filter((m) => m.team_a === current || m.team_b === current);
+  const route = countryPathRoute(d, current, sim);
   setTimeout(() => {
     document.getElementById("country-sort")?.addEventListener("change", (event) => {
       state.countryPathSort = event.target.value;
@@ -718,7 +818,7 @@ function countryPath(d) {
       render();
     });
   }, 0);
-  return `<h2>Animated Possible Country Path</h2><div class="controls-row"><label>Country order<select id="country-sort"><option value="az" ${sort === "az" ? "selected" : ""}>A-Z order</option><option value="za" ${sort === "za" ? "selected" : ""}>Z-A order</option><option value="champion" ${sort === "champion" ? "selected" : ""}>Highest champion %</option></select></label><label>Country<select id="country-select">${teams.map((t) => `<option ${t.team === current ? "selected" : ""}>${esc(t.team)}</option>`).join("")}</select></label></div><div class="path-shell"><div class="path-track">${stages.map(([name, p]) => `<section class="path-stage"><strong>${esc(name)}</strong><div class="stage-percent">${pct(p)}</div><p class="muted">${p >= 0.7 ? "Strong chance." : p >= 0.4 ? "Realistic path." : p > 0 ? "Needs the path to break well." : "No path in sample."}</p><div class="bar-track"><div class="stage-meter-fill" style="--p:${p * 100}%; background:${p >= 0.4 ? "#2457a6" : "#b84a62"}"></div></div></section>`).join("")}</div></div><h3>One Sample Knockout Route</h3>${route.length ? table(route.map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === current ? m.team_b : m.team_a, result: m.winner === current ? "Advanced" : "Eliminated" })), [{ key: "round", label: "Round" }, { key: "match", label: "Match" }, { key: "opponent", label: "Opponent" }, { key: "result", label: "Result" }]) : `<p class="warn">${esc(current)} did not reach the Round of 32 in this sampled bracket seed.</p>`}`;
+  return `<h2>Animated Possible Country Path</h2><div class="controls-row"><label>Country order<select id="country-sort"><option value="az" ${sort === "az" ? "selected" : ""}>A-Z order</option><option value="za" ${sort === "za" ? "selected" : ""}>Z-A order</option><option value="champion" ${sort === "champion" ? "selected" : ""}>Highest champion %</option></select></label><label>Country<select id="country-select">${teams.map((t) => `<option ${t.team === current ? "selected" : ""}>${esc(t.team)}</option>`).join("")}</select></label></div><div class="path-shell"><div class="path-track">${stages.map(([name, p]) => `<section class="path-stage"><strong>${esc(name)}</strong><div class="stage-percent">${pct(p)}</div><p class="muted">${p >= 0.7 ? "Strong chance." : p >= 0.4 ? "Realistic path." : p > 0 ? "Needs the path to break well." : "No path in sample."}</p><div class="bar-track"><div class="stage-meter-fill" style="--p:${p * 100}%; background:${p >= 0.4 ? "#2457a6" : "#b84a62"}"></div></div></section>`).join("")}</div></div><h3>One Sample Knockout Route</h3>${route.length ? table(route.map((m) => ({ round: m.round, match: m.match, opponent: m.team_a === current ? m.team_b : m.team_a, result: m.winner ? (m.winner === current ? "Advanced" : "Eliminated") : "Upcoming" })), [{ key: "round", label: "Round" }, { key: "match", label: "Match" }, { key: "opponent", label: "Opponent" }, { key: "result", label: "Result" }]) : `<p class="warn">${esc(current)} did not reach the Round of 32 in this sampled bracket seed.</p>`}`;
 }
 
 function penalties(d) {
