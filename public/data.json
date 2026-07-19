@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T21:54:14+00:00",
+  "generated_at": "2026-07-19T22:53:24+00:00",
   "refresh_cadences": {
     "live_results_minutes": 5,
     "transfermarkt_values_hours": 1,
@@ -25,433 +25,433 @@
         {
           "team": "France",
           "group": "I",
-          "Round of 32": 0.882,
-          "Quarter-finals": 0.434,
-          "Semi-finals": 0.2895,
-          "Final": 0.18,
-          "Champion": 0.1025
-        },
-        {
-          "team": "Argentina",
-          "group": "J",
-          "Round of 32": 0.904,
-          "Quarter-finals": 0.4015,
-          "Semi-finals": 0.26,
-          "Final": 0.149,
-          "Champion": 0.0905
-        },
-        {
-          "team": "Spain",
-          "group": "H",
-          "Round of 32": 0.9015,
-          "Quarter-finals": 0.3935,
-          "Semi-finals": 0.2455,
-          "Final": 0.1515,
-          "Champion": 0.086
+          "Round of 32": 0.8875,
+          "Quarter-finals": 0.444,
+          "Semi-finals": 0.2965,
+          "Final": 0.1765,
+          "Champion": 0.0995
         },
         {
           "team": "England",
           "group": "L",
-          "Round of 32": 0.8855,
-          "Quarter-finals": 0.4165,
-          "Semi-finals": 0.2605,
-          "Final": 0.153,
-          "Champion": 0.0845
+          "Round of 32": 0.8905,
+          "Quarter-finals": 0.4235,
+          "Semi-finals": 0.2625,
+          "Final": 0.1535,
+          "Champion": 0.0945
         },
         {
-          "team": "Portugal",
-          "group": "K",
-          "Round of 32": 0.8995,
-          "Quarter-finals": 0.4085,
-          "Semi-finals": 0.251,
-          "Final": 0.147,
-          "Champion": 0.081
+          "team": "Spain",
+          "group": "H",
+          "Round of 32": 0.905,
+          "Quarter-finals": 0.394,
+          "Semi-finals": 0.252,
+          "Final": 0.1645,
+          "Champion": 0.0935
         },
         {
-          "team": "Netherlands",
-          "group": "F",
-          "Round of 32": 0.8495,
-          "Quarter-finals": 0.355,
-          "Semi-finals": 0.221,
-          "Final": 0.1375,
-          "Champion": 0.077
+          "team": "Argentina",
+          "group": "J",
+          "Round of 32": 0.9105,
+          "Quarter-finals": 0.4025,
+          "Semi-finals": 0.2545,
+          "Final": 0.148,
+          "Champion": 0.0865
         },
         {
           "team": "Brazil",
           "group": "C",
-          "Round of 32": 0.88,
-          "Quarter-finals": 0.349,
-          "Semi-finals": 0.2105,
-          "Final": 0.1155,
-          "Champion": 0.0675
+          "Round of 32": 0.8845,
+          "Quarter-finals": 0.3535,
+          "Semi-finals": 0.218,
+          "Final": 0.12,
+          "Champion": 0.071
+        },
+        {
+          "team": "Portugal",
+          "group": "K",
+          "Round of 32": 0.893,
+          "Quarter-finals": 0.387,
+          "Semi-finals": 0.2385,
+          "Final": 0.1285,
+          "Champion": 0.07
+        },
+        {
+          "team": "Netherlands",
+          "group": "F",
+          "Round of 32": 0.835,
+          "Quarter-finals": 0.343,
+          "Semi-finals": 0.2045,
+          "Final": 0.1215,
+          "Champion": 0.0605
         },
         {
           "team": "Belgium",
           "group": "G",
-          "Round of 32": 0.8835,
-          "Quarter-finals": 0.3805,
-          "Semi-finals": 0.21,
-          "Final": 0.1205,
-          "Champion": 0.065
+          "Round of 32": 0.8675,
+          "Quarter-finals": 0.3735,
+          "Semi-finals": 0.2055,
+          "Final": 0.113,
+          "Champion": 0.058
         },
         {
           "team": "Germany",
           "group": "E",
-          "Round of 32": 0.895,
-          "Quarter-finals": 0.344,
-          "Semi-finals": 0.1935,
-          "Final": 0.097,
-          "Champion": 0.0485
+          "Round of 32": 0.8935,
+          "Quarter-finals": 0.3545,
+          "Semi-finals": 0.201,
+          "Final": 0.108,
+          "Champion": 0.0565
         },
         {
           "team": "Morocco",
           "group": "C",
-          "Round of 32": 0.8585,
-          "Quarter-finals": 0.3075,
-          "Semi-finals": 0.167,
-          "Final": 0.0795,
-          "Champion": 0.038
-        },
-        {
-          "team": "Croatia",
-          "group": "L",
-          "Round of 32": 0.802,
-          "Quarter-finals": 0.271,
-          "Semi-finals": 0.1375,
-          "Final": 0.0655,
-          "Champion": 0.0325
-        },
-        {
-          "team": "Senegal",
-          "group": "I",
-          "Round of 32": 0.8135,
-          "Quarter-finals": 0.2675,
-          "Semi-finals": 0.139,
-          "Final": 0.0685,
-          "Champion": 0.0315
+          "Round of 32": 0.852,
+          "Quarter-finals": 0.322,
+          "Semi-finals": 0.1725,
+          "Final": 0.087,
+          "Champion": 0.043
         },
         {
           "team": "Mexico",
           "group": "A",
-          "Round of 32": 0.851,
-          "Quarter-finals": 0.2885,
-          "Semi-finals": 0.1455,
-          "Final": 0.071,
-          "Champion": 0.0285
+          "Round of 32": 0.8425,
+          "Quarter-finals": 0.283,
+          "Semi-finals": 0.145,
+          "Final": 0.068,
+          "Champion": 0.032
+        },
+        {
+          "team": "Senegal",
+          "group": "I",
+          "Round of 32": 0.794,
+          "Quarter-finals": 0.2595,
+          "Semi-finals": 0.145,
+          "Final": 0.067,
+          "Champion": 0.032
+        },
+        {
+          "team": "Croatia",
+          "group": "L",
+          "Round of 32": 0.805,
+          "Quarter-finals": 0.283,
+          "Semi-finals": 0.1365,
+          "Final": 0.0655,
+          "Champion": 0.03
         },
         {
           "team": "Colombia",
           "group": "K",
-          "Round of 32": 0.835,
-          "Quarter-finals": 0.276,
-          "Semi-finals": 0.138,
-          "Final": 0.06,
-          "Champion": 0.028
+          "Round of 32": 0.842,
+          "Quarter-finals": 0.2855,
+          "Semi-finals": 0.139,
+          "Final": 0.0655,
+          "Champion": 0.0275
         },
         {
           "team": "USA",
           "group": "D",
-          "Round of 32": 0.7795,
-          "Quarter-finals": 0.2515,
-          "Semi-finals": 0.1255,
-          "Final": 0.055,
-          "Champion": 0.0245
-        },
-        {
-          "team": "Japan",
-          "group": "F",
-          "Round of 32": 0.734,
-          "Quarter-finals": 0.203,
-          "Semi-finals": 0.091,
-          "Final": 0.044,
-          "Champion": 0.016
+          "Round of 32": 0.786,
+          "Quarter-finals": 0.255,
+          "Semi-finals": 0.127,
+          "Final": 0.0575,
+          "Champion": 0.027
         },
         {
           "team": "Switzerland",
           "group": "B",
-          "Round of 32": 0.837,
-          "Quarter-finals": 0.2305,
-          "Semi-finals": 0.0995,
-          "Final": 0.0435,
-          "Champion": 0.016
+          "Round of 32": 0.8455,
+          "Quarter-finals": 0.215,
+          "Semi-finals": 0.097,
+          "Final": 0.041,
+          "Champion": 0.015
+        },
+        {
+          "team": "Japan",
+          "group": "F",
+          "Round of 32": 0.72,
+          "Quarter-finals": 0.2025,
+          "Semi-finals": 0.083,
+          "Final": 0.0365,
+          "Champion": 0.0135
         },
         {
           "team": "Uruguay",
           "group": "H",
-          "Round of 32": 0.7975,
-          "Quarter-finals": 0.2005,
-          "Semi-finals": 0.0905,
-          "Final": 0.0405,
-          "Champion": 0.0145
-        },
-        {
-          "team": "Austria",
-          "group": "J",
-          "Round of 32": 0.752,
-          "Quarter-finals": 0.142,
-          "Semi-finals": 0.0585,
-          "Final": 0.0215,
-          "Champion": 0.01
+          "Round of 32": 0.787,
+          "Quarter-finals": 0.207,
+          "Semi-finals": 0.101,
+          "Final": 0.0415,
+          "Champion": 0.013
         },
         {
           "team": "Ecuador",
           "group": "E",
-          "Round of 32": 0.7495,
-          "Quarter-finals": 0.145,
-          "Semi-finals": 0.0595,
-          "Final": 0.0225,
-          "Champion": 0.0085
-        },
-        {
-          "team": "Turkey",
-          "group": "D",
-          "Round of 32": 0.719,
-          "Quarter-finals": 0.1645,
-          "Semi-finals": 0.068,
-          "Final": 0.021,
-          "Champion": 0.008
-        },
-        {
-          "team": "Norway",
-          "group": "I",
-          "Round of 32": 0.6535,
-          "Quarter-finals": 0.1445,
-          "Semi-finals": 0.057,
-          "Final": 0.0215,
-          "Champion": 0.0075
+          "Round of 32": 0.757,
+          "Quarter-finals": 0.153,
+          "Semi-finals": 0.0715,
+          "Final": 0.0255,
+          "Champion": 0.012
         },
         {
           "team": "Iran",
           "group": "G",
-          "Round of 32": 0.754,
-          "Quarter-finals": 0.1735,
-          "Semi-finals": 0.0695,
-          "Final": 0.024,
-          "Champion": 0.006
+          "Round of 32": 0.752,
+          "Quarter-finals": 0.203,
+          "Semi-finals": 0.0775,
+          "Final": 0.0285,
+          "Champion": 0.0115
         },
         {
-          "team": "Sweden",
-          "group": "F",
-          "Round of 32": 0.615,
-          "Quarter-finals": 0.102,
-          "Semi-finals": 0.033,
-          "Final": 0.015,
-          "Champion": 0.006
+          "team": "Austria",
+          "group": "J",
+          "Round of 32": 0.7375,
+          "Quarter-finals": 0.144,
+          "Semi-finals": 0.0535,
+          "Final": 0.0175,
+          "Champion": 0.0095
+        },
+        {
+          "team": "Norway",
+          "group": "I",
+          "Round of 32": 0.656,
+          "Quarter-finals": 0.121,
+          "Semi-finals": 0.0515,
+          "Final": 0.0165,
+          "Champion": 0.007
+        },
+        {
+          "team": "Turkey",
+          "group": "D",
+          "Round of 32": 0.709,
+          "Quarter-finals": 0.1545,
+          "Semi-finals": 0.064,
+          "Final": 0.018,
+          "Champion": 0.0065
         },
         {
           "team": "South Korea",
           "group": "A",
-          "Round of 32": 0.746,
-          "Quarter-finals": 0.1375,
-          "Semi-finals": 0.0465,
-          "Final": 0.0175,
+          "Round of 32": 0.741,
+          "Quarter-finals": 0.136,
+          "Semi-finals": 0.044,
+          "Final": 0.0145,
           "Champion": 0.0045
+        },
+        {
+          "team": "Sweden",
+          "group": "F",
+          "Round of 32": 0.603,
+          "Quarter-finals": 0.089,
+          "Semi-finals": 0.035,
+          "Final": 0.0175,
+          "Champion": 0.004
+        },
+        {
+          "team": "Qatar",
+          "group": "B",
+          "Round of 32": 0.7125,
+          "Quarter-finals": 0.1015,
+          "Semi-finals": 0.0265,
+          "Final": 0.01,
+          "Champion": 0.004
         },
         {
           "team": "Australia",
           "group": "D",
-          "Round of 32": 0.623,
-          "Quarter-finals": 0.1,
-          "Semi-finals": 0.036,
-          "Final": 0.008,
-          "Champion": 0.0035
+          "Round of 32": 0.639,
+          "Quarter-finals": 0.1075,
+          "Semi-finals": 0.0325,
+          "Final": 0.015,
+          "Champion": 0.003
         },
         {
-          "team": "Paraguay",
-          "group": "D",
-          "Round of 32": 0.577,
-          "Quarter-finals": 0.0805,
-          "Semi-finals": 0.0305,
-          "Final": 0.0095,
-          "Champion": 0.003
+          "team": "Algeria",
+          "group": "J",
+          "Round of 32": 0.6025,
+          "Quarter-finals": 0.0635,
+          "Semi-finals": 0.0165,
+          "Final": 0.006,
+          "Champion": 0.0025
         },
         {
           "team": "Ghana",
           "group": "L",
-          "Round of 32": 0.5335,
-          "Quarter-finals": 0.0725,
-          "Semi-finals": 0.017,
-          "Final": 0.0055,
+          "Round of 32": 0.536,
+          "Quarter-finals": 0.0795,
+          "Semi-finals": 0.024,
+          "Final": 0.0095,
           "Champion": 0.002
         },
         {
           "team": "Canada",
           "group": "B",
-          "Round of 32": 0.6495,
-          "Quarter-finals": 0.074,
-          "Semi-finals": 0.021,
-          "Final": 0.005,
-          "Champion": 0.0015
+          "Round of 32": 0.6645,
+          "Quarter-finals": 0.067,
+          "Semi-finals": 0.0205,
+          "Final": 0.006,
+          "Champion": 0.002
         },
         {
           "team": "Egypt",
           "group": "G",
-          "Round of 32": 0.6295,
-          "Quarter-finals": 0.117,
-          "Semi-finals": 0.0335,
-          "Final": 0.007,
-          "Champion": 0.001
+          "Round of 32": 0.6565,
+          "Quarter-finals": 0.121,
+          "Semi-finals": 0.044,
+          "Final": 0.012,
+          "Champion": 0.002
+        },
+        {
+          "team": "Paraguay",
+          "group": "D",
+          "Round of 32": 0.57,
+          "Quarter-finals": 0.0855,
+          "Semi-finals": 0.0305,
+          "Final": 0.008,
+          "Champion": 0.0015
         },
         {
           "team": "Ivory Coast",
           "group": "E",
-          "Round of 32": 0.59,
-          "Quarter-finals": 0.073,
-          "Semi-finals": 0.0195,
-          "Final": 0.0035,
+          "Round of 32": 0.596,
+          "Quarter-finals": 0.07,
+          "Semi-finals": 0.015,
+          "Final": 0.007,
           "Champion": 0.001
         },
         {
           "team": "Scotland",
           "group": "C",
-          "Round of 32": 0.5705,
-          "Quarter-finals": 0.0695,
-          "Semi-finals": 0.023,
-          "Final": 0.0055,
+          "Round of 32": 0.5445,
+          "Quarter-finals": 0.066,
+          "Semi-finals": 0.0245,
+          "Final": 0.007,
           "Champion": 0.001
-        },
-        {
-          "team": "Algeria",
-          "group": "J",
-          "Round of 32": 0.594,
-          "Quarter-finals": 0.0565,
-          "Semi-finals": 0.0235,
-          "Final": 0.005,
-          "Champion": 0.001
-        },
-        {
-          "team": "Tunisia",
-          "group": "F",
-          "Round of 32": 0.5215,
-          "Quarter-finals": 0.063,
-          "Semi-finals": 0.016,
-          "Final": 0.0035,
-          "Champion": 0.001
-        },
-        {
-          "team": "Qatar",
-          "group": "B",
-          "Round of 32": 0.7245,
-          "Quarter-finals": 0.114,
-          "Semi-finals": 0.034,
-          "Final": 0.011,
-          "Champion": 0.0005
         },
         {
           "team": "Saudi Arabia",
           "group": "H",
-          "Round of 32": 0.5395,
-          "Quarter-finals": 0.0505,
-          "Semi-finals": 0.0105,
-          "Final": 0.003,
-          "Champion": 0.0005
+          "Round of 32": 0.527,
+          "Quarter-finals": 0.05,
+          "Semi-finals": 0.011,
+          "Final": 0.004,
+          "Champion": 0.001
         },
         {
-          "team": "South Africa",
+          "team": "Czechia",
           "group": "A",
-          "Round of 32": 0.5215,
-          "Quarter-finals": 0.0455,
-          "Semi-finals": 0.0095,
-          "Final": 0.003,
-          "Champion": 0.0005
+          "Round of 32": 0.557,
+          "Quarter-finals": 0.047,
+          "Semi-finals": 0.011,
+          "Final": 0.0015,
+          "Champion": 0.001
         },
         {
-          "team": "New Zealand",
-          "group": "G",
-          "Round of 32": 0.3945,
-          "Quarter-finals": 0.0225,
-          "Semi-finals": 0.004,
-          "Final": 0.0005,
+          "team": "Panama",
+          "group": "L",
+          "Round of 32": 0.4105,
+          "Quarter-finals": 0.0355,
+          "Semi-finals": 0.009,
+          "Final": 0.001,
           "Champion": 0.0005
         },
         {
           "team": "Iraq",
           "group": "I",
-          "Round of 32": 0.3295,
-          "Quarter-finals": 0.018,
-          "Semi-finals": 0.0045,
-          "Final": 0.0005,
-          "Champion": 0.0005
-        },
-        {
-          "team": "Czechia",
-          "group": "A",
-          "Round of 32": 0.563,
-          "Quarter-finals": 0.0455,
-          "Semi-finals": 0.011,
+          "Round of 32": 0.3395,
+          "Quarter-finals": 0.0205,
+          "Semi-finals": 0.0025,
           "Final": 0.001,
-          "Champion": 0.0
-        },
-        {
-          "team": "Panama",
-          "group": "L",
-          "Round of 32": 0.406,
-          "Quarter-finals": 0.0295,
-          "Semi-finals": 0.0055,
-          "Final": 0.0005,
-          "Champion": 0.0
+          "Champion": 0.0005
         },
         {
           "team": "DR Congo",
           "group": "K",
-          "Round of 32": 0.4685,
-          "Quarter-finals": 0.0325,
-          "Semi-finals": 0.0055,
-          "Final": 0.0025,
+          "Round of 32": 0.4885,
+          "Quarter-finals": 0.033,
+          "Semi-finals": 0.0085,
+          "Final": 0.0035,
+          "Champion": 0.0
+        },
+        {
+          "team": "Tunisia",
+          "group": "F",
+          "Round of 32": 0.5345,
+          "Quarter-finals": 0.0645,
+          "Semi-finals": 0.012,
+          "Final": 0.002,
+          "Champion": 0.0
+        },
+        {
+          "team": "South Africa",
+          "group": "A",
+          "Round of 32": 0.532,
+          "Quarter-finals": 0.0435,
+          "Semi-finals": 0.0085,
+          "Final": 0.0015,
           "Champion": 0.0
         },
         {
           "team": "Cape Verde",
           "group": "H",
-          "Round of 32": 0.3935,
-          "Quarter-finals": 0.0285,
-          "Semi-finals": 0.0055,
+          "Round of 32": 0.4225,
+          "Quarter-finals": 0.023,
+          "Semi-finals": 0.0045,
           "Final": 0.001,
-          "Champion": 0.0
-        },
-        {
-          "team": "Uzbekistan",
-          "group": "K",
-          "Round of 32": 0.4475,
-          "Quarter-finals": 0.0315,
-          "Semi-finals": 0.007,
-          "Final": 0.001,
-          "Champion": 0.0
-        },
-        {
-          "team": "Bosnia & Herzegovina",
-          "group": "B",
-          "Round of 32": 0.461,
-          "Quarter-finals": 0.0215,
-          "Semi-finals": 0.0025,
-          "Final": 0.0005,
           "Champion": 0.0
         },
         {
           "team": "Jordan",
           "group": "J",
-          "Round of 32": 0.4185,
-          "Quarter-finals": 0.0205,
-          "Semi-finals": 0.005,
+          "Round of 32": 0.4175,
+          "Quarter-finals": 0.019,
+          "Semi-finals": 0.003,
+          "Final": 0.0,
+          "Champion": 0.0
+        },
+        {
+          "team": "Uzbekistan",
+          "group": "K",
+          "Round of 32": 0.4275,
+          "Quarter-finals": 0.024,
+          "Semi-finals": 0.004,
           "Final": 0.0005,
+          "Champion": 0.0
+        },
+        {
+          "team": "Bosnia & Herzegovina",
+          "group": "B",
+          "Round of 32": 0.4595,
+          "Quarter-finals": 0.029,
+          "Semi-finals": 0.004,
+          "Final": 0.001,
+          "Champion": 0.0
+        },
+        {
+          "team": "New Zealand",
+          "group": "G",
+          "Round of 32": 0.386,
+          "Quarter-finals": 0.022,
+          "Semi-finals": 0.004,
+          "Final": 0.001,
           "Champion": 0.0
         },
         {
           "team": "Haiti",
           "group": "C",
-          "Round of 32": 0.3505,
-          "Quarter-finals": 0.0195,
-          "Semi-finals": 0.0015,
-          "Final": 0.0,
+          "Round of 32": 0.3705,
+          "Quarter-finals": 0.021,
+          "Semi-finals": 0.0035,
+          "Final": 0.0005,
           "Champion": 0.0
         },
         {
           "team": "Cura\u00e7ao",
           "group": "E",
-          "Round of 32": 0.416,
-          "Quarter-finals": 0.027,
-          "Semi-finals": 0.007,
-          "Final": 0.001,
+          "Round of 32": 0.4095,
+          "Quarter-finals": 0.018,
+          "Semi-finals": 0.0045,
+          "Final": 0.0,
           "Champion": 0.0
         }
       ],
@@ -459,431 +459,431 @@
         {
           "round": "Round of 32",
           "match": "M73",
-          "team_a": "South Africa",
+          "team_a": "Czechia",
           "team_b": "Bosnia & Herzegovina",
           "winner": "Bosnia & Herzegovina"
         },
         {
           "round": "Round of 32",
           "match": "M74",
-          "team_a": "Germany",
-          "team_b": "Mexico",
-          "winner": "Mexico"
+          "team_a": "Ecuador",
+          "team_b": "South Korea",
+          "winner": "South Korea"
         },
         {
           "round": "Round of 32",
           "match": "M75",
-          "team_a": "Netherlands",
+          "team_a": "Japan",
           "team_b": "Scotland",
-          "winner": "Netherlands"
+          "winner": "Scotland"
         },
         {
           "round": "Round of 32",
           "match": "M76",
-          "team_a": "Morocco",
-          "team_b": "Japan",
-          "winner": "Morocco"
+          "team_a": "Brazil",
+          "team_b": "Sweden",
+          "winner": "Sweden"
         },
         {
           "round": "Round of 32",
           "match": "M77",
           "team_a": "Senegal",
-          "team_b": "Brazil",
-          "winner": "Senegal"
+          "team_b": "USA",
+          "winner": "USA"
         },
         {
           "round": "Round of 32",
           "match": "M78",
-          "team_a": "Cura\u00e7ao",
-          "team_b": "Norway",
-          "winner": "Norway"
+          "team_a": "Germany",
+          "team_b": "France",
+          "winner": "France"
         },
         {
           "round": "Round of 32",
           "match": "M79",
-          "team_a": "Czechia",
-          "team_b": "Tunisia",
-          "winner": "Tunisia"
+          "team_a": "Mexico",
+          "team_b": "Ivory Coast",
+          "winner": "Mexico"
         },
         {
           "round": "Round of 32",
           "match": "M80",
-          "team_a": "Ghana",
-          "team_b": "Spain",
-          "winner": "Spain"
+          "team_a": "England",
+          "team_b": "Uruguay",
+          "winner": "England"
         },
         {
           "round": "Round of 32",
           "match": "M81",
-          "team_a": "Australia",
-          "team_b": "Canada",
-          "winner": "Australia"
-        },
-        {
-          "round": "Round of 32",
-          "match": "M82",
-          "team_a": "Iran",
-          "team_b": "France",
-          "winner": "Iran"
-        },
-        {
-          "round": "Round of 32",
-          "match": "M83",
-          "team_a": "Portugal",
-          "team_b": "England",
-          "winner": "Portugal"
-        },
-        {
-          "round": "Round of 32",
-          "match": "M84",
-          "team_a": "Cape Verde",
-          "team_b": "Algeria",
-          "winner": "Cape Verde"
-        },
-        {
-          "round": "Round of 32",
-          "match": "M85",
-          "team_a": "Switzerland",
-          "team_b": "New Zealand",
+          "team_a": "Turkey",
+          "team_b": "Switzerland",
           "winner": "Switzerland"
         },
         {
           "round": "Round of 32",
+          "match": "M82",
+          "team_a": "New Zealand",
+          "team_b": "Austria",
+          "winner": "New Zealand"
+        },
+        {
+          "round": "Round of 32",
+          "match": "M83",
+          "team_a": "Uzbekistan",
+          "team_b": "Croatia",
+          "winner": "Croatia"
+        },
+        {
+          "round": "Round of 32",
+          "match": "M84",
+          "team_a": "Spain",
+          "team_b": "Argentina",
+          "winner": "Argentina"
+        },
+        {
+          "round": "Round of 32",
+          "match": "M85",
+          "team_a": "Qatar",
+          "team_b": "Netherlands",
+          "winner": "Netherlands"
+        },
+        {
+          "round": "Round of 32",
           "match": "M86",
-          "team_a": "Austria",
-          "team_b": "Saudi Arabia",
-          "winner": "Saudi Arabia"
+          "team_a": "Jordan",
+          "team_b": "Cape Verde",
+          "winner": "Cape Verde"
         },
         {
           "round": "Round of 32",
           "match": "M87",
           "team_a": "Colombia",
-          "team_b": "Jordan",
-          "winner": "Colombia"
+          "team_b": "Portugal",
+          "winner": "Portugal"
         },
         {
           "round": "Round of 32",
           "match": "M88",
           "team_a": "Paraguay",
           "team_b": "Egypt",
-          "winner": "Paraguay"
+          "winner": "Egypt"
         },
         {
           "round": "R16",
           "match": "M89",
           "team_a": "Bosnia & Herzegovina",
-          "team_b": "Netherlands",
-          "winner": "Netherlands"
+          "team_b": "Scotland",
+          "winner": "Bosnia & Herzegovina"
         },
         {
           "round": "R16",
           "match": "M90",
-          "team_a": "Mexico",
-          "team_b": "Senegal",
-          "winner": "Senegal"
+          "team_a": "South Korea",
+          "team_b": "USA",
+          "winner": "USA"
         },
         {
           "round": "R16",
           "match": "M91",
-          "team_a": "Morocco",
-          "team_b": "Norway",
-          "winner": "Norway"
+          "team_a": "Sweden",
+          "team_b": "France",
+          "winner": "France"
         },
         {
           "round": "R16",
           "match": "M92",
-          "team_a": "Tunisia",
-          "team_b": "Spain",
-          "winner": "Spain"
+          "team_a": "Mexico",
+          "team_b": "England",
+          "winner": "Mexico"
         },
         {
           "round": "R16",
           "match": "M93",
-          "team_a": "Portugal",
-          "team_b": "Cape Verde",
-          "winner": "Portugal"
+          "team_a": "Croatia",
+          "team_b": "Argentina",
+          "winner": "Argentina"
         },
         {
           "round": "R16",
           "match": "M94",
-          "team_a": "Australia",
-          "team_b": "Iran",
-          "winner": "Iran"
+          "team_a": "Switzerland",
+          "team_b": "New Zealand",
+          "winner": "Switzerland"
         },
         {
           "round": "R16",
           "match": "M95",
-          "team_a": "Saudi Arabia",
-          "team_b": "Paraguay",
-          "winner": "Paraguay"
+          "team_a": "Cape Verde",
+          "team_b": "Egypt",
+          "winner": "Egypt"
         },
         {
           "round": "R16",
           "match": "M96",
-          "team_a": "Switzerland",
-          "team_b": "Colombia",
-          "winner": "Switzerland"
+          "team_a": "Netherlands",
+          "team_b": "Portugal",
+          "winner": "Netherlands"
         },
         {
           "round": "QF",
           "match": "M97",
-          "team_a": "Netherlands",
-          "team_b": "Senegal",
-          "winner": "Senegal"
+          "team_a": "Bosnia & Herzegovina",
+          "team_b": "USA",
+          "winner": "USA"
         },
         {
           "round": "QF",
           "match": "M98",
-          "team_a": "Portugal",
-          "team_b": "Iran",
-          "winner": "Portugal"
+          "team_a": "Argentina",
+          "team_b": "Switzerland",
+          "winner": "Argentina"
         },
         {
           "round": "QF",
           "match": "M99",
-          "team_a": "Norway",
-          "team_b": "Spain",
-          "winner": "Spain"
+          "team_a": "France",
+          "team_b": "Mexico",
+          "winner": "France"
         },
         {
           "round": "QF",
           "match": "M100",
-          "team_a": "Paraguay",
-          "team_b": "Switzerland",
-          "winner": "Switzerland"
+          "team_a": "Egypt",
+          "team_b": "Netherlands",
+          "winner": "Netherlands"
         },
         {
           "round": "SF",
           "match": "M101",
-          "team_a": "Senegal",
-          "team_b": "Portugal",
-          "winner": "Senegal"
+          "team_a": "USA",
+          "team_b": "Argentina",
+          "winner": "Argentina"
         },
         {
           "round": "SF",
           "match": "M102",
-          "team_a": "Spain",
-          "team_b": "Switzerland",
-          "winner": "Switzerland"
+          "team_a": "France",
+          "team_b": "Netherlands",
+          "winner": "France"
         },
         {
           "round": "Final",
           "match": "M104",
-          "team_a": "Senegal",
-          "team_b": "Switzerland",
-          "winner": "Switzerland"
+          "team_a": "Argentina",
+          "team_b": "France",
+          "winner": "Argentina"
         }
       ],
       "round32_analysis": [
         {
           "match": "M73",
-          "fixture": "South Africa vs Bosnia & Herzegovina",
-          "team_a": "South Africa",
+          "fixture": "Czechia vs Bosnia & Herzegovina",
+          "team_a": "Czechia",
           "team_b": "Bosnia & Herzegovina",
-          "favorite": "South Africa",
-          "favorite_win_probability": 0.5932665359,
-          "team_a_win_probability": 0.5932665359,
-          "team_b_win_probability": 0.4067334641,
-          "team_a_expected_goals": 1.1091311702,
-          "team_b_expected_goals": 0.9254204372,
-          "strength_gap": 11.1528352944,
-          "analysis": "South Africa has the edge, but the matchup is close enough for tactical swings."
+          "favorite": "Czechia",
+          "favorite_win_probability": 0.6050250944,
+          "team_a_win_probability": 0.6050250944,
+          "team_b_win_probability": 0.3949749056,
+          "team_a_expected_goals": 1.1539930239,
+          "team_b_expected_goals": 0.9338600942,
+          "strength_gap": 12.1607367672,
+          "analysis": "Czechia has the edge, but the matchup is close enough for tactical swings."
         },
         {
           "match": "M74",
-          "fixture": "Germany vs Mexico",
-          "team_a": "Germany",
-          "team_b": "Mexico",
-          "favorite": "Germany",
-          "favorite_win_probability": 0.5604959854,
-          "team_a_win_probability": 0.5604959854,
-          "team_b_win_probability": 0.4395040146,
-          "team_a_expected_goals": 1.3102364776,
-          "team_b_expected_goals": 1.1187875041,
-          "strength_gap": 3.8044287288,
+          "fixture": "Ecuador vs South Korea",
+          "team_a": "Ecuador",
+          "team_b": "South Korea",
+          "favorite": "Ecuador",
+          "favorite_win_probability": 0.5393047064,
+          "team_a_win_probability": 0.5393047064,
+          "team_b_win_probability": 0.4606952936,
+          "team_a_expected_goals": 1.1103486747,
+          "team_b_expected_goals": 1.0331191277,
+          "strength_gap": 4.8166900724,
           "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
           "match": "M75",
-          "fixture": "Netherlands vs Scotland",
-          "team_a": "Netherlands",
+          "fixture": "Japan vs Scotland",
+          "team_a": "Japan",
           "team_b": "Scotland",
-          "favorite": "Netherlands",
-          "favorite_win_probability": 0.7895830968,
-          "team_a_win_probability": 0.7895830968,
-          "team_b_win_probability": 0.2104169032,
-          "team_a_expected_goals": 1.5335045548,
-          "team_b_expected_goals": 0.785840511,
-          "strength_gap": 45.8798024408,
-          "analysis": "Netherlands is a clear favorite; Scotland likely needs a low-scoring match or penalties."
+          "favorite": "Japan",
+          "favorite_win_probability": 0.6990125372,
+          "team_a_win_probability": 0.6990125372,
+          "team_b_win_probability": 0.3009874628,
+          "team_a_expected_goals": 1.3302373152,
+          "team_b_expected_goals": 0.895507046,
+          "strength_gap": 27.8880218736,
+          "analysis": "Japan is a clear favorite; Scotland likely needs a low-scoring match or penalties."
         },
         {
           "match": "M76",
-          "fixture": "Morocco vs Japan",
-          "team_a": "Morocco",
-          "team_b": "Japan",
-          "favorite": "Morocco",
-          "favorite_win_probability": 0.5929045871,
-          "team_a_win_probability": 0.5929045871,
-          "team_b_win_probability": 0.4070954129,
-          "team_a_expected_goals": 1.2789225257,
-          "team_b_expected_goals": 1.083763685,
-          "strength_gap": 12.2087382696,
-          "analysis": "Morocco has the edge, but the matchup is close enough for tactical swings."
+          "fixture": "Brazil vs Sweden",
+          "team_a": "Brazil",
+          "team_b": "Sweden",
+          "favorite": "Brazil",
+          "favorite_win_probability": 0.7318433565,
+          "team_a_win_probability": 0.7318433565,
+          "team_b_win_probability": 0.2681566435,
+          "team_a_expected_goals": 1.466678979,
+          "team_b_expected_goals": 0.9221467833,
+          "strength_gap": 36.3099670666,
+          "analysis": "Brazil is a clear favorite; Sweden likely needs a low-scoring match or penalties."
         },
         {
           "match": "M77",
-          "fixture": "Senegal vs Brazil",
+          "fixture": "Senegal vs USA",
           "team_a": "Senegal",
-          "team_b": "Brazil",
-          "favorite": "Brazil",
-          "favorite_win_probability": 0.5878824257,
-          "team_a_win_probability": 0.4121175743,
-          "team_b_win_probability": 0.5878824257,
-          "team_a_expected_goals": 1.1555901538,
-          "team_b_expected_goals": 1.3156018335,
-          "strength_gap": 13.8295700163,
-          "analysis": "Brazil has the edge, but the matchup is close enough for tactical swings."
+          "team_b": "USA",
+          "favorite": "Senegal",
+          "favorite_win_probability": 0.5095294685,
+          "team_a_win_probability": 0.5095294685,
+          "team_b_win_probability": 0.4904705315,
+          "team_a_expected_goals": 1.2698599985,
+          "team_b_expected_goals": 1.202534695,
+          "strength_gap": 1.7476848075,
+          "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
           "match": "M78",
-          "fixture": "Cura\u00e7ao vs Norway",
-          "team_a": "Cura\u00e7ao",
-          "team_b": "Norway",
-          "favorite": "Norway",
-          "favorite_win_probability": 0.762636043,
-          "team_a_win_probability": 0.237363957,
-          "team_b_win_probability": 0.762636043,
-          "team_a_expected_goals": 0.8383617969,
-          "team_b_expected_goals": 1.4078831212,
-          "strength_gap": 52.9028963332,
-          "analysis": "Norway is a clear favorite; Cura\u00e7ao likely needs a low-scoring match or penalties."
+          "fixture": "Germany vs France",
+          "team_a": "Germany",
+          "team_b": "France",
+          "favorite": "France",
+          "favorite_win_probability": 0.5811859211,
+          "team_a_win_probability": 0.4188140789,
+          "team_b_win_probability": 0.5811859211,
+          "team_a_expected_goals": 1.2263100951,
+          "team_b_expected_goals": 1.3762433172,
+          "strength_gap": 13.1891663566,
+          "analysis": "France has the edge, but the matchup is close enough for tactical swings."
         },
         {
           "match": "M79",
-          "fixture": "Czechia vs Tunisia",
-          "team_a": "Czechia",
-          "team_b": "Tunisia",
-          "favorite": "Tunisia",
-          "favorite_win_probability": 0.5620244948,
-          "team_a_win_probability": 0.4379755052,
-          "team_b_win_probability": 0.5620244948,
-          "team_a_expected_goals": 1.0206343964,
-          "team_b_expected_goals": 1.1632178582,
-          "strength_gap": 6.5039483239,
-          "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
+          "fixture": "Mexico vs Ivory Coast",
+          "team_a": "Mexico",
+          "team_b": "Ivory Coast",
+          "favorite": "Mexico",
+          "favorite_win_probability": 0.7323611527,
+          "team_a_win_probability": 0.7323611527,
+          "team_b_win_probability": 0.2676388473,
+          "team_a_expected_goals": 1.3709001078,
+          "team_b_expected_goals": 0.8642899557,
+          "strength_gap": 37.1902477463,
+          "analysis": "Mexico is a clear favorite; Ivory Coast likely needs a low-scoring match or penalties."
         },
         {
           "match": "M80",
-          "fixture": "Ghana vs Spain",
-          "team_a": "Ghana",
-          "team_b": "Spain",
-          "favorite": "Spain",
-          "favorite_win_probability": 0.7978393749,
-          "team_a_win_probability": 0.2021606251,
-          "team_b_win_probability": 0.7978393749,
-          "team_a_expected_goals": 0.771592425,
-          "team_b_expected_goals": 1.5264641144,
-          "strength_gap": 52.6522674993,
-          "analysis": "Spain is a clear favorite; Ghana likely needs a low-scoring match or penalties."
+          "fixture": "England vs Uruguay",
+          "team_a": "England",
+          "team_b": "Uruguay",
+          "favorite": "England",
+          "favorite_win_probability": 0.6741010676,
+          "team_a_win_probability": 0.6741010676,
+          "team_b_win_probability": 0.3258989324,
+          "team_a_expected_goals": 1.40858535,
+          "team_b_expected_goals": 1.0163946882,
+          "strength_gap": 24.7560019521,
+          "analysis": "England has the edge, but the matchup is close enough for tactical swings."
         },
         {
           "match": "M81",
-          "fixture": "Australia vs Canada",
-          "team_a": "Australia",
-          "team_b": "Canada",
-          "favorite": "Australia",
-          "favorite_win_probability": 0.5800840383,
-          "team_a_win_probability": 0.5800840383,
-          "team_b_win_probability": 0.4199159617,
-          "team_a_expected_goals": 1.1797929025,
-          "team_b_expected_goals": 0.9739125637,
-          "strength_gap": 6.9426653581,
-          "analysis": "Australia has the edge, but the matchup is close enough for tactical swings."
-        },
-        {
-          "match": "M82",
-          "fixture": "Iran vs France",
-          "team_a": "Iran",
-          "team_b": "France",
-          "favorite": "France",
-          "favorite_win_probability": 0.7261482297,
-          "team_a_win_probability": 0.2738517703,
-          "team_b_win_probability": 0.7261482297,
-          "team_a_expected_goals": 0.9525244456,
-          "team_b_expected_goals": 1.4894129549,
-          "strength_gap": 35.2680632988,
-          "analysis": "France is a clear favorite; Iran likely needs a low-scoring match or penalties."
-        },
-        {
-          "match": "M83",
-          "fixture": "Portugal vs England",
-          "team_a": "Portugal",
-          "team_b": "England",
-          "favorite": "England",
-          "favorite_win_probability": 0.5273721966,
-          "team_a_win_probability": 0.4726278034,
-          "team_b_win_probability": 0.5273721966,
-          "team_a_expected_goals": 1.2149931652,
-          "team_b_expected_goals": 1.2967213123,
-          "strength_gap": 2.1278552917,
+          "fixture": "Turkey vs Switzerland",
+          "team_a": "Turkey",
+          "team_b": "Switzerland",
+          "favorite": "Switzerland",
+          "favorite_win_probability": 0.5343911418,
+          "team_a_win_probability": 0.4656088582,
+          "team_b_win_probability": 0.5343911418,
+          "team_a_expected_goals": 1.0949679301,
+          "team_b_expected_goals": 1.1498167127,
+          "strength_gap": 5.2180467976,
           "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
+          "match": "M82",
+          "fixture": "New Zealand vs Austria",
+          "team_a": "New Zealand",
+          "team_b": "Austria",
+          "favorite": "Austria",
+          "favorite_win_probability": 0.7460006351,
+          "team_a_win_probability": 0.2539993649,
+          "team_b_win_probability": 0.7460006351,
+          "team_a_expected_goals": 0.843578016,
+          "team_b_expected_goals": 1.4223274937,
+          "strength_gap": 36.7550501735,
+          "analysis": "Austria is a clear favorite; New Zealand likely needs a low-scoring match or penalties."
+        },
+        {
+          "match": "M83",
+          "fixture": "Uzbekistan vs Croatia",
+          "team_a": "Uzbekistan",
+          "team_b": "Croatia",
+          "favorite": "Croatia",
+          "favorite_win_probability": 0.8015898954,
+          "team_a_win_probability": 0.1984101046,
+          "team_b_win_probability": 0.8015898954,
+          "team_a_expected_goals": 0.747719366,
+          "team_b_expected_goals": 1.5205212753,
+          "strength_gap": 50.4571023944,
+          "analysis": "Croatia is a clear favorite; Uzbekistan likely needs a low-scoring match or penalties."
+        },
+        {
           "match": "M84",
-          "fixture": "Cape Verde vs Algeria",
-          "team_a": "Cape Verde",
-          "team_b": "Algeria",
-          "favorite": "Algeria",
-          "favorite_win_probability": 0.6121179355,
-          "team_a_win_probability": 0.3878820645,
-          "team_b_win_probability": 0.6121179355,
-          "team_a_expected_goals": 0.9470846167,
-          "team_b_expected_goals": 1.1885200508,
-          "strength_gap": 12.9796361883,
-          "analysis": "Algeria has the edge, but the matchup is close enough for tactical swings."
+          "fixture": "Spain vs Argentina",
+          "team_a": "Spain",
+          "team_b": "Argentina",
+          "favorite": "Spain",
+          "favorite_win_probability": 0.5111352668,
+          "team_a_win_probability": 0.5111352668,
+          "team_b_win_probability": 0.4888647332,
+          "team_a_expected_goals": 1.2627448644,
+          "team_b_expected_goals": 1.2810801227,
+          "strength_gap": 4.1862294065,
+          "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
           "match": "M85",
-          "fixture": "Switzerland vs New Zealand",
-          "team_a": "Switzerland",
-          "team_b": "New Zealand",
-          "favorite": "Switzerland",
-          "favorite_win_probability": 0.783517205,
-          "team_a_win_probability": 0.783517205,
-          "team_b_win_probability": 0.216482795,
-          "team_a_expected_goals": 1.4588740804,
-          "team_b_expected_goals": 0.7689257412,
-          "strength_gap": 46.2474192051,
-          "analysis": "Switzerland is a clear favorite; New Zealand likely needs a low-scoring match or penalties."
+          "fixture": "Qatar vs Netherlands",
+          "team_a": "Qatar",
+          "team_b": "Netherlands",
+          "favorite": "Netherlands",
+          "favorite_win_probability": 0.7684773267,
+          "team_a_win_probability": 0.2315226733,
+          "team_b_win_probability": 0.7684773267,
+          "team_a_expected_goals": 0.8471935203,
+          "team_b_expected_goals": 1.5213218488,
+          "strength_gap": 42.5850558247,
+          "analysis": "Netherlands is a clear favorite; Qatar likely needs a low-scoring match or penalties."
         },
         {
           "match": "M86",
-          "fixture": "Austria vs Saudi Arabia",
-          "team_a": "Austria",
-          "team_b": "Saudi Arabia",
-          "favorite": "Austria",
-          "favorite_win_probability": 0.6673785538,
-          "team_a_win_probability": 0.6673785538,
-          "team_b_win_probability": 0.3326214462,
-          "team_a_expected_goals": 1.2845717361,
-          "team_b_expected_goals": 0.9222842176,
-          "strength_gap": 21.7668267528,
-          "analysis": "Austria has the edge, but the matchup is close enough for tactical swings."
+          "fixture": "Jordan vs Cape Verde",
+          "team_a": "Jordan",
+          "team_b": "Cape Verde",
+          "favorite": "Cape Verde",
+          "favorite_win_probability": 0.5186296908,
+          "team_a_win_probability": 0.4813703092,
+          "team_b_win_probability": 0.5186296908,
+          "team_a_expected_goals": 1.0476773639,
+          "team_b_expected_goals": 1.0666256544,
+          "strength_gap": 3.3353785812,
+          "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
         },
         {
           "match": "M87",
-          "fixture": "Colombia vs Jordan",
+          "fixture": "Colombia vs Portugal",
           "team_a": "Colombia",
-          "team_b": "Jordan",
-          "favorite": "Colombia",
-          "favorite_win_probability": 0.810872307,
-          "team_a_win_probability": 0.810872307,
-          "team_b_win_probability": 0.189127693,
-          "team_a_expected_goals": 1.4919432153,
-          "team_b_expected_goals": 0.7042415783,
-          "strength_gap": 52.9212970277,
-          "analysis": "Colombia is a clear favorite; Jordan likely needs a low-scoring match or penalties."
+          "team_b": "Portugal",
+          "favorite": "Portugal",
+          "favorite_win_probability": 0.602203993,
+          "team_a_win_probability": 0.397796007,
+          "team_b_win_probability": 0.602203993,
+          "team_a_expected_goals": 1.0489041309,
+          "team_b_expected_goals": 1.2613217902,
+          "strength_gap": 13.3861714851,
+          "analysis": "Portugal has the edge, but the matchup is close enough for tactical swings."
         },
         {
           "match": "M88",
@@ -906,7 +906,7 @@
     "base": "EUR",
     "quote": "SGD",
     "eur_to_sgd": 1.4765,
-    "fetched_at": "2026-07-19T21:52:40+00:00",
+    "fetched_at": "2026-07-19T22:52:12+00:00",
     "note": "Transfermarkt squad values are stored in EUR millions and converted to SGD for display only."
   },
   "sources": [
@@ -914,7 +914,7 @@
       "name": "groups_2026",
       "url": "https://github.com/openfootball/worldcup",
       "status": "live",
-      "fetched_at": "2026-07-19T21:52:38+00:00",
+      "fetched_at": "2026-07-19T22:52:09+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://github.com/openfootball/worldcup"
@@ -923,7 +923,7 @@
       "name": "fifa_rankings",
       "url": "https://inside.fifa.com/fifa-world-ranking/men",
       "status": "live",
-      "fetched_at": "2026-07-19T21:52:38+00:00",
+      "fetched_at": "2026-07-19T22:52:09+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://inside.fifa.com/fifa-world-ranking/men"
@@ -932,7 +932,7 @@
       "name": "elo_ratings",
       "url": "https://www.eloratings.net/",
       "status": "seed",
-      "fetched_at": "2026-07-19T21:52:38+00:00",
+      "fetched_at": "2026-07-19T22:52:09+00:00",
       "rows": 48,
       "note": "Using bundled starter data. The public page loads this table dynamically, so the app cannot read it from the initial HTML.",
       "citation": "https://www.eloratings.net/"
@@ -941,7 +941,7 @@
       "name": "transfermarkt_values",
       "url": "https://www.transfermarkt.com/statistik/weltrangliste",
       "status": "cached",
-      "fetched_at": "2026-07-19T21:52:38+00:00",
+      "fetched_at": "2026-07-19T22:52:09+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://www.transfermarkt.com/statistik/weltrangliste"
@@ -950,7 +950,7 @@
       "name": "espn_scoreboard",
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
       "status": "live",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 104,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
@@ -959,7 +959,7 @@
       "name": "fifa_schedule",
       "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule",
       "status": "reference",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 0,
       "note": "Official tournament schedule and match path reference.",
       "citation": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule"
@@ -968,7 +968,7 @@
       "name": "format_cross_check",
       "url": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for",
       "status": "reference",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 0,
       "note": "Independent tournament-format cross-check.",
       "citation": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for"
@@ -977,7 +977,7 @@
       "name": "espn_world_cup",
       "url": "https://www.espn.com/soccer/league/_/name/fifa.world",
       "status": "reference",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 0,
       "note": "Readable live scores, fixtures, and World Cup news reference.",
       "citation": "https://www.espn.com/soccer/league/_/name/fifa.world"
@@ -986,7 +986,7 @@
       "name": "football_data_org",
       "url": "https://api.football-data.org/v4/competitions/WC/matches",
       "status": "optional_api",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 0,
       "note": "Optional free-token fallback for World Cup matches. Add FOOTBALL_DATA_TOKEN in Cloudflare to enable live fallback.",
       "citation": "https://api.football-data.org/v4/competitions/WC/matches"
@@ -995,7 +995,7 @@
       "name": "eur_sgd_fx",
       "url": "https://api.frankfurter.app/latest?from=EUR&to=SGD",
       "status": "live",
-      "fetched_at": "2026-07-19T21:52:40+00:00",
+      "fetched_at": "2026-07-19T22:52:12+00:00",
       "rows": 1,
       "note": "Live EUR to SGD display conversion refreshed successfully.",
       "citation": "https://api.frankfurter.app/latest?from=EUR&to=SGD"
@@ -2039,8 +2039,8 @@
       "away": "Argentina",
       "home_score": "1",
       "away_score": "0",
-      "status": "Overtime",
-      "completed": false
+      "status": "Final Score - After Extra Time",
+      "completed": true
     }
   ],
   "current_group_tables": [
@@ -2383,14 +2383,14 @@
     {
       "group": "H",
       "team": "Spain",
-      "played": 7,
-      "won": 6,
+      "played": 8,
+      "won": 7,
       "drawn": 1,
       "lost": 0,
-      "goals_for": 13,
+      "goals_for": 14,
       "goals_against": 1,
-      "goal_difference": 12,
-      "points": 19
+      "goal_difference": 13,
+      "points": 22
     },
     {
       "group": "H",
@@ -2479,13 +2479,13 @@
     {
       "group": "J",
       "team": "Argentina",
-      "played": 7,
+      "played": 8,
       "won": 7,
       "drawn": 0,
-      "lost": 0,
+      "lost": 1,
       "goals_for": 19,
-      "goals_against": 7,
-      "goal_difference": 12,
+      "goals_against": 8,
+      "goal_difference": 11,
       "points": 21
     },
     {
@@ -3401,13 +3401,13 @@
       "host": 0,
       "world_cup_experience": 7.9013877113,
       "knockout_index": 331.933658534,
-      "attack": 2.0868555957,
+      "attack": 2.0725469482,
       "defense": 0.45,
-      "strength_score": 98.3365425789,
-      "live_matches_played": 7,
-      "live_goal_difference": 12.0,
-      "live_expected_goal_difference": 2.7350905385,
-      "live_form_adjustment": 5.294233978,
+      "strength_score": 98.1624992142,
+      "live_matches_played": 8,
+      "live_goal_difference": 13.0,
+      "live_expected_goal_difference": 2.7596187733,
+      "live_form_adjustment": 5.1201906133,
       "adjusted_by_live_results": true
     },
     {
@@ -3421,13 +3421,13 @@
       "host": 0,
       "world_cup_experience": 7.6137056389,
       "knockout_index": 320.9593623663,
-      "attack": 2.160860548,
-      "defense": 0.454396606,
-      "strength_score": 95.0338564772,
-      "live_matches_played": 7,
-      "live_goal_difference": 12.0,
-      "live_expected_goal_difference": 4.0220889826,
-      "live_form_adjustment": 4.5588062957,
+      "attack": 2.1121602454,
+      "defense": 0.4529427805,
+      "strength_score": 93.9762698076,
+      "live_matches_played": 8,
+      "live_goal_difference": 11.0,
+      "live_expected_goal_difference": 3.9975607478,
+      "live_form_adjustment": 3.5012196261,
       "adjusted_by_live_results": true
     },
     {
@@ -4335,433 +4335,433 @@
     {
       "team": "France",
       "group": "I",
-      "Round of 32": 0.882,
-      "Quarter-finals": 0.434,
-      "Semi-finals": 0.2895,
-      "Final": 0.18,
-      "Champion": 0.1025
-    },
-    {
-      "team": "Argentina",
-      "group": "J",
-      "Round of 32": 0.904,
-      "Quarter-finals": 0.4015,
-      "Semi-finals": 0.26,
-      "Final": 0.149,
-      "Champion": 0.0905
-    },
-    {
-      "team": "Spain",
-      "group": "H",
-      "Round of 32": 0.9015,
-      "Quarter-finals": 0.3935,
-      "Semi-finals": 0.2455,
-      "Final": 0.1515,
-      "Champion": 0.086
+      "Round of 32": 0.8875,
+      "Quarter-finals": 0.444,
+      "Semi-finals": 0.2965,
+      "Final": 0.1765,
+      "Champion": 0.0995
     },
     {
       "team": "England",
       "group": "L",
-      "Round of 32": 0.8855,
-      "Quarter-finals": 0.4165,
-      "Semi-finals": 0.2605,
-      "Final": 0.153,
-      "Champion": 0.0845
+      "Round of 32": 0.8905,
+      "Quarter-finals": 0.4235,
+      "Semi-finals": 0.2625,
+      "Final": 0.1535,
+      "Champion": 0.0945
     },
     {
-      "team": "Portugal",
-      "group": "K",
-      "Round of 32": 0.8995,
-      "Quarter-finals": 0.4085,
-      "Semi-finals": 0.251,
-      "Final": 0.147,
-      "Champion": 0.081
+      "team": "Spain",
+      "group": "H",
+      "Round of 32": 0.905,
+      "Quarter-finals": 0.394,
+      "Semi-finals": 0.252,
+      "Final": 0.1645,
+      "Champion": 0.0935
     },
     {
-      "team": "Netherlands",
-      "group": "F",
-      "Round of 32": 0.8495,
-      "Quarter-finals": 0.355,
-      "Semi-finals": 0.221,
-      "Final": 0.1375,
-      "Champion": 0.077
+      "team": "Argentina",
+      "group": "J",
+      "Round of 32": 0.9105,
+      "Quarter-finals": 0.4025,
+      "Semi-finals": 0.2545,
+      "Final": 0.148,
+      "Champion": 0.0865
     },
     {
       "team": "Brazil",
       "group": "C",
-      "Round of 32": 0.88,
-      "Quarter-finals": 0.349,
-      "Semi-finals": 0.2105,
-      "Final": 0.1155,
-      "Champion": 0.0675
+      "Round of 32": 0.8845,
+      "Quarter-finals": 0.3535,
+      "Semi-finals": 0.218,
+      "Final": 0.12,
+      "Champion": 0.071
+    },
+    {
+      "team": "Portugal",
+      "group": "K",
+      "Round of 32": 0.893,
+      "Quarter-finals": 0.387,
+      "Semi-finals": 0.2385,
+      "Final": 0.1285,
+      "Champion": 0.07
+    },
+    {
+      "team": "Netherlands",
+      "group": "F",
+      "Round of 32": 0.835,
+      "Quarter-finals": 0.343,
+      "Semi-finals": 0.2045,
+      "Final": 0.1215,
+      "Champion": 0.0605
     },
     {
       "team": "Belgium",
       "group": "G",
-      "Round of 32": 0.8835,
-      "Quarter-finals": 0.3805,
-      "Semi-finals": 0.21,
-      "Final": 0.1205,
-      "Champion": 0.065
+      "Round of 32": 0.8675,
+      "Quarter-finals": 0.3735,
+      "Semi-finals": 0.2055,
+      "Final": 0.113,
+      "Champion": 0.058
     },
     {
       "team": "Germany",
       "group": "E",
-      "Round of 32": 0.895,
-      "Quarter-finals": 0.344,
-      "Semi-finals": 0.1935,
-      "Final": 0.097,
-      "Champion": 0.0485
+      "Round of 32": 0.8935,
+      "Quarter-finals": 0.3545,
+      "Semi-finals": 0.201,
+      "Final": 0.108,
+      "Champion": 0.0565
     },
     {
       "team": "Morocco",
       "group": "C",
-      "Round of 32": 0.8585,
-      "Quarter-finals": 0.3075,
-      "Semi-finals": 0.167,
-      "Final": 0.0795,
-      "Champion": 0.038
-    },
-    {
-      "team": "Croatia",
-      "group": "L",
-      "Round of 32": 0.802,
-      "Quarter-finals": 0.271,
-      "Semi-finals": 0.1375,
-      "Final": 0.0655,
-      "Champion": 0.0325
-    },
-    {
-      "team": "Senegal",
-      "group": "I",
-      "Round of 32": 0.8135,
-      "Quarter-finals": 0.2675,
-      "Semi-finals": 0.139,
-      "Final": 0.0685,
-      "Champion": 0.0315
+      "Round of 32": 0.852,
+      "Quarter-finals": 0.322,
+      "Semi-finals": 0.1725,
+      "Final": 0.087,
+      "Champion": 0.043
     },
     {
       "team": "Mexico",
       "group": "A",
-      "Round of 32": 0.851,
-      "Quarter-finals": 0.2885,
-      "Semi-finals": 0.1455,
-      "Final": 0.071,
-      "Champion": 0.0285
+      "Round of 32": 0.8425,
+      "Quarter-finals": 0.283,
+      "Semi-finals": 0.145,
+      "Final": 0.068,
+      "Champion": 0.032
+    },
+    {
+      "team": "Senegal",
+      "group": "I",
+      "Round of 32": 0.794,
+      "Quarter-finals": 0.2595,
+      "Semi-finals": 0.145,
+      "Final": 0.067,
+      "Champion": 0.032
+    },
+    {
+      "team": "Croatia",
+      "group": "L",
+      "Round of 32": 0.805,
+      "Quarter-finals": 0.283,
+      "Semi-finals": 0.1365,
+      "Final": 0.0655,
+      "Champion": 0.03
     },
     {
       "team": "Colombia",
       "group": "K",
-      "Round of 32": 0.835,
-      "Quarter-finals": 0.276,
-      "Semi-finals": 0.138,
-      "Final": 0.06,
-      "Champion": 0.028
+      "Round of 32": 0.842,
+      "Quarter-finals": 0.2855,
+      "Semi-finals": 0.139,
+      "Final": 0.0655,
+      "Champion": 0.0275
     },
     {
       "team": "USA",
       "group": "D",
-      "Round of 32": 0.7795,
-      "Quarter-finals": 0.2515,
-      "Semi-finals": 0.1255,
-      "Final": 0.055,
-      "Champion": 0.0245
-    },
-    {
-      "team": "Japan",
-      "group": "F",
-      "Round of 32": 0.734,
-      "Quarter-finals": 0.203,
-      "Semi-finals": 0.091,
-      "Final": 0.044,
-      "Champion": 0.016
+      "Round of 32": 0.786,
+      "Quarter-finals": 0.255,
+      "Semi-finals": 0.127,
+      "Final": 0.0575,
+      "Champion": 0.027
     },
     {
       "team": "Switzerland",
       "group": "B",
-      "Round of 32": 0.837,
-      "Quarter-finals": 0.2305,
-      "Semi-finals": 0.0995,
-      "Final": 0.0435,
-      "Champion": 0.016
+      "Round of 32": 0.8455,
+      "Quarter-finals": 0.215,
+      "Semi-finals": 0.097,
+      "Final": 0.041,
+      "Champion": 0.015
+    },
+    {
+      "team": "Japan",
+      "group": "F",
+      "Round of 32": 0.72,
+      "Quarter-finals": 0.2025,
+      "Semi-finals": 0.083,
+      "Final": 0.0365,
+      "Champion": 0.0135
     },
     {
       "team": "Uruguay",
       "group": "H",
-      "Round of 32": 0.7975,
-      "Quarter-finals": 0.2005,
-      "Semi-finals": 0.0905,
-      "Final": 0.0405,
-      "Champion": 0.0145
-    },
-    {
-      "team": "Austria",
-      "group": "J",
-      "Round of 32": 0.752,
-      "Quarter-finals": 0.142,
-      "Semi-finals": 0.0585,
-      "Final": 0.0215,
-      "Champion": 0.01
+      "Round of 32": 0.787,
+      "Quarter-finals": 0.207,
+      "Semi-finals": 0.101,
+      "Final": 0.0415,
+      "Champion": 0.013
     },
     {
       "team": "Ecuador",
       "group": "E",
-      "Round of 32": 0.7495,
-      "Quarter-finals": 0.145,
-      "Semi-finals": 0.0595,
-      "Final": 0.0225,
-      "Champion": 0.0085
-    },
-    {
-      "team": "Turkey",
-      "group": "D",
-      "Round of 32": 0.719,
-      "Quarter-finals": 0.1645,
-      "Semi-finals": 0.068,
-      "Final": 0.021,
-      "Champion": 0.008
-    },
-    {
-      "team": "Norway",
-      "group": "I",
-      "Round of 32": 0.6535,
-      "Quarter-finals": 0.1445,
-      "Semi-finals": 0.057,
-      "Final": 0.0215,
-      "Champion": 0.0075
+      "Round of 32": 0.757,
+      "Quarter-finals": 0.153,
+      "Semi-finals": 0.0715,
+      "Final": 0.0255,
+      "Champion": 0.012
     },
     {
       "team": "Iran",
       "group": "G",
-      "Round of 32": 0.754,
-      "Quarter-finals": 0.1735,
-      "Semi-finals": 0.0695,
-      "Final": 0.024,
-      "Champion": 0.006
+      "Round of 32": 0.752,
+      "Quarter-finals": 0.203,
+      "Semi-finals": 0.0775,
+      "Final": 0.0285,
+      "Champion": 0.0115
     },
     {
-      "team": "Sweden",
-      "group": "F",
-      "Round of 32": 0.615,
-      "Quarter-finals": 0.102,
-      "Semi-finals": 0.033,
-      "Final": 0.015,
-      "Champion": 0.006
+      "team": "Austria",
+      "group": "J",
+      "Round of 32": 0.7375,
+      "Quarter-finals": 0.144,
+      "Semi-finals": 0.0535,
+      "Final": 0.0175,
+      "Champion": 0.0095
+    },
+    {
+      "team": "Norway",
+      "group": "I",
+      "Round of 32": 0.656,
+      "Quarter-finals": 0.121,
+      "Semi-finals": 0.0515,
+      "Final": 0.0165,
+      "Champion": 0.007
+    },
+    {
+      "team": "Turkey",
+      "group": "D",
+      "Round of 32": 0.709,
+      "Quarter-finals": 0.1545,
+      "Semi-finals": 0.064,
+      "Final": 0.018,
+      "Champion": 0.0065
     },
     {
       "team": "South Korea",
       "group": "A",
-      "Round of 32": 0.746,
-      "Quarter-finals": 0.1375,
-      "Semi-finals": 0.0465,
-      "Final": 0.0175,
+      "Round of 32": 0.741,
+      "Quarter-finals": 0.136,
+      "Semi-finals": 0.044,
+      "Final": 0.0145,
       "Champion": 0.0045
+    },
+    {
+      "team": "Sweden",
+      "group": "F",
+      "Round of 32": 0.603,
+      "Quarter-finals": 0.089,
+      "Semi-finals": 0.035,
+      "Final": 0.0175,
+      "Champion": 0.004
+    },
+    {
+      "team": "Qatar",
+      "group": "B",
+      "Round of 32": 0.7125,
+      "Quarter-finals": 0.1015,
+      "Semi-finals": 0.0265,
+      "Final": 0.01,
+      "Champion": 0.004
     },
     {
       "team": "Australia",
       "group": "D",
-      "Round of 32": 0.623,
-      "Quarter-finals": 0.1,
-      "Semi-finals": 0.036,
-      "Final": 0.008,
-      "Champion": 0.0035
+      "Round of 32": 0.639,
+      "Quarter-finals": 0.1075,
+      "Semi-finals": 0.0325,
+      "Final": 0.015,
+      "Champion": 0.003
     },
     {
-      "team": "Paraguay",
-      "group": "D",
-      "Round of 32": 0.577,
-      "Quarter-finals": 0.0805,
-      "Semi-finals": 0.0305,
-      "Final": 0.0095,
-      "Champion": 0.003
+      "team": "Algeria",
+      "group": "J",
+      "Round of 32": 0.6025,
+      "Quarter-finals": 0.0635,
+      "Semi-finals": 0.0165,
+      "Final": 0.006,
+      "Champion": 0.0025
     },
     {
       "team": "Ghana",
       "group": "L",
-      "Round of 32": 0.5335,
-      "Quarter-finals": 0.0725,
-      "Semi-finals": 0.017,
-      "Final": 0.0055,
+      "Round of 32": 0.536,
+      "Quarter-finals": 0.0795,
+      "Semi-finals": 0.024,
+      "Final": 0.0095,
       "Champion": 0.002
     },
     {
       "team": "Canada",
       "group": "B",
-      "Round of 32": 0.6495,
-      "Quarter-finals": 0.074,
-      "Semi-finals": 0.021,
-      "Final": 0.005,
-      "Champion": 0.0015
+      "Round of 32": 0.6645,
+      "Quarter-finals": 0.067,
+      "Semi-finals": 0.0205,
+      "Final": 0.006,
+      "Champion": 0.002
     },
     {
       "team": "Egypt",
       "group": "G",
-      "Round of 32": 0.6295,
-      "Quarter-finals": 0.117,
-      "Semi-finals": 0.0335,
-      "Final": 0.007,
-      "Champion": 0.001
+      "Round of 32": 0.6565,
+      "Quarter-finals": 0.121,
+      "Semi-finals": 0.044,
+      "Final": 0.012,
+      "Champion": 0.002
+    },
+    {
+      "team": "Paraguay",
+      "group": "D",
+      "Round of 32": 0.57,
+      "Quarter-finals": 0.0855,
+      "Semi-finals": 0.0305,
+      "Final": 0.008,
+      "Champion": 0.0015
     },
     {
       "team": "Ivory Coast",
       "group": "E",
-      "Round of 32": 0.59,
-      "Quarter-finals": 0.073,
-      "Semi-finals": 0.0195,
-      "Final": 0.0035,
+      "Round of 32": 0.596,
+      "Quarter-finals": 0.07,
+      "Semi-finals": 0.015,
+      "Final": 0.007,
       "Champion": 0.001
     },
     {
       "team": "Scotland",
       "group": "C",
-      "Round of 32": 0.5705,
-      "Quarter-finals": 0.0695,
-      "Semi-finals": 0.023,
-      "Final": 0.0055,
+      "Round of 32": 0.5445,
+      "Quarter-finals": 0.066,
+      "Semi-finals": 0.0245,
+      "Final": 0.007,
       "Champion": 0.001
-    },
-    {
-      "team": "Algeria",
-      "group": "J",
-      "Round of 32": 0.594,
-      "Quarter-finals": 0.0565,
-      "Semi-finals": 0.0235,
-      "Final": 0.005,
-      "Champion": 0.001
-    },
-    {
-      "team": "Tunisia",
-      "group": "F",
-      "Round of 32": 0.5215,
-      "Quarter-finals": 0.063,
-      "Semi-finals": 0.016,
-      "Final": 0.0035,
-      "Champion": 0.001
-    },
-    {
-      "team": "Qatar",
-      "group": "B",
-      "Round of 32": 0.7245,
-      "Quarter-finals": 0.114,
-      "Semi-finals": 0.034,
-      "Final": 0.011,
-      "Champion": 0.0005
     },
     {
       "team": "Saudi Arabia",
       "group": "H",
-      "Round of 32": 0.5395,
-      "Quarter-finals": 0.0505,
-      "Semi-finals": 0.0105,
-      "Final": 0.003,
-      "Champion": 0.0005
+      "Round of 32": 0.527,
+      "Quarter-finals": 0.05,
+      "Semi-finals": 0.011,
+      "Final": 0.004,
+      "Champion": 0.001
     },
     {
-      "team": "South Africa",
+      "team": "Czechia",
       "group": "A",
-      "Round of 32": 0.5215,
-      "Quarter-finals": 0.0455,
-      "Semi-finals": 0.0095,
-      "Final": 0.003,
-      "Champion": 0.0005
+      "Round of 32": 0.557,
+      "Quarter-finals": 0.047,
+      "Semi-finals": 0.011,
+      "Final": 0.0015,
+      "Champion": 0.001
     },
     {
-      "team": "New Zealand",
-      "group": "G",
-      "Round of 32": 0.3945,
-      "Quarter-finals": 0.0225,
-      "Semi-finals": 0.004,
-      "Final": 0.0005,
+      "team": "Panama",
+      "group": "L",
+      "Round of 32": 0.4105,
+      "Quarter-finals": 0.0355,
+      "Semi-finals": 0.009,
+      "Final": 0.001,
       "Champion": 0.0005
     },
     {
       "team": "Iraq",
       "group": "I",
-      "Round of 32": 0.3295,
-      "Quarter-finals": 0.018,
-      "Semi-finals": 0.0045,
-      "Final": 0.0005,
-      "Champion": 0.0005
-    },
-    {
-      "team": "Czechia",
-      "group": "A",
-      "Round of 32": 0.563,
-      "Quarter-finals": 0.0455,
-      "Semi-finals": 0.011,
+      "Round of 32": 0.3395,
+      "Quarter-finals": 0.0205,
+      "Semi-finals": 0.0025,
       "Final": 0.001,
-      "Champion": 0.0
-    },
-    {
-      "team": "Panama",
-      "group": "L",
-      "Round of 32": 0.406,
-      "Quarter-finals": 0.0295,
-      "Semi-finals": 0.0055,
-      "Final": 0.0005,
-      "Champion": 0.0
+      "Champion": 0.0005
     },
     {
       "team": "DR Congo",
       "group": "K",
-      "Round of 32": 0.4685,
-      "Quarter-finals": 0.0325,
-      "Semi-finals": 0.0055,
-      "Final": 0.0025,
+      "Round of 32": 0.4885,
+      "Quarter-finals": 0.033,
+      "Semi-finals": 0.0085,
+      "Final": 0.0035,
+      "Champion": 0.0
+    },
+    {
+      "team": "Tunisia",
+      "group": "F",
+      "Round of 32": 0.5345,
+      "Quarter-finals": 0.0645,
+      "Semi-finals": 0.012,
+      "Final": 0.002,
+      "Champion": 0.0
+    },
+    {
+      "team": "South Africa",
+      "group": "A",
+      "Round of 32": 0.532,
+      "Quarter-finals": 0.0435,
+      "Semi-finals": 0.0085,
+      "Final": 0.0015,
       "Champion": 0.0
     },
     {
       "team": "Cape Verde",
       "group": "H",
-      "Round of 32": 0.3935,
-      "Quarter-finals": 0.0285,
-      "Semi-finals": 0.0055,
+      "Round of 32": 0.4225,
+      "Quarter-finals": 0.023,
+      "Semi-finals": 0.0045,
       "Final": 0.001,
-      "Champion": 0.0
-    },
-    {
-      "team": "Uzbekistan",
-      "group": "K",
-      "Round of 32": 0.4475,
-      "Quarter-finals": 0.0315,
-      "Semi-finals": 0.007,
-      "Final": 0.001,
-      "Champion": 0.0
-    },
-    {
-      "team": "Bosnia & Herzegovina",
-      "group": "B",
-      "Round of 32": 0.461,
-      "Quarter-finals": 0.0215,
-      "Semi-finals": 0.0025,
-      "Final": 0.0005,
       "Champion": 0.0
     },
     {
       "team": "Jordan",
       "group": "J",
-      "Round of 32": 0.4185,
-      "Quarter-finals": 0.0205,
-      "Semi-finals": 0.005,
+      "Round of 32": 0.4175,
+      "Quarter-finals": 0.019,
+      "Semi-finals": 0.003,
+      "Final": 0.0,
+      "Champion": 0.0
+    },
+    {
+      "team": "Uzbekistan",
+      "group": "K",
+      "Round of 32": 0.4275,
+      "Quarter-finals": 0.024,
+      "Semi-finals": 0.004,
       "Final": 0.0005,
+      "Champion": 0.0
+    },
+    {
+      "team": "Bosnia & Herzegovina",
+      "group": "B",
+      "Round of 32": 0.4595,
+      "Quarter-finals": 0.029,
+      "Semi-finals": 0.004,
+      "Final": 0.001,
+      "Champion": 0.0
+    },
+    {
+      "team": "New Zealand",
+      "group": "G",
+      "Round of 32": 0.386,
+      "Quarter-finals": 0.022,
+      "Semi-finals": 0.004,
+      "Final": 0.001,
       "Champion": 0.0
     },
     {
       "team": "Haiti",
       "group": "C",
-      "Round of 32": 0.3505,
-      "Quarter-finals": 0.0195,
-      "Semi-finals": 0.0015,
-      "Final": 0.0,
+      "Round of 32": 0.3705,
+      "Quarter-finals": 0.021,
+      "Semi-finals": 0.0035,
+      "Final": 0.0005,
       "Champion": 0.0
     },
     {
       "team": "Cura\u00e7ao",
       "group": "E",
-      "Round of 32": 0.416,
-      "Quarter-finals": 0.027,
-      "Semi-finals": 0.007,
-      "Final": 0.001,
+      "Round of 32": 0.4095,
+      "Quarter-finals": 0.018,
+      "Semi-finals": 0.0045,
+      "Final": 0.0,
       "Champion": 0.0
     }
   ],
@@ -4787,7 +4787,7 @@
     {
       "team": "Spain",
       "group": "H",
-      "strength_score": 98.3365425789,
+      "strength_score": 98.1624992142,
       "Quarter-finals": 0.8070830639,
       "Semi-finals": 0.586717721,
       "Final": 0.3363470554,
@@ -4796,7 +4796,7 @@
     {
       "team": "Argentina",
       "group": "J",
-      "strength_score": 95.0338564772,
+      "strength_score": 93.9762698076,
       "Quarter-finals": 0.6920890844,
       "Semi-finals": 0.5210247023,
       "Final": 0.2991569946,
@@ -5203,431 +5203,431 @@
     {
       "round": "Round of 32",
       "match": "M73",
-      "team_a": "South Africa",
+      "team_a": "Czechia",
       "team_b": "Bosnia & Herzegovina",
       "winner": "Bosnia & Herzegovina"
     },
     {
       "round": "Round of 32",
       "match": "M74",
-      "team_a": "Germany",
-      "team_b": "Mexico",
-      "winner": "Mexico"
+      "team_a": "Ecuador",
+      "team_b": "South Korea",
+      "winner": "South Korea"
     },
     {
       "round": "Round of 32",
       "match": "M75",
-      "team_a": "Netherlands",
+      "team_a": "Japan",
       "team_b": "Scotland",
-      "winner": "Netherlands"
+      "winner": "Scotland"
     },
     {
       "round": "Round of 32",
       "match": "M76",
-      "team_a": "Morocco",
-      "team_b": "Japan",
-      "winner": "Morocco"
+      "team_a": "Brazil",
+      "team_b": "Sweden",
+      "winner": "Sweden"
     },
     {
       "round": "Round of 32",
       "match": "M77",
       "team_a": "Senegal",
-      "team_b": "Brazil",
-      "winner": "Senegal"
+      "team_b": "USA",
+      "winner": "USA"
     },
     {
       "round": "Round of 32",
       "match": "M78",
-      "team_a": "Cura\u00e7ao",
-      "team_b": "Norway",
-      "winner": "Norway"
+      "team_a": "Germany",
+      "team_b": "France",
+      "winner": "France"
     },
     {
       "round": "Round of 32",
       "match": "M79",
-      "team_a": "Czechia",
-      "team_b": "Tunisia",
-      "winner": "Tunisia"
+      "team_a": "Mexico",
+      "team_b": "Ivory Coast",
+      "winner": "Mexico"
     },
     {
       "round": "Round of 32",
       "match": "M80",
-      "team_a": "Ghana",
-      "team_b": "Spain",
-      "winner": "Spain"
+      "team_a": "England",
+      "team_b": "Uruguay",
+      "winner": "England"
     },
     {
       "round": "Round of 32",
       "match": "M81",
-      "team_a": "Australia",
-      "team_b": "Canada",
-      "winner": "Australia"
-    },
-    {
-      "round": "Round of 32",
-      "match": "M82",
-      "team_a": "Iran",
-      "team_b": "France",
-      "winner": "Iran"
-    },
-    {
-      "round": "Round of 32",
-      "match": "M83",
-      "team_a": "Portugal",
-      "team_b": "England",
-      "winner": "Portugal"
-    },
-    {
-      "round": "Round of 32",
-      "match": "M84",
-      "team_a": "Cape Verde",
-      "team_b": "Algeria",
-      "winner": "Cape Verde"
-    },
-    {
-      "round": "Round of 32",
-      "match": "M85",
-      "team_a": "Switzerland",
-      "team_b": "New Zealand",
+      "team_a": "Turkey",
+      "team_b": "Switzerland",
       "winner": "Switzerland"
     },
     {
       "round": "Round of 32",
+      "match": "M82",
+      "team_a": "New Zealand",
+      "team_b": "Austria",
+      "winner": "New Zealand"
+    },
+    {
+      "round": "Round of 32",
+      "match": "M83",
+      "team_a": "Uzbekistan",
+      "team_b": "Croatia",
+      "winner": "Croatia"
+    },
+    {
+      "round": "Round of 32",
+      "match": "M84",
+      "team_a": "Spain",
+      "team_b": "Argentina",
+      "winner": "Argentina"
+    },
+    {
+      "round": "Round of 32",
+      "match": "M85",
+      "team_a": "Qatar",
+      "team_b": "Netherlands",
+      "winner": "Netherlands"
+    },
+    {
+      "round": "Round of 32",
       "match": "M86",
-      "team_a": "Austria",
-      "team_b": "Saudi Arabia",
-      "winner": "Saudi Arabia"
+      "team_a": "Jordan",
+      "team_b": "Cape Verde",
+      "winner": "Cape Verde"
     },
     {
       "round": "Round of 32",
       "match": "M87",
       "team_a": "Colombia",
-      "team_b": "Jordan",
-      "winner": "Colombia"
+      "team_b": "Portugal",
+      "winner": "Portugal"
     },
     {
       "round": "Round of 32",
       "match": "M88",
       "team_a": "Paraguay",
       "team_b": "Egypt",
-      "winner": "Paraguay"
+      "winner": "Egypt"
     },
     {
       "round": "R16",
       "match": "M89",
       "team_a": "Bosnia & Herzegovina",
-      "team_b": "Netherlands",
-      "winner": "Netherlands"
+      "team_b": "Scotland",
+      "winner": "Bosnia & Herzegovina"
     },
     {
       "round": "R16",
       "match": "M90",
-      "team_a": "Mexico",
-      "team_b": "Senegal",
-      "winner": "Senegal"
+      "team_a": "South Korea",
+      "team_b": "USA",
+      "winner": "USA"
     },
     {
       "round": "R16",
       "match": "M91",
-      "team_a": "Morocco",
-      "team_b": "Norway",
-      "winner": "Norway"
+      "team_a": "Sweden",
+      "team_b": "France",
+      "winner": "France"
     },
     {
       "round": "R16",
       "match": "M92",
-      "team_a": "Tunisia",
-      "team_b": "Spain",
-      "winner": "Spain"
+      "team_a": "Mexico",
+      "team_b": "England",
+      "winner": "Mexico"
     },
     {
       "round": "R16",
       "match": "M93",
-      "team_a": "Portugal",
-      "team_b": "Cape Verde",
-      "winner": "Portugal"
+      "team_a": "Croatia",
+      "team_b": "Argentina",
+      "winner": "Argentina"
     },
     {
       "round": "R16",
       "match": "M94",
-      "team_a": "Australia",
-      "team_b": "Iran",
-      "winner": "Iran"
+      "team_a": "Switzerland",
+      "team_b": "New Zealand",
+      "winner": "Switzerland"
     },
     {
       "round": "R16",
       "match": "M95",
-      "team_a": "Saudi Arabia",
-      "team_b": "Paraguay",
-      "winner": "Paraguay"
+      "team_a": "Cape Verde",
+      "team_b": "Egypt",
+      "winner": "Egypt"
     },
     {
       "round": "R16",
       "match": "M96",
-      "team_a": "Switzerland",
-      "team_b": "Colombia",
-      "winner": "Switzerland"
+      "team_a": "Netherlands",
+      "team_b": "Portugal",
+      "winner": "Netherlands"
     },
     {
       "round": "QF",
       "match": "M97",
-      "team_a": "Netherlands",
-      "team_b": "Senegal",
-      "winner": "Senegal"
+      "team_a": "Bosnia & Herzegovina",
+      "team_b": "USA",
+      "winner": "USA"
     },
     {
       "round": "QF",
       "match": "M98",
-      "team_a": "Portugal",
-      "team_b": "Iran",
-      "winner": "Portugal"
+      "team_a": "Argentina",
+      "team_b": "Switzerland",
+      "winner": "Argentina"
     },
     {
       "round": "QF",
       "match": "M99",
-      "team_a": "Norway",
-      "team_b": "Spain",
-      "winner": "Spain"
+      "team_a": "France",
+      "team_b": "Mexico",
+      "winner": "France"
     },
     {
       "round": "QF",
       "match": "M100",
-      "team_a": "Paraguay",
-      "team_b": "Switzerland",
-      "winner": "Switzerland"
+      "team_a": "Egypt",
+      "team_b": "Netherlands",
+      "winner": "Netherlands"
     },
     {
       "round": "SF",
       "match": "M101",
-      "team_a": "Senegal",
-      "team_b": "Portugal",
-      "winner": "Senegal"
+      "team_a": "USA",
+      "team_b": "Argentina",
+      "winner": "Argentina"
     },
     {
       "round": "SF",
       "match": "M102",
-      "team_a": "Spain",
-      "team_b": "Switzerland",
-      "winner": "Switzerland"
+      "team_a": "France",
+      "team_b": "Netherlands",
+      "winner": "France"
     },
     {
       "round": "Final",
       "match": "M104",
-      "team_a": "Senegal",
-      "team_b": "Switzerland",
-      "winner": "Switzerland"
+      "team_a": "Argentina",
+      "team_b": "France",
+      "winner": "Argentina"
     }
   ],
   "round32_analysis": [
     {
       "match": "M73",
-      "fixture": "South Africa vs Bosnia & Herzegovina",
-      "team_a": "South Africa",
+      "fixture": "Czechia vs Bosnia & Herzegovina",
+      "team_a": "Czechia",
       "team_b": "Bosnia & Herzegovina",
-      "favorite": "South Africa",
-      "favorite_win_probability": 0.5932665359,
-      "team_a_win_probability": 0.5932665359,
-      "team_b_win_probability": 0.4067334641,
-      "team_a_expected_goals": 1.1091311702,
-      "team_b_expected_goals": 0.9254204372,
-      "strength_gap": 11.1528352944,
-      "analysis": "South Africa has the edge, but the matchup is close enough for tactical swings."
+      "favorite": "Czechia",
+      "favorite_win_probability": 0.6050250944,
+      "team_a_win_probability": 0.6050250944,
+      "team_b_win_probability": 0.3949749056,
+      "team_a_expected_goals": 1.1539930239,
+      "team_b_expected_goals": 0.9338600942,
+      "strength_gap": 12.1607367672,
+      "analysis": "Czechia has the edge, but the matchup is close enough for tactical swings."
     },
     {
       "match": "M74",
-      "fixture": "Germany vs Mexico",
-      "team_a": "Germany",
-      "team_b": "Mexico",
-      "favorite": "Germany",
-      "favorite_win_probability": 0.5604959854,
-      "team_a_win_probability": 0.5604959854,
-      "team_b_win_probability": 0.4395040146,
-      "team_a_expected_goals": 1.3102364776,
-      "team_b_expected_goals": 1.1187875041,
-      "strength_gap": 3.8044287288,
+      "fixture": "Ecuador vs South Korea",
+      "team_a": "Ecuador",
+      "team_b": "South Korea",
+      "favorite": "Ecuador",
+      "favorite_win_probability": 0.5393047064,
+      "team_a_win_probability": 0.5393047064,
+      "team_b_win_probability": 0.4606952936,
+      "team_a_expected_goals": 1.1103486747,
+      "team_b_expected_goals": 1.0331191277,
+      "strength_gap": 4.8166900724,
       "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
       "match": "M75",
-      "fixture": "Netherlands vs Scotland",
-      "team_a": "Netherlands",
+      "fixture": "Japan vs Scotland",
+      "team_a": "Japan",
       "team_b": "Scotland",
-      "favorite": "Netherlands",
-      "favorite_win_probability": 0.7895830968,
-      "team_a_win_probability": 0.7895830968,
-      "team_b_win_probability": 0.2104169032,
-      "team_a_expected_goals": 1.5335045548,
-      "team_b_expected_goals": 0.785840511,
-      "strength_gap": 45.8798024408,
-      "analysis": "Netherlands is a clear favorite; Scotland likely needs a low-scoring match or penalties."
+      "favorite": "Japan",
+      "favorite_win_probability": 0.6990125372,
+      "team_a_win_probability": 0.6990125372,
+      "team_b_win_probability": 0.3009874628,
+      "team_a_expected_goals": 1.3302373152,
+      "team_b_expected_goals": 0.895507046,
+      "strength_gap": 27.8880218736,
+      "analysis": "Japan is a clear favorite; Scotland likely needs a low-scoring match or penalties."
     },
     {
       "match": "M76",
-      "fixture": "Morocco vs Japan",
-      "team_a": "Morocco",
-      "team_b": "Japan",
-      "favorite": "Morocco",
-      "favorite_win_probability": 0.5929045871,
-      "team_a_win_probability": 0.5929045871,
-      "team_b_win_probability": 0.4070954129,
-      "team_a_expected_goals": 1.2789225257,
-      "team_b_expected_goals": 1.083763685,
-      "strength_gap": 12.2087382696,
-      "analysis": "Morocco has the edge, but the matchup is close enough for tactical swings."
+      "fixture": "Brazil vs Sweden",
+      "team_a": "Brazil",
+      "team_b": "Sweden",
+      "favorite": "Brazil",
+      "favorite_win_probability": 0.7318433565,
+      "team_a_win_probability": 0.7318433565,
+      "team_b_win_probability": 0.2681566435,
+      "team_a_expected_goals": 1.466678979,
+      "team_b_expected_goals": 0.9221467833,
+      "strength_gap": 36.3099670666,
+      "analysis": "Brazil is a clear favorite; Sweden likely needs a low-scoring match or penalties."
     },
     {
       "match": "M77",
-      "fixture": "Senegal vs Brazil",
+      "fixture": "Senegal vs USA",
       "team_a": "Senegal",
-      "team_b": "Brazil",
-      "favorite": "Brazil",
-      "favorite_win_probability": 0.5878824257,
-      "team_a_win_probability": 0.4121175743,
-      "team_b_win_probability": 0.5878824257,
-      "team_a_expected_goals": 1.1555901538,
-      "team_b_expected_goals": 1.3156018335,
-      "strength_gap": 13.8295700163,
-      "analysis": "Brazil has the edge, but the matchup is close enough for tactical swings."
+      "team_b": "USA",
+      "favorite": "Senegal",
+      "favorite_win_probability": 0.5095294685,
+      "team_a_win_probability": 0.5095294685,
+      "team_b_win_probability": 0.4904705315,
+      "team_a_expected_goals": 1.2698599985,
+      "team_b_expected_goals": 1.202534695,
+      "strength_gap": 1.7476848075,
+      "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
       "match": "M78",
-      "fixture": "Cura\u00e7ao vs Norway",
-      "team_a": "Cura\u00e7ao",
-      "team_b": "Norway",
-      "favorite": "Norway",
-      "favorite_win_probability": 0.762636043,
-      "team_a_win_probability": 0.237363957,
-      "team_b_win_probability": 0.762636043,
-      "team_a_expected_goals": 0.8383617969,
-      "team_b_expected_goals": 1.4078831212,
-      "strength_gap": 52.9028963332,
-      "analysis": "Norway is a clear favorite; Cura\u00e7ao likely needs a low-scoring match or penalties."
+      "fixture": "Germany vs France",
+      "team_a": "Germany",
+      "team_b": "France",
+      "favorite": "France",
+      "favorite_win_probability": 0.5811859211,
+      "team_a_win_probability": 0.4188140789,
+      "team_b_win_probability": 0.5811859211,
+      "team_a_expected_goals": 1.2263100951,
+      "team_b_expected_goals": 1.3762433172,
+      "strength_gap": 13.1891663566,
+      "analysis": "France has the edge, but the matchup is close enough for tactical swings."
     },
     {
       "match": "M79",
-      "fixture": "Czechia vs Tunisia",
-      "team_a": "Czechia",
-      "team_b": "Tunisia",
-      "favorite": "Tunisia",
-      "favorite_win_probability": 0.5620244948,
-      "team_a_win_probability": 0.4379755052,
-      "team_b_win_probability": 0.5620244948,
-      "team_a_expected_goals": 1.0206343964,
-      "team_b_expected_goals": 1.1632178582,
-      "strength_gap": 6.5039483239,
-      "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
+      "fixture": "Mexico vs Ivory Coast",
+      "team_a": "Mexico",
+      "team_b": "Ivory Coast",
+      "favorite": "Mexico",
+      "favorite_win_probability": 0.7323611527,
+      "team_a_win_probability": 0.7323611527,
+      "team_b_win_probability": 0.2676388473,
+      "team_a_expected_goals": 1.3709001078,
+      "team_b_expected_goals": 0.8642899557,
+      "strength_gap": 37.1902477463,
+      "analysis": "Mexico is a clear favorite; Ivory Coast likely needs a low-scoring match or penalties."
     },
     {
       "match": "M80",
-      "fixture": "Ghana vs Spain",
-      "team_a": "Ghana",
-      "team_b": "Spain",
-      "favorite": "Spain",
-      "favorite_win_probability": 0.7978393749,
-      "team_a_win_probability": 0.2021606251,
-      "team_b_win_probability": 0.7978393749,
-      "team_a_expected_goals": 0.771592425,
-      "team_b_expected_goals": 1.5264641144,
-      "strength_gap": 52.6522674993,
-      "analysis": "Spain is a clear favorite; Ghana likely needs a low-scoring match or penalties."
+      "fixture": "England vs Uruguay",
+      "team_a": "England",
+      "team_b": "Uruguay",
+      "favorite": "England",
+      "favorite_win_probability": 0.6741010676,
+      "team_a_win_probability": 0.6741010676,
+      "team_b_win_probability": 0.3258989324,
+      "team_a_expected_goals": 1.40858535,
+      "team_b_expected_goals": 1.0163946882,
+      "strength_gap": 24.7560019521,
+      "analysis": "England has the edge, but the matchup is close enough for tactical swings."
     },
     {
       "match": "M81",
-      "fixture": "Australia vs Canada",
-      "team_a": "Australia",
-      "team_b": "Canada",
-      "favorite": "Australia",
-      "favorite_win_probability": 0.5800840383,
-      "team_a_win_probability": 0.5800840383,
-      "team_b_win_probability": 0.4199159617,
-      "team_a_expected_goals": 1.1797929025,
-      "team_b_expected_goals": 0.9739125637,
-      "strength_gap": 6.9426653581,
-      "analysis": "Australia has the edge, but the matchup is close enough for tactical swings."
-    },
-    {
-      "match": "M82",
-      "fixture": "Iran vs France",
-      "team_a": "Iran",
-      "team_b": "France",
-      "favorite": "France",
-      "favorite_win_probability": 0.7261482297,
-      "team_a_win_probability": 0.2738517703,
-      "team_b_win_probability": 0.7261482297,
-      "team_a_expected_goals": 0.9525244456,
-      "team_b_expected_goals": 1.4894129549,
-      "strength_gap": 35.2680632988,
-      "analysis": "France is a clear favorite; Iran likely needs a low-scoring match or penalties."
-    },
-    {
-      "match": "M83",
-      "fixture": "Portugal vs England",
-      "team_a": "Portugal",
-      "team_b": "England",
-      "favorite": "England",
-      "favorite_win_probability": 0.5273721966,
-      "team_a_win_probability": 0.4726278034,
-      "team_b_win_probability": 0.5273721966,
-      "team_a_expected_goals": 1.2149931652,
-      "team_b_expected_goals": 1.2967213123,
-      "strength_gap": 2.1278552917,
+      "fixture": "Turkey vs Switzerland",
+      "team_a": "Turkey",
+      "team_b": "Switzerland",
+      "favorite": "Switzerland",
+      "favorite_win_probability": 0.5343911418,
+      "team_a_win_probability": 0.4656088582,
+      "team_b_win_probability": 0.5343911418,
+      "team_a_expected_goals": 1.0949679301,
+      "team_b_expected_goals": 1.1498167127,
+      "strength_gap": 5.2180467976,
       "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
+      "match": "M82",
+      "fixture": "New Zealand vs Austria",
+      "team_a": "New Zealand",
+      "team_b": "Austria",
+      "favorite": "Austria",
+      "favorite_win_probability": 0.7460006351,
+      "team_a_win_probability": 0.2539993649,
+      "team_b_win_probability": 0.7460006351,
+      "team_a_expected_goals": 0.843578016,
+      "team_b_expected_goals": 1.4223274937,
+      "strength_gap": 36.7550501735,
+      "analysis": "Austria is a clear favorite; New Zealand likely needs a low-scoring match or penalties."
+    },
+    {
+      "match": "M83",
+      "fixture": "Uzbekistan vs Croatia",
+      "team_a": "Uzbekistan",
+      "team_b": "Croatia",
+      "favorite": "Croatia",
+      "favorite_win_probability": 0.8015898954,
+      "team_a_win_probability": 0.1984101046,
+      "team_b_win_probability": 0.8015898954,
+      "team_a_expected_goals": 0.747719366,
+      "team_b_expected_goals": 1.5205212753,
+      "strength_gap": 50.4571023944,
+      "analysis": "Croatia is a clear favorite; Uzbekistan likely needs a low-scoring match or penalties."
+    },
+    {
       "match": "M84",
-      "fixture": "Cape Verde vs Algeria",
-      "team_a": "Cape Verde",
-      "team_b": "Algeria",
-      "favorite": "Algeria",
-      "favorite_win_probability": 0.6121179355,
-      "team_a_win_probability": 0.3878820645,
-      "team_b_win_probability": 0.6121179355,
-      "team_a_expected_goals": 0.9470846167,
-      "team_b_expected_goals": 1.1885200508,
-      "strength_gap": 12.9796361883,
-      "analysis": "Algeria has the edge, but the matchup is close enough for tactical swings."
+      "fixture": "Spain vs Argentina",
+      "team_a": "Spain",
+      "team_b": "Argentina",
+      "favorite": "Spain",
+      "favorite_win_probability": 0.5111352668,
+      "team_a_win_probability": 0.5111352668,
+      "team_b_win_probability": 0.4888647332,
+      "team_a_expected_goals": 1.2627448644,
+      "team_b_expected_goals": 1.2810801227,
+      "strength_gap": 4.1862294065,
+      "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
       "match": "M85",
-      "fixture": "Switzerland vs New Zealand",
-      "team_a": "Switzerland",
-      "team_b": "New Zealand",
-      "favorite": "Switzerland",
-      "favorite_win_probability": 0.783517205,
-      "team_a_win_probability": 0.783517205,
-      "team_b_win_probability": 0.216482795,
-      "team_a_expected_goals": 1.4588740804,
-      "team_b_expected_goals": 0.7689257412,
-      "strength_gap": 46.2474192051,
-      "analysis": "Switzerland is a clear favorite; New Zealand likely needs a low-scoring match or penalties."
+      "fixture": "Qatar vs Netherlands",
+      "team_a": "Qatar",
+      "team_b": "Netherlands",
+      "favorite": "Netherlands",
+      "favorite_win_probability": 0.7684773267,
+      "team_a_win_probability": 0.2315226733,
+      "team_b_win_probability": 0.7684773267,
+      "team_a_expected_goals": 0.8471935203,
+      "team_b_expected_goals": 1.5213218488,
+      "strength_gap": 42.5850558247,
+      "analysis": "Netherlands is a clear favorite; Qatar likely needs a low-scoring match or penalties."
     },
     {
       "match": "M86",
-      "fixture": "Austria vs Saudi Arabia",
-      "team_a": "Austria",
-      "team_b": "Saudi Arabia",
-      "favorite": "Austria",
-      "favorite_win_probability": 0.6673785538,
-      "team_a_win_probability": 0.6673785538,
-      "team_b_win_probability": 0.3326214462,
-      "team_a_expected_goals": 1.2845717361,
-      "team_b_expected_goals": 0.9222842176,
-      "strength_gap": 21.7668267528,
-      "analysis": "Austria has the edge, but the matchup is close enough for tactical swings."
+      "fixture": "Jordan vs Cape Verde",
+      "team_a": "Jordan",
+      "team_b": "Cape Verde",
+      "favorite": "Cape Verde",
+      "favorite_win_probability": 0.5186296908,
+      "team_a_win_probability": 0.4813703092,
+      "team_b_win_probability": 0.5186296908,
+      "team_a_expected_goals": 1.0476773639,
+      "team_b_expected_goals": 1.0666256544,
+      "strength_gap": 3.3353785812,
+      "analysis": "Very balanced fixture; penalties and small goal-margin events matter a lot."
     },
     {
       "match": "M87",
-      "fixture": "Colombia vs Jordan",
+      "fixture": "Colombia vs Portugal",
       "team_a": "Colombia",
-      "team_b": "Jordan",
-      "favorite": "Colombia",
-      "favorite_win_probability": 0.810872307,
-      "team_a_win_probability": 0.810872307,
-      "team_b_win_probability": 0.189127693,
-      "team_a_expected_goals": 1.4919432153,
-      "team_b_expected_goals": 0.7042415783,
-      "strength_gap": 52.9212970277,
-      "analysis": "Colombia is a clear favorite; Jordan likely needs a low-scoring match or penalties."
+      "team_b": "Portugal",
+      "favorite": "Portugal",
+      "favorite_win_probability": 0.602203993,
+      "team_a_win_probability": 0.397796007,
+      "team_b_win_probability": 0.602203993,
+      "team_a_expected_goals": 1.0489041309,
+      "team_b_expected_goals": 1.2613217902,
+      "strength_gap": 13.3861714851,
+      "analysis": "Portugal has the edge, but the matchup is close enough for tactical swings."
     },
     {
       "match": "M88",
@@ -6500,10 +6500,10 @@
       "team_a": "Cape Verde",
       "team_b": "Spain",
       "team_a_expected_goals": 0.62358657,
-      "team_b_expected_goals": 1.6667819504,
-      "team_a_win": 0.1357505124,
-      "draw": 0.2371708277,
-      "team_b_win": 0.6270786599
+      "team_b_expected_goals": 1.6596276267,
+      "team_a_win": 0.1364828914,
+      "draw": 0.2381379672,
+      "team_b_win": 0.6253791413
     },
     {
       "group": "H",
@@ -6530,10 +6530,10 @@
       "team_a": "Saudi Arabia",
       "team_b": "Spain",
       "team_a_expected_goals": 0.725583272,
-      "team_b_expected_goals": 1.5902547052,
-      "team_a_win": 0.1691739573,
-      "draw": 0.2499375015,
-      "team_b_win": 0.5808885413
+      "team_b_expected_goals": 1.5831003814,
+      "team_a_win": 0.17004635,
+      "draw": 0.2508559139,
+      "team_b_win": 0.5790977361
     },
     {
       "group": "H",
@@ -6549,31 +6549,31 @@
       "group": "H",
       "team_a": "Spain",
       "team_b": "Cape Verde",
-      "team_a_expected_goals": 1.6667819504,
+      "team_a_expected_goals": 1.6596276267,
       "team_b_expected_goals": 0.62358657,
-      "team_a_win": 0.6270786599,
-      "draw": 0.2371708277,
-      "team_b_win": 0.1357505124
+      "team_a_win": 0.6253791413,
+      "draw": 0.2381379672,
+      "team_b_win": 0.1364828914
     },
     {
       "group": "H",
       "team_a": "Spain",
       "team_b": "Saudi Arabia",
-      "team_a_expected_goals": 1.5902547052,
+      "team_a_expected_goals": 1.5831003814,
       "team_b_expected_goals": 0.725583272,
-      "team_a_win": 0.5808885413,
-      "draw": 0.2499375015,
-      "team_b_win": 0.1691739573
+      "team_a_win": 0.5790977361,
+      "draw": 0.2508559139,
+      "team_b_win": 0.17004635
     },
     {
       "group": "H",
       "team_a": "Spain",
       "team_b": "Uruguay",
-      "team_a_expected_goals": 1.3802918355,
+      "team_a_expected_goals": 1.3731375117,
       "team_b_expected_goals": 1.0078049462,
-      "team_a_win": 0.4542650768,
-      "draw": 0.2714216323,
-      "team_b_win": 0.2743132909
+      "team_a_win": 0.4523210531,
+      "draw": 0.2721208739,
+      "team_b_win": 0.275558073
     },
     {
       "group": "H",
@@ -6600,10 +6600,10 @@
       "team_a": "Uruguay",
       "team_b": "Spain",
       "team_a_expected_goals": 1.0078049462,
-      "team_b_expected_goals": 1.3802918355,
-      "team_a_win": 0.2743132909,
-      "draw": 0.2714216323,
-      "team_b_win": 0.4542650768
+      "team_b_expected_goals": 1.3731375117,
+      "team_a_win": 0.275558073,
+      "draw": 0.2721208739,
+      "team_b_win": 0.4523210531
     },
     {
       "group": "I",
@@ -6729,11 +6729,11 @@
       "group": "J",
       "team_a": "Algeria",
       "team_b": "Argentina",
-      "team_a_expected_goals": 0.7923642012,
-      "team_b_expected_goals": 1.6289283207,
-      "team_a_win": 0.1809359576,
-      "draw": 0.2461841144,
-      "team_b_win": 0.572879928
+      "team_a_expected_goals": 0.7916372885,
+      "team_b_expected_goals": 1.6045781693,
+      "team_a_win": 0.1838636695,
+      "draw": 0.24909456,
+      "team_b_win": 0.5670417705
     },
     {
       "group": "J",
@@ -6759,31 +6759,31 @@
       "group": "J",
       "team_a": "Argentina",
       "team_b": "Algeria",
-      "team_a_expected_goals": 1.6289283207,
-      "team_b_expected_goals": 0.7923642012,
-      "team_a_win": 0.572879928,
-      "draw": 0.2461841144,
-      "team_b_win": 0.1809359576
+      "team_a_expected_goals": 1.6045781693,
+      "team_b_expected_goals": 0.7916372885,
+      "team_a_win": 0.5670417705,
+      "draw": 0.24909456,
+      "team_b_win": 0.1838636695
     },
     {
       "group": "J",
       "team_a": "Argentina",
       "team_b": "Austria",
-      "team_a_expected_goals": 1.5021312196,
-      "team_b_expected_goals": 0.9649431318,
-      "team_a_win": 0.4970166963,
-      "draw": 0.2602258741,
-      "team_b_win": 0.2427574295
+      "team_a_expected_goals": 1.4777810682,
+      "team_b_expected_goals": 0.9642162191,
+      "team_a_win": 0.490829155,
+      "draw": 0.2627446079,
+      "team_b_win": 0.2464262371
     },
     {
       "group": "J",
       "team_a": "Argentina",
       "team_b": "Jordan",
-      "team_a_expected_goals": 1.7484693584,
-      "team_b_expected_goals": 0.6515215143,
-      "team_a_win": 0.6384885805,
-      "draw": 0.2275169512,
-      "team_b_win": 0.1339944683
+      "team_a_expected_goals": 1.724119207,
+      "team_b_expected_goals": 0.6507946016,
+      "team_a_win": 0.6331091703,
+      "draw": 0.230613223,
+      "team_b_win": 0.1362776066
     },
     {
       "group": "J",
@@ -6799,11 +6799,11 @@
       "group": "J",
       "team_a": "Austria",
       "team_b": "Argentina",
-      "team_a_expected_goals": 0.9649431318,
-      "team_b_expected_goals": 1.5021312196,
-      "team_a_win": 0.2427574295,
-      "draw": 0.2602258741,
-      "team_b_win": 0.4970166963
+      "team_a_expected_goals": 0.9642162191,
+      "team_b_expected_goals": 1.4777810682,
+      "team_a_win": 0.2464262371,
+      "draw": 0.2627446079,
+      "team_b_win": 0.490829155
     },
     {
       "group": "J",
@@ -6829,11 +6829,11 @@
       "group": "J",
       "team_a": "Jordan",
       "team_b": "Argentina",
-      "team_a_expected_goals": 0.6515215143,
-      "team_b_expected_goals": 1.7484693584,
-      "team_a_win": 0.1339944683,
-      "draw": 0.2275169512,
-      "team_b_win": 0.6384885805
+      "team_a_expected_goals": 0.6507946016,
+      "team_b_expected_goals": 1.724119207,
+      "team_a_win": 0.1362776066,
+      "draw": 0.230613223,
+      "team_b_win": 0.6331091703
     },
     {
       "group": "J",
@@ -7470,9 +7470,9 @@
       "match_id": "H1",
       "home": "Spain",
       "away": "Cape Verde",
-      "home_expected_goals": 1.6667819504,
+      "home_expected_goals": 1.6596276267,
       "away_expected_goals": 0.62358657,
-      "total_expected_goals": 2.2903685204
+      "total_expected_goals": 2.2832141967
     },
     {
       "group": "H",
@@ -7488,9 +7488,9 @@
       "match_id": "H3",
       "home": "Spain",
       "away": "Saudi Arabia",
-      "home_expected_goals": 1.5902547052,
+      "home_expected_goals": 1.5831003814,
       "away_expected_goals": 0.725583272,
-      "total_expected_goals": 2.3158379771
+      "total_expected_goals": 2.3086836534
     },
     {
       "group": "H",
@@ -7507,8 +7507,8 @@
       "home": "Uruguay",
       "away": "Spain",
       "home_expected_goals": 1.0078049462,
-      "away_expected_goals": 1.3802918355,
-      "total_expected_goals": 2.3880967816
+      "away_expected_goals": 1.3731375117,
+      "total_expected_goals": 2.3809424579
     },
     {
       "group": "H",
@@ -7578,9 +7578,9 @@
       "match_id": "J1",
       "home": "Argentina",
       "away": "Algeria",
-      "home_expected_goals": 1.6289283207,
-      "away_expected_goals": 0.7923642012,
-      "total_expected_goals": 2.4212925219
+      "home_expected_goals": 1.6045781693,
+      "away_expected_goals": 0.7916372885,
+      "total_expected_goals": 2.3962154579
     },
     {
       "group": "J",
@@ -7596,9 +7596,9 @@
       "match_id": "J3",
       "home": "Argentina",
       "away": "Austria",
-      "home_expected_goals": 1.5021312196,
-      "away_expected_goals": 0.9649431318,
-      "total_expected_goals": 2.4670743513
+      "home_expected_goals": 1.4777810682,
+      "away_expected_goals": 0.9642162191,
+      "total_expected_goals": 2.4419972873
     },
     {
       "group": "J",
@@ -7614,9 +7614,9 @@
       "match_id": "J5",
       "home": "Jordan",
       "away": "Argentina",
-      "home_expected_goals": 0.6515215143,
-      "away_expected_goals": 1.7484693584,
-      "total_expected_goals": 2.3999908727
+      "home_expected_goals": 0.6507946016,
+      "away_expected_goals": 1.724119207,
+      "total_expected_goals": 2.3749138087
     },
     {
       "group": "J",
@@ -7936,30 +7936,30 @@
     {
       "team": "Spain",
       "group": "H",
-      "expected_goals_for": 4.637328491,
+      "expected_goals_for": 4.6158655198,
       "expected_goals_against": 2.3569747882,
-      "expected_goal_difference": 2.2803537028
+      "expected_goal_difference": 2.2588907316
     },
     {
       "team": "Uruguay",
       "group": "H",
       "expected_goals_for": 3.7435958984,
-      "expected_goals_against": 2.9531897527,
-      "expected_goal_difference": 0.7904061457
+      "expected_goals_against": 2.946035429,
+      "expected_goal_difference": 0.7975604695
     },
     {
       "team": "Saudi Arabia",
       "group": "H",
       "expected_goals_for": 2.6869680062,
-      "expected_goals_against": 3.865300036,
-      "expected_goal_difference": -1.1783320299
+      "expected_goals_against": 3.8581457123,
+      "expected_goal_difference": -1.1711777061
     },
     {
       "team": "Cape Verde",
       "group": "H",
       "expected_goals_for": 2.304450655,
-      "expected_goals_against": 4.1968784737,
-      "expected_goal_difference": -1.8924278187
+      "expected_goals_against": 4.18972415,
+      "expected_goal_difference": -1.885273495
     },
     {
       "team": "France",
@@ -7992,30 +7992,30 @@
     {
       "team": "Argentina",
       "group": "J",
-      "expected_goals_for": 4.8795288986,
-      "expected_goals_against": 2.4088288473,
-      "expected_goal_difference": 2.4707000513
+      "expected_goals_for": 4.8064784446,
+      "expected_goals_against": 2.4066481092,
+      "expected_goal_difference": 2.3998303354
     },
     {
       "team": "Austria",
       "group": "J",
-      "expected_goals_for": 3.6569699204,
-      "expected_goals_against": 3.3350222203,
-      "expected_goal_difference": 0.3219477001
+      "expected_goals_for": 3.6562430077,
+      "expected_goals_against": 3.310672069,
+      "expected_goal_difference": 0.3455709387
     },
     {
       "team": "Algeria",
       "group": "J",
-      "expected_goals_for": 3.0124360277,
-      "expected_goals_against": 3.8879924541,
-      "expected_goal_difference": -0.8755564264
+      "expected_goals_for": 3.011709115,
+      "expected_goals_against": 3.8636423028,
+      "expected_goal_difference": -0.8519331878
     },
     {
       "team": "Jordan",
       "group": "J",
-      "expected_goals_for": 2.4703669292,
-      "expected_goals_against": 4.3874582542,
-      "expected_goal_difference": -1.9170913249
+      "expected_goals_for": 2.4696400165,
+      "expected_goals_against": 4.3631081028,
+      "expected_goal_difference": -1.8934680863
     },
     {
       "team": "Portugal",
@@ -8176,17 +8176,17 @@
       "elo": 2086.0,
       "fifa_rank": 3.0,
       "market_value_m": 783.0,
-      "defense": 0.454396606,
+      "defense": 0.4529427805,
       "knockout_index": 320.9593623663,
       "host": 0,
       "squad_quality": 50.8297344073,
       "team_composure": 95.652173913,
       "ranking_strength": 97.4683544304,
-      "keeper_defense_proxy": 98.57180593,
+      "keeper_defense_proxy": 99.0409984799,
       "knockout_experience_proxy": 94.2746034911,
-      "player_condition_proxy": 77.3629707901,
-      "penalty_shootout_rating": 84.7281961061,
-      "win_vs_average_penalty_team": 0.9475498495,
+      "player_condition_proxy": 77.4098900451,
+      "penalty_shootout_rating": 84.8417407032,
+      "win_vs_average_penalty_team": 0.9480181186,
       "profile": "Elite shootout profile"
     },
     {
