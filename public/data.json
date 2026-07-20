@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-20T10:11:36+00:00",
+  "generated_at": "2026-07-20T13:07:06+00:00",
   "refresh_cadences": {
     "live_results_minutes": 5,
     "transfermarkt_values_hours": 1,
@@ -906,7 +906,7 @@
     "base": "EUR",
     "quote": "SGD",
     "eur_to_sgd": 1.4765,
-    "fetched_at": "2026-07-20T10:10:41+00:00",
+    "fetched_at": "2026-07-20T13:06:10+00:00",
     "note": "Transfermarkt squad values are stored in EUR millions and converted to SGD for display only."
   },
   "sources": [
@@ -914,7 +914,7 @@
       "name": "groups_2026",
       "url": "https://github.com/openfootball/worldcup",
       "status": "live",
-      "fetched_at": "2026-07-20T10:10:39+00:00",
+      "fetched_at": "2026-07-20T13:06:07+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://github.com/openfootball/worldcup"
@@ -923,7 +923,7 @@
       "name": "fifa_rankings",
       "url": "https://inside.fifa.com/fifa-world-ranking/men",
       "status": "live",
-      "fetched_at": "2026-07-20T10:10:39+00:00",
+      "fetched_at": "2026-07-20T13:06:07+00:00",
       "rows": 48,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://inside.fifa.com/fifa-world-ranking/men"
@@ -932,7 +932,7 @@
       "name": "elo_ratings",
       "url": "https://www.eloratings.net/",
       "status": "seed",
-      "fetched_at": "2026-07-20T10:10:39+00:00",
+      "fetched_at": "2026-07-20T13:06:08+00:00",
       "rows": 48,
       "note": "Using bundled starter data. The public page loads this table dynamically, so the app cannot read it from the initial HTML.",
       "citation": "https://www.eloratings.net/"
@@ -941,7 +941,7 @@
       "name": "transfermarkt_values",
       "url": "https://www.transfermarkt.com/statistik/weltrangliste",
       "status": "cached",
-      "fetched_at": "2026-07-20T10:10:39+00:00",
+      "fetched_at": "2026-07-20T13:06:08+00:00",
       "rows": 48,
       "note": "Using last saved snapshot. The live source could not be refreshed just now.",
       "citation": "https://www.transfermarkt.com/statistik/weltrangliste"
@@ -950,7 +950,7 @@
       "name": "espn_scoreboard",
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
       "status": "live",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 104,
       "note": "Live source refreshed successfully. Parser 2026.1.",
       "citation": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
@@ -959,7 +959,7 @@
       "name": "fifa_schedule",
       "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule",
       "status": "reference",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 0,
       "note": "Official tournament schedule and match path reference.",
       "citation": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/match-schedule"
@@ -968,7 +968,7 @@
       "name": "format_cross_check",
       "url": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for",
       "status": "reference",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 0,
       "note": "Independent tournament-format cross-check.",
       "citation": "https://www.theguardian.com/football/2026/jun/09/a-very-beginners-guide-to-the-world-cup-how-does-it-work-and-the-players-to-look-out-for"
@@ -977,7 +977,7 @@
       "name": "espn_world_cup",
       "url": "https://www.espn.com/soccer/league/_/name/fifa.world",
       "status": "reference",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 0,
       "note": "Readable live scores, fixtures, and World Cup news reference.",
       "citation": "https://www.espn.com/soccer/league/_/name/fifa.world"
@@ -986,7 +986,7 @@
       "name": "football_data_org",
       "url": "https://api.football-data.org/v4/competitions/WC/matches",
       "status": "optional_api",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 0,
       "note": "Optional free-token fallback for World Cup matches. Add FOOTBALL_DATA_TOKEN in Cloudflare to enable live fallback.",
       "citation": "https://api.football-data.org/v4/competitions/WC/matches"
@@ -995,7 +995,7 @@
       "name": "eur_sgd_fx",
       "url": "https://api.frankfurter.app/latest?from=EUR&to=SGD",
       "status": "live",
-      "fetched_at": "2026-07-20T10:10:41+00:00",
+      "fetched_at": "2026-07-20T13:06:10+00:00",
       "rows": 1,
       "note": "Live EUR to SGD display conversion refreshed successfully.",
       "citation": "https://api.frankfurter.app/latest?from=EUR&to=SGD"
